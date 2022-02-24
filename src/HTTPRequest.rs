@@ -132,4 +132,14 @@ impl Method {
     fn get_type<'a>(request: &'a str) -> Option<&'a str> {
         request.split_whitespace().next()
     }
+
+    fn get_start_line<'a>(start_line: &'a str) -> Result<(&'a str, &'a str, &'a str), ParserError> {
+        let mut start_line = start_line.split_whitespace();
+        
+        let method : &str = start_line.next().ok_or(ParserError::InvalidMethod)?;
+        let target : &str = start_line.next().ok_or(ParserError::InvalidMethod)?;
+        let version : &str = start_line.next().ok_or(ParserError::InvalidMethod)?;
+
+        Result::Ok((method, target, version))
+    }
 }

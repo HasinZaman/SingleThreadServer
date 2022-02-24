@@ -344,4 +344,139 @@ impl Method {
 
         Result::Ok((method, target, version))
     }
+#[cfg(test)]
+mod tests {
+    mod HTTP_Body_Enum_Test {
+        use crate::HTTPRequest::HTTPBody::*;
+        
+        #[test]
+        fn content_type_application_test(){
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::EDI_X12
+                };
+                assert_eq!(actual.to_string(), "application/EDI-X12");
+            }
+
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::EDIFACT
+                };
+                assert_eq!(actual.to_string(), "application/EDIFACT");
+            }
+
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::javascript
+                };
+                assert_eq!(actual.to_string(), "application/javascript");
+            }
+
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::octet_stream
+                };
+                assert_eq!(actual.to_string(), "application/octet-stream");
+            }
+
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::ogg
+                };
+                assert_eq!(actual.to_string(), "application/ogg");
+            }
+
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::pdf
+                };
+                assert_eq!(actual.to_string(), "application/pdf");
+            }
+
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::xhtml_xml
+                };
+                assert_eq!(actual.to_string(), "application/xhtml+xml");
+            }
+
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::x_shockwave_flash
+                };
+                assert_eq!(actual.to_string(), "application/x-shockwave-flash");
+            }
+
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::json
+                };
+                assert_eq!(actual.to_string(), "application/json");
+            }
+
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::ld_json
+                };
+                assert_eq!(actual.to_string(), "application/ld+json");
+            }
+
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::xml
+                };
+                assert_eq!(actual.to_string(), "application/xml");
+            }
+
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::zip
+                };
+                assert_eq!(actual.to_string(), "application/zip");
+            }
+
+            {
+                let actual : ContentType = ContentType::Application {
+                    value : Value::Application::x_www_form_urlencoded
+                };
+                assert_eq!(actual.to_string(), "application/x-www-form-urlencoded");
+            }
+        }
+
+        #[test]
+        fn content_type_audio_test(){
+
+        }
+
+        #[test]
+        fn content_type_image_test(){
+            
+        }
+
+        #[test]
+        fn content_type_multipart_test(){
+            
+        }
+
+        #[test]
+        fn content_type_text_test(){
+            
+        }
+
+        #[test]
+        fn content_type_video_test(){
+            
+        }
+    }
+    mod HTTP_Request_Parse_Test {
+        //get test
+        //head test
+        //post test
+        //put test
+        //delete test
+        //connect test
+        //options test
+        //trace test
+        //patch test
+    }
 }

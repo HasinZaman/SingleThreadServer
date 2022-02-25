@@ -362,6 +362,40 @@ impl Method {
 
         Result::Ok((method, target, version))
     }
+impl ToString for Method {
+    fn to_string(&self) -> String {
+        match &self {
+            Method::GET { file } => {
+                return String::from(format!("GET file={}", file));
+            },
+            Method::HEAD { file } => {
+                return String::from(format!("Head file={}", file));
+            },
+            Method::POST { file, body } => {
+                return String::from(format!("POST file={}", file));
+            },
+            Method::PUT { file, body } => {
+                return String::from(format!("PUT file={}", file));
+            },
+            Method::DELETE { file, body } => {
+                return String::from(format!("DELETE file={}", file));
+            },
+            Method::CONNECT { URL } => {
+                return String::from(format!("CONNECT URL={}", URL));
+            },
+            Method::OPTIONS { URL } => {
+                return String::from(format!("OPTIONS URL={}", URL));
+            },
+            Method::TRACE => {
+                return String::from("TRACE");
+            },
+            Method::PATCH => {
+                return String::from("PATCH");
+            }
+            _ => panic!("Not implemented variant"),
+        }
+    }
+}
 #[cfg(test)]
 mod tests {
     mod HTTP_Body_Enum_Test {

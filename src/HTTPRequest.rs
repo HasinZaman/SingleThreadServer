@@ -497,27 +497,220 @@ mod tests {
 
         #[test]
         fn content_type_audio_test(){
-
+            {
+                let actual : ContentType = ContentType::Audio {
+                    value : Value::Audio::mpeg
+                };
+                assert_eq!(actual.to_string(), "audio/mpeg");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Audio {
+                    value : Value::Audio::x_ms_wma
+                };
+                assert_eq!(actual.to_string(), "audio/x-ms-wma");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Audio {
+                    value : Value::Audio::vnd_rn_realaudio
+                };
+                assert_eq!(actual.to_string(), "audio/vnd.rn-realaudio");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Audio {
+                    value : Value::Audio::x_wav
+                };
+                assert_eq!(actual.to_string(), "audio/x-wav");
+            }
         }
 
         #[test]
         fn content_type_image_test(){
+            {
+                let actual : ContentType = ContentType::Image {
+                    value : Value::Image::gif
+                };
+                assert_eq!(actual.to_string(), "image/gif");
+            }
             
+            {
+                let actual : ContentType = ContentType::Image {
+                    value : Value::Image::jpeg
+                };
+                assert_eq!(actual.to_string(), "image/jpeg");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Image {
+                    value : Value::Image::png
+                };
+                assert_eq!(actual.to_string(), "image/png");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Image {
+                    value : Value::Image::tiff
+                };
+                assert_eq!(actual.to_string(), "image/tiff");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Image {
+                    value : Value::Image::vnd_microsoft_icon
+                };
+                assert_eq!(actual.to_string(), "image/vnd.microsoft.icon");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Image {
+                    value : Value::Image::x_icon
+                };
+                assert_eq!(actual.to_string(), "image/x-icon");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Image {
+                    value : Value::Image::vnd_djvu
+                };
+                assert_eq!(actual.to_string(), "image/vnd.djvu");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Image {
+                    value : Value::Image::svg_xml
+                };
+                assert_eq!(actual.to_string(), "image/svg+xml");
+            }
         }
 
         #[test]
         fn content_type_multipart_test(){
-            
+            {
+                let actual : ContentType = ContentType::Multipart {
+                    value : Value::Multipart::mixed
+                };
+                assert_eq!(actual.to_string(), "multipart/mixed");
+            }
+
+            {
+                let actual : ContentType = ContentType::Multipart {
+                    value : Value::Multipart::alternative
+                };
+                assert_eq!(actual.to_string(), "multipart/alternative");
+            }
+
+            {
+                let actual : ContentType = ContentType::Multipart {
+                    value : Value::Multipart::related
+                };
+                assert_eq!(actual.to_string(), "multipart/related");
+            }
+
+            {
+                let actual : ContentType = ContentType::Multipart {
+                    value : Value::Multipart::form_data { boundary : String::from("")}
+                };
+                assert_eq!(actual.to_string(), "multipart/form-data");
+            }
         }
 
         #[test]
         fn content_type_text_test(){
+            {
+                let actual : ContentType = ContentType::Text {
+                    value : Value::Text::css
+                };
+                assert_eq!(actual.to_string(), "text/css");
+            }
             
+            {
+                let actual : ContentType = ContentType::Text {
+                    value : Value::Text::csv
+                };
+                assert_eq!(actual.to_string(), "text/csv");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Text {
+                    value : Value::Text::html
+                };
+                assert_eq!(actual.to_string(), "text/html");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Text {
+                    value : Value::Text::javascript
+                };
+                assert_eq!(actual.to_string(), "text/javascript");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Text {
+                    value : Value::Text::plain
+                };
+                assert_eq!(actual.to_string(), "text/plain");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Text {
+                    value : Value::Text::xml
+                };
+                assert_eq!(actual.to_string(), "text/xml");
+            }
         }
 
         #[test]
         fn content_type_video_test(){
+            {
+                let actual : ContentType = ContentType::Video {
+                    value : Value::Video::mpeg
+                };
+                assert_eq!(actual.to_string(), "video/mpeg");
+            }
             
+            {
+                let actual : ContentType = ContentType::Video {
+                    value : Value::Video::mp4
+                };
+                assert_eq!(actual.to_string(), "video/mp4");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Video {
+                    value : Value::Video::quicktime
+                };
+                assert_eq!(actual.to_string(), "video/quicktime");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Video {
+                    value : Value::Video::x_ms_wmv
+                };
+                assert_eq!(actual.to_string(), "video/x-ms-wmv");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Video {
+                    value : Value::Video::x_msvideo
+                };
+                assert_eq!(actual.to_string(), "video/x-msvideo");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Video {
+                    value : Value::Video::x_flv
+                };
+                assert_eq!(actual.to_string(), "video/x-flv");
+            }
+            
+            {
+                let actual : ContentType = ContentType::Video {
+                    value : Value::Video::webm
+                };
+                assert_eq!(actual.to_string(), "video/webm");
+            }
         }
     }
     mod HTTP_Request_Parse_Test {

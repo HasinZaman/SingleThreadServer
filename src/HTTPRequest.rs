@@ -241,6 +241,12 @@ pub mod HTTPBody {
             
         }
     }
+    use std::fmt::{Debug, Formatter, Error};
+    impl Debug for ContentType {
+        fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+            f.debug_struct(&format!("ContentType: {}", self.to_string())).finish()
+        }
+    }
 }
 
 impl Method {

@@ -35,6 +35,12 @@ pub enum ParserError {
     NotImplemented,
 }
 
+#[derive(Debug)]
+pub struct Body {
+    pub content_type : HTTPBody::ContentType,
+    pub content : String,
+}
+
 pub mod HTTPBody {
     trait VariantName {
         fn get_variant(&self) -> String;

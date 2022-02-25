@@ -1,22 +1,28 @@
 #[derive(Debug)]
 pub enum Method {
     GET {
-        file : String 
+        file : String,
     },
     HEAD {
-        file : String
+        file : String,
     },
     POST {
-        body : String,
-        content_type : String
+        file : String,
+        body : Body,
     },
-    PUT,
-    DELETE,
+    PUT {
+        file : String,
+        body : Body,
+    },
+    DELETE {
+        file : String,
+        body : Option<Body>,
+    },
     CONNECT {
-        URL : String
+        URL : String,
     },
     OPTIONS {
-        URL : String
+        URL : String,
     },
     TRACE,
     PATCH

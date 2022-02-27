@@ -410,6 +410,8 @@ pub mod HTTPBody {
         fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
             f.debug_struct(&format!("ContentType: {}", self.to_string())).finish()
 
+        pub fn parse_value<V>(value : &str) -> Result<V, ParserError> where V : Constructor<V> {
+            V::new(value)
         }
     }
 }

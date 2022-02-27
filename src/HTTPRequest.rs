@@ -87,8 +87,8 @@ pub mod HTTPBody {
                     return Ok(content_type);
                 },
                 "multipart" => {
-                    let content_type_value = Value::parse_value::<Value::Image>(value)?;
-                    let content_type = ContentType::Image{ value : content_type_value };
+                    let content_type_value = Value::parse_value::<Value::Multipart>(value)?;
+                    let content_type = ContentType::Multipart{ value : content_type_value };
                     return Ok(content_type);
                 },
                 "text" => {

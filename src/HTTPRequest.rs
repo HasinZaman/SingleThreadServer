@@ -455,6 +455,55 @@ impl Method {
 
         Result::Ok((method, target, version))
     }
+
+    fn get_body<'a>(request : &Vec<&str>) -> Result<Body, ParserError> {
+        let mut content_type : Option<HTTPBody::ContentType> = Option::None;
+        let mut boundary_index : Option<usize> = Option::None;
+
+        //get content type
+        for i1 in 1..request.len() {
+            if 13 <= request[i1].len() {
+                let content_type_result = HTTPBody::ContentType::new(request[i1]);
+
+                match content_type_result {
+                    Ok( tmp ) => {
+                        content_type = Option::Some(tmp);
+                    },
+                    Err(err) => return Result::Err(err),
+                }
+            }
+            else if 0 == request[i1].len() {
+                if content_type.is_none() {
+                    return Result::Err(ParserError::InvalidMethod)
+                }
+
+                boundary_index = Option::Some(i1);
+                break;
+            }
+            println!("{}", request[i1].to_string());
+        };
+
+        let mut body : String = String::from("");
+
+        match boundary_index {
+            Some(tmp) => {
+                for i1 in tmp..request.len() {
+                    body.push_str(request[i1]);
+                }
+            },
+            None => panic!("boundary_index is invalid type (None)"),
+        }
+        
+
+        match content_type {
+            Some( tmp ) => return Result::Ok(Body { content_type : tmp, content : body }),
+            None => panic!("content_type is invalid type (None)"),
+        }
+
+        
+    }
+}
+
 impl ToString for Method {
     fn to_string(&self) -> String {
         match &self {

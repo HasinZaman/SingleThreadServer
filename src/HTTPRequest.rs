@@ -386,43 +386,6 @@ pub mod HTTPBody {
                 }
             }
         }
-
-    }
-    impl VariantName for ContentType {
-        fn get_variant(&self) -> String{
-            match &self {
-                ContentType::Application { value } => return String::from("application"),
-                ContentType::Audio { value } => return String::from("audio"),
-                ContentType::Image { value } => return String::from("image"),
-                ContentType::Multipart { value } => return String::from("multipart"),
-                ContentType::Text { value } => return String::from("text"),
-                ContentType::Video { value } => return String::from("video"),
-                _ => panic!("Invalid variant type"),
-            }
-        }
-    }
-    impl ToString for ContentType {
-        fn to_string(&self) -> String {
-            match &self {
-                ContentType::Application { value }  => {
-                    return format!("{}/{}", &self.get_variant(), value.get_variant())
-                },
-                ContentType::Audio { value }   => {
-                    return format!("{}/{}", &self.get_variant(), value.get_variant())
-                },
-                 ContentType::Image { value }   => {
-                    return format!("{}/{}", &self.get_variant(), value.get_variant())
-                },
-                 ContentType::Multipart { value }   => {
-                    return format!("{}/{}", &self.get_variant(), value.get_variant())
-                },
-                 ContentType::Text { value }   => {
-                    return format!("{}/{}", &self.get_variant(), value.get_variant())
-                },
-                 ContentType::Video { value } => {
-                    return format!("{}/{}", &self.get_variant(), value.get_variant())
-                },
-                _ => panic!("Not implemented variant"),
         impl Constructor<Video> for Video{
             fn new(value_raw : &str) -> Result<Video, ParserError>{
                 let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();

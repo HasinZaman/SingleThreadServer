@@ -42,6 +42,8 @@ pub struct Body {
 }
 
 pub mod HTTPBody {
+    use crate::HTTPRequest::ParserError;
+
     trait VariantName {
         fn get_variant(&self) -> String;
     }
@@ -55,8 +57,107 @@ pub mod HTTPBody {
         Text {value : Value::Text},
         Video {value : Value::Video},
     }
+    
+    impl ContentType {
+        pub fn new( raw_str : &str ) -> Result<ContentType, ParserError> {
+            let str_vec : Vec<&str> = raw_str.split("/").collect();
+
+            if str_vec.len() < 2 {
+                return Result::Err(ParserError::InvalidMethod);
+            }
+
+            let type_raw : &str = str_vec[0];
+
+            let value : &str = str_vec[1];
+
+            match type_raw {
+                "application" => {
+                    let content_type_value = Value::parse_value::<Value::Application>(value)?;
+                    let content_type = ContentType::Application{ value : content_type_value };
+                    return Ok(content_type);
+                }, 
+                "audio" => {
+                    let content_type_value = Value::parse_value::<Value::Audio>(value)?;
+                    let content_type = ContentType::Audio{ value : content_type_value };
+                    return Ok(content_type);
+                },
+                "image" => {
+                    let content_type_value = Value::parse_value::<Value::Image>(value)?;
+                    let content_type = ContentType::Image{ value : content_type_value };
+                    return Ok(content_type);
+                },
+                "multipart" => {
+                    let content_type_value = Value::parse_value::<Value::Image>(value)?;
+                    let content_type = ContentType::Image{ value : content_type_value };
+                    return Ok(content_type);
+                },
+                "text" => {
+                    let content_type_value = Value::parse_value::<Value::Text>(value)?;
+                    let content_type = ContentType::Text{ value : content_type_value };
+                    return Ok(content_type);
+                },
+                "video" => {
+                    let content_type_value = Value::parse_value::<Value::Video>(value)?;
+                    let content_type = ContentType::Video{ value : content_type_value };
+                    return Ok(content_type);
+                },
+                _ => return Result::Err(ParserError::InvalidMethod),
+            }
+        }
+    }
+    impl VariantName for ContentType {
+        fn get_variant(&self) -> String{
+            match &self {
+                ContentType::Application { value } => return String::from("application"),
+                ContentType::Audio { value } => return String::from("audio"),
+                ContentType::Image { value } => return String::from("image"),
+                ContentType::Multipart { value } => return String::from("multipart"),
+                ContentType::Text { value } => return String::from("text"),
+                ContentType::Video { value } => return String::from("video"),
+                _ => panic!("Invalid variant type"),
+            }
+        }
+    }
+    impl ToString for ContentType {
+        fn to_string(&self) -> String {
+            match &self {
+                ContentType::Application { value }  => {
+                    return format!("{}/{}", &self.get_variant(), value.get_variant())
+                },
+                ContentType::Audio { value }   => {
+                    return format!("{}/{}", &self.get_variant(), value.get_variant())
+                },
+                 ContentType::Image { value }   => {
+                    return format!("{}/{}", &self.get_variant(), value.get_variant())
+                },
+                 ContentType::Multipart { value }   => {
+                    return format!("{}/{}", &self.get_variant(), value.get_variant())
+                },
+                 ContentType::Text { value }   => {
+                    return format!("{}/{}", &self.get_variant(), value.get_variant())
+                },
+                 ContentType::Video { value } => {
+                    return format!("{}/{}", &self.get_variant(), value.get_variant())
+                },
+                _ => panic!("Not implemented variant"),
+            }
+            
+        }
+    }
+    use std::fmt::{Debug, Formatter, Error};
+    impl Debug for ContentType {
+        fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+            f.debug_struct(&format!("ContentType: {}", self.to_string())).finish()
+        }
+    }
 
     pub mod Value{
+        use crate::HTTPRequest::ParserError;
+
+        pub trait Constructor<V>{
+            fn new(value_raw : &str) -> Result<V, ParserError>;
+        }
+
         pub enum Application {
             EDI_X12,
             EDIFACT,
@@ -92,6 +193,29 @@ pub mod HTTPBody {
                 }
             }
         }
+        impl Constructor<Application> for Application{
+            fn new(value_raw : &str) -> Result<Application, ParserError> {
+                let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();
+
+                let value : &str = value_paramater_vec[0];
+                match value {
+                    "EDI-X12" => return Result::Ok(Application::EDI_X12),
+                    "EDIFACT" => return Result::Ok(Application::EDIFACT),
+                    "javascript" => return Result::Ok(Application::javascript),
+                    "octet-stream" => return Result::Ok(Application::octet_stream),
+                    "ogg" => return Result::Ok(Application::ogg),
+                    "pdf" => return Result::Ok(Application::pdf),
+                    "xhtml+xml" => return Result::Ok(Application::xhtml_xml),
+                    "x-shockwave-flash" => return Result::Ok(Application::x_shockwave_flash),
+                    "json" => return Result::Ok(Application::json),
+                    "ld+json" => return Result::Ok(Application::ld_json),
+                    "xml" => return Result::Ok(Application::xml),
+                    "zip" => return Result::Ok(Application::zip),
+                    "x-www-form-urlencoded" => return Result::Ok(Application::x_www_form_urlencoded),
+                    _ => panic!("Invalid variant type"),
+                }
+            }
+        }
 
         pub enum Audio {
             mpeg,
@@ -106,6 +230,20 @@ pub mod HTTPBody {
                     Audio::x_ms_wma => return String::from("x-ms-wma"),
                     Audio::vnd_rn_realaudio => return String::from("vnd.rn-realaudio"),
                     Audio::x_wav => return String::from("x-wav"),
+                    _ => panic!("Invalid variant type"),
+                }
+            }
+        }
+        impl Constructor<Audio> for Audio{
+            fn new(value_raw : &str) -> Result<Audio, ParserError> {
+                let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();
+
+                let value : &str = value_paramater_vec[0];
+                match value {
+                    "mpeg" => return Result::Ok(Audio::mpeg),
+                    "x-ms-wma" => return Result::Ok(Audio::x_ms_wma),
+                    "vnd.rn-realaudio" => return Result::Ok(Audio::vnd_rn_realaudio),
+                    "x-wav" => return Result::Ok(Audio::x_wav),
                     _ => panic!("Invalid variant type"),
                 }
             }
@@ -136,6 +274,24 @@ pub mod HTTPBody {
                 }
             }
         }
+        impl Constructor<Image> for Image{
+            fn new(value_raw : &str) -> Result<Image, ParserError>{
+                let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();
+
+                let value : &str = value_paramater_vec[0];
+                match value {
+                    "gif" => return Result::Ok(Image::gif),
+                    "jpeg" => return Result::Ok(Image::jpeg),
+                    "png" => return Result::Ok(Image::png),
+                    "tiff" => return Result::Ok(Image::tiff),
+                    "vnd.microsoft.icon" => return Result::Ok(Image::vnd_microsoft_icon),
+                    "x-icon" => return Result::Ok(Image::x_icon),
+                    "vnd.djvu" => return Result::Ok(Image::vnd_djvu),
+                    "svg+xml" => return Result::Ok(Image::svg_xml),
+                    _ => panic!("Invalid variant type"),
+                }
+            }
+        }
 
         pub enum Multipart {
             mixed,
@@ -150,6 +306,20 @@ pub mod HTTPBody {
                     Multipart::alternative => String::from("alternative"),
                     Multipart::related => String::from("related"),
                     Multipart::form_data { boundary } => String::from("form-data"),
+                    _ => panic!("Invalid variant type"),
+                }
+            }
+        }
+        impl Constructor<Multipart> for Multipart{
+            fn new(value_raw : &str) -> Result<Multipart, ParserError>{
+                let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();
+
+                let value : &str = value_paramater_vec[0];
+                match value {
+                    "mixed" => return Result::Ok(Multipart::mixed),
+                    "alternative" => return Result::Ok(Multipart::alternative),
+                    "related" => return Result::Ok(Multipart::related),
+                    "form-data" => return Result::Ok(Multipart::form_data { boundary : String::from("")}),
                     _ => panic!("Invalid variant type"),
                 }
             }
@@ -172,6 +342,15 @@ pub mod HTTPBody {
                     Text::javascript => String::from("javascript"),
                     Text::plain => String::from("plain"),
                     Text::xml => String::from("xml"),
+                    _ => panic!("Invalid variant type"),
+                }
+            }
+        }
+        impl Constructor<Text> for Text{
+            fn new(value_raw : &str) -> Result<Text, ParserError>{
+                    "javascript" => return Result::Ok(Text::javascript),
+                    "plain" => return Result::Ok(Text::plain),
+                    "xml" => return Result::Ok(Text::xml),
                     _ => panic!("Invalid variant type"),
                 }
             }
@@ -237,6 +416,21 @@ pub mod HTTPBody {
                     return format!("{}/{}", &self.get_variant(), value.get_variant())
                 },
                 _ => panic!("Not implemented variant"),
+        impl Constructor<Video> for Video{
+            fn new(value_raw : &str) -> Result<Video, ParserError>{
+                let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();
+
+                let value : &str = value_paramater_vec[0];
+                match value {
+                    "mpeg" => return Result::Ok(Video::mpeg),
+                    "mp4" => return Result::Ok(Video::mp4),
+                    "quicktime" => return Result::Ok(Video::quicktime),
+                    "x-ms-wmv" => return Result::Ok(Video::x_ms_wmv),
+                    "x-msvideo" => return Result::Ok(Video::x_msvideo),
+                    "x-flv" => return Result::Ok(Video::x_flv),
+                    "webm" => return Result::Ok(Video::webm),
+                    _ => panic!("Invalid variant type"),
+                }
             }
             
         }
@@ -245,6 +439,7 @@ pub mod HTTPBody {
     impl Debug for ContentType {
         fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
             f.debug_struct(&format!("ContentType: {}", self.to_string())).finish()
+
         }
     }
 }

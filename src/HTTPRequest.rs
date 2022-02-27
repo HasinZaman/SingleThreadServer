@@ -348,6 +348,13 @@ pub mod HTTPBody {
         }
         impl Constructor<Text> for Text{
             fn new(value_raw : &str) -> Result<Text, ParserError>{
+                let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();
+
+                let value : &str = value_paramater_vec[0];
+                match value {
+                    "css" => return Result::Ok(Text::css),
+                    "csv" => return Result::Ok(Text::csv),
+                    "html" => return Result::Ok(Text::html),
                     "javascript" => return Result::Ok(Text::javascript),
                     "plain" => return Result::Ok(Text::plain),
                     "xml" => return Result::Ok(Text::xml),
@@ -596,13 +603,101 @@ mod tests {
     mod HTTP_Body_Enum_Test {
         use crate::HTTPRequest::HTTPBody::*;
         
-        #[test]
-        fn content_type_application_test(){
-            {
-                let actual : ContentType = ContentType::Application {
-                    value : Value::Application::EDI_X12
-                };
-                assert_eq!(actual.to_string(), "application/EDI-X12");
+        mod enum_to_string_test{
+            use crate::HTTPRequest::HTTPBody::*;
+
+            #[test]
+            fn application_test(){
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::EDI_X12
+                    };
+                    assert_eq!(actual.to_string(), "application/EDI-X12");
+                }
+
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::EDIFACT
+                    };
+                    assert_eq!(actual.to_string(), "application/EDIFACT");
+                }
+
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::javascript
+                    };
+                    assert_eq!(actual.to_string(), "application/javascript");
+                }
+
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::octet_stream
+                    };
+                    assert_eq!(actual.to_string(), "application/octet-stream");
+                }
+
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::ogg
+                    };
+                    assert_eq!(actual.to_string(), "application/ogg");
+                }
+
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::pdf
+                    };
+                    assert_eq!(actual.to_string(), "application/pdf");
+                }
+
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::xhtml_xml
+                    };
+                    assert_eq!(actual.to_string(), "application/xhtml+xml");
+                }
+
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::x_shockwave_flash
+                    };
+                    assert_eq!(actual.to_string(), "application/x-shockwave-flash");
+                }
+
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::json
+                    };
+                    assert_eq!(actual.to_string(), "application/json");
+                }
+
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::ld_json
+                    };
+                    assert_eq!(actual.to_string(), "application/ld+json");
+                }
+
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::xml
+                    };
+                    assert_eq!(actual.to_string(), "application/xml");
+                }
+
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::zip
+                    };
+                    assert_eq!(actual.to_string(), "application/zip");
+                }
+
+                {
+                    let actual : ContentType = ContentType::Application {
+                        value : Value::Application::x_www_form_urlencoded
+                    };
+                    assert_eq!(actual.to_string(), "application/x-www-form-urlencoded");
+                }
             }
 
             {

@@ -419,31 +419,34 @@ impl Method {
             return Result::Err(ParserError::InvalidMethod);
         }
 
-        match Method::get_type(&request[0]){
-            Some(method) => {
-                let method : String = method.to_uppercase();
-
-                match method.as_str() {
-                    "GET"       => return Result::Err(ParserError::NotImplemented),
-                    "HEAD"      => return Result::Err(ParserError::NotImplemented),
-                    "POST"      => return Result::Err(ParserError::NotImplemented),
-                    "PUT"       => return Result::Err(ParserError::NotImplemented),
-                    "DELETE"    => return Result::Err(ParserError::NotImplemented),
-                    "CONNECT"   => return Result::Err(ParserError::NotImplemented),
-                    "OPTIONS"   => return Result::Err(ParserError::NotImplemented),
-                    "TRACE"     => return Result::Err(ParserError::NotImplemented),
-                    "PATCH"     => return Result::Err(ParserError::NotImplemented),
-                    _           => return Result::Err(ParserError::InvalidMethod),
-                }
+        let mut method;
+        let mut target;
+        let mut version;
+        
+        match Method::get_start_line(&request[0]) {
+            Ok(tmp) => {
+                method = tmp.0;
+                target = tmp.1;
+                version = tmp.2;
             },
-            None => {
-                return Result::Err(ParserError::InvalidMethod);
-            },
+            Err(tmp) => return Result::Err(tmp),
         }
-    }
 
-    fn get_type<'a>(request: &'a str) -> Option<&'a str> {
-        request.split_whitespace().next()
+        let method : String = method.to_uppercase();
+
+        match method.as_str() {
+            "GET"       => return Result::Ok(Method::GET{ file : target.to_string() }),
+            "HEAD"      => return Result::Ok(Method::HEAD{ file : target.to_string() }),
+            "POST"      => return Result::Ok(Method::POST{ file : target.to_string(), body : Method::get_body(&request)?}),
+            "PUT"       => return Result::Ok(Method::PUT{ file : target.to_string(), body : Method::get_body(&request)?}),
+            "DELETE"    => return Result::Err(ParserError::NotImplemented),//return Result::Ok(Method::DELETE{ file : target.to_string(), body : Method::get_body(&request)?}),
+            // DELETE { file : String, body : Option<Body>, },
+            "CONNECT"   => return Result::Ok(Method::CONNECT{ URL : target.to_string() }),
+            "OPTIONS"   => return Result::Ok(Method::OPTIONS{ URL : target.to_string() }),
+            "TRACE"     => return Result::Err(ParserError::NotImplemented),
+            "PATCH"     => return Result::Err(ParserError::NotImplemented),
+            _           => return Result::Err(ParserError::InvalidMethod),
+        }
     }
 
     fn get_start_line<'a>(start_line: &'a str) -> Result<(&'a str, &'a str, &'a str), ParserError> {
@@ -499,8 +502,6 @@ impl Method {
             Some( tmp ) => return Result::Ok(Body { content_type : tmp, content : body }),
             None => panic!("content_type is invalid type (None)"),
         }
-
-        
     }
 }
 

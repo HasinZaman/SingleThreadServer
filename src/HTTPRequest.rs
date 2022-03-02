@@ -444,10 +444,9 @@ impl Method {
         match method.as_str() {
             "GET"       => return Result::Ok(Method::GET{ file : target.to_string() }),
             "HEAD"      => return Result::Ok(Method::HEAD{ file : target.to_string() }),
-            "DELETE"    => return Result::Err(ParserError::NotImplemented),//return Result::Ok(Method::DELETE{ file : target.to_string(), body : Method::get_body(&request)?}),
-            // DELETE { file : String, body : Option<Body>, },
             "POST"      => return Result::Ok(Method::POST{ file : target.to_string(), body : body_unwrap(Method::get_body(&request)?)?}),
             "PUT"       => return Result::Ok(Method::PUT{ file : target.to_string(), body : body_unwrap(Method::get_body(&request)?)?}),
+            "DELETE"    => return Result::Ok(Method::DELETE{ file : target.to_string(), body : Method::get_body(&request)?}),
             "CONNECT"   => return Result::Ok(Method::CONNECT{ URL : target.to_string() }),
             "OPTIONS"   => return Result::Ok(Method::OPTIONS{ URL : target.to_string() }),
             "TRACE"     => return Result::Err(ParserError::NotImplemented),

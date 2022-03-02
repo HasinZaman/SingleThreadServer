@@ -1219,7 +1219,9 @@ mod tests {
             //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
             //GET /index.html
 
-            let get_method_result : Result<Method, ParserError> = Method::new(make_HTTP_Request("GET /index.html HTTP/1.1"));
+            let get_method_result : Result<Method, ParserError> = Method::new(
+                make_HTTP_Request("GET /index.html HTTP/1.1")
+            );
 
             assert_eq!(get_method_result.is_ok(), true);
             match get_method_result {
@@ -1245,7 +1247,9 @@ mod tests {
             //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD
             //HEAD /index.html
 
-            let get_method_result : Result<Method, ParserError> = Method::new(make_HTTP_Request("HEAD /index.html HTTP/1.1"));
+            let get_method_result : Result<Method, ParserError> = Method::new(
+                make_HTTP_Request("HEAD /index.html HTTP/1.1")
+            );
 
             assert_eq!(get_method_result.is_ok(), true);
             match get_method_result {
@@ -1272,16 +1276,11 @@ mod tests {
 
             let get_method_result : Result<Method, ParserError> = Method::new(
                 make_HTTP_Request(
-                    "POST /test HTTP/1.1
-                    Host: foo.example
-                    Content-Type: application/x-www-form-urlencoded
-                    Content-Length: 27
-                    
-                    field1=value1&field2=value2"
+                    "POST /test HTTP/1.1\nHost: foo.example\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 27\n\nfield1=value1&field2=value2"
                 )
             );
+            assert!(get_method_result.is_ok(),"{}", format!("{:?}", get_method_result));
 
-            assert_eq!(get_method_result.is_ok(), true);
             match get_method_result {
                 Ok(get_method_actual) => {
                     match get_method_actual {
@@ -1310,16 +1309,11 @@ mod tests {
 
             let get_method_result : Result<Method, ParserError> = Method::new(
                 make_HTTP_Request(
-                    "PUT /new.html HTTP/1.1
-                    Host: example.com
-                    Content-type: text/html
-                    Content-length: 16
-                    
-                    <p>New File</p>"
+                    "PUT /new.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>"
                 )
             );
 
-            assert_eq!(get_method_result.is_ok(), true);
+            assert!(get_method_result.is_ok(),"{}", format!("{:?}", get_method_result));
             match get_method_result {
                 Ok(get_method_actual) => {
                     match get_method_actual {

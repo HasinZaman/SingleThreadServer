@@ -552,11 +552,11 @@ impl ToString for Method {
             Method::OPTIONS { URL } => {
                 return String::from(format!("OPTIONS URL={}", URL));
             },
-            Method::TRACE => {
-                return String::from("TRACE");
+            Method::TRACE { file } => {
+                return String::from(format!("TRACE file={}", file));
             },
-            Method::PATCH => {
-                return String::from("PATCH");
+            Method::PATCH { file, body } => {
+                return String::from(format!("PATCH file={}", file));
             }
         }
     }

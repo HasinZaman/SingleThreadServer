@@ -445,7 +445,7 @@ impl Method {
             "OPTIONS"   => return Result::Ok(Method::OPTIONS{ URL : target.to_string() }),
             "TRACE"     => return Result::Err(ParserError::NotImplemented),
             "PATCH"     => return Result::Err(ParserError::NotImplemented),
-            _           => return Result::Err(ParserError::InvalidMethod),
+            _           => return Result::Err(ParserError::InvalidMethod(Option::Some(String::from(format!("{} is an invalid method name", method.as_str()))))),
         }
     }
 

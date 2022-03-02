@@ -30,7 +30,7 @@ pub enum Method {
 
 #[derive(Debug)]
 pub enum ParserError {
-    InvalidMethod,
+    InvalidMethod(Option<String>),
     FileDoesNotExist,
     NotImplemented,
 }
@@ -63,7 +63,7 @@ pub mod HTTPBody {
             let str_vec : Vec<&str> = raw_str.split("/").collect();
 
             if str_vec.len() < 2 {
-                return Result::Err(ParserError::InvalidMethod);
+                return Result::Err(ParserError::InvalidMethod(Option::Some(String::from("Start line must have more than 2 elements"))));
             }
 
             let type_raw : &str = str_vec[0];
@@ -101,7 +101,7 @@ pub mod HTTPBody {
                     let content_type = ContentType::Video{ value : content_type_value };
                     return Ok(content_type);
                 },
-                _ => return Result::Err(ParserError::InvalidMethod),
+                _ => return Result::Err(ParserError::InvalidMethod(Option::Some(String::from("Invalid type")))),
             }
         }
     }
@@ -416,7 +416,7 @@ impl Method {
         let request : Vec<&str> = request.split("\n").collect();
 
         if request.len() == 0 {
-            return Result::Err(ParserError::InvalidMethod);
+            return Result::Err(ParserError::InvalidMethod(Option::Some(String::from("request must have more than 0 lines"))));
         }
 
         let mut method;
@@ -472,7 +472,8 @@ impl Method {
                     Ok( tmp ) => {
                         content_type = Option::Some(tmp);
                     },
-                    Err(err) => return Result::Err(err),
+                        let content_type_result = HTTPBody::ContentType::new(value.trim_start());
+                            return Result::Err(ParserError::InvalidMethod(Option::Some(String::from("No content type before beginning of body"))))
                 }
             }
             else if 0 == request[i1].len() {

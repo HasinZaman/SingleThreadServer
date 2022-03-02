@@ -412,6 +412,13 @@ pub mod HTTPBody {
 
 impl Method {
     pub fn new(request_data : [u8; 1024]) -> Result<Method, ParserError> {
+        let body_unwrap = |body_tmp : Option<Body>| -> Result<Body, ParserError> {
+            match body_tmp {
+                Some(body) => return Result::Ok(body),
+                None => return Result::Err(ParserError::InvalidMethod(Option::Some(String::from("Http request requires body attribute"))))
+            }
+        };
+
         let request : String = String::from_utf8_lossy(&request_data[..]).to_string();
         let request : Vec<&str> = request.split("\n").collect();
 
@@ -437,10 +444,10 @@ impl Method {
         match method.as_str() {
             "GET"       => return Result::Ok(Method::GET{ file : target.to_string() }),
             "HEAD"      => return Result::Ok(Method::HEAD{ file : target.to_string() }),
-            "POST"      => return Result::Ok(Method::POST{ file : target.to_string(), body : Method::get_body(&request)?}),
-            "PUT"       => return Result::Ok(Method::PUT{ file : target.to_string(), body : Method::get_body(&request)?}),
             "DELETE"    => return Result::Err(ParserError::NotImplemented),//return Result::Ok(Method::DELETE{ file : target.to_string(), body : Method::get_body(&request)?}),
             // DELETE { file : String, body : Option<Body>, },
+            "POST"      => return Result::Ok(Method::POST{ file : target.to_string(), body : body_unwrap(Method::get_body(&request)?)?}),
+            "PUT"       => return Result::Ok(Method::PUT{ file : target.to_string(), body : body_unwrap(Method::get_body(&request)?)?}),
             "CONNECT"   => return Result::Ok(Method::CONNECT{ URL : target.to_string() }),
             "OPTIONS"   => return Result::Ok(Method::OPTIONS{ URL : target.to_string() }),
             "TRACE"     => return Result::Err(ParserError::NotImplemented),
@@ -459,7 +466,7 @@ impl Method {
         Result::Ok((method, target, version))
     }
 
-    fn get_body<'a>(request : &Vec<&str>) -> Result<Body, ParserError> {
+    fn get_body<'a>(request : &Vec<&str>) -> Result<Option<Body>, ParserError> {
         let mut content_type : Option<HTTPBody::ContentType> = Option::None;
         let mut boundary_index : Option<usize> = Option::None;
 
@@ -491,6 +498,10 @@ impl Method {
             }
         };
 
+        if content_type.is_none() {
+            return Result::Ok(Option::None) 
+        }
+
         let mut body : String = String::from("");
 
         match boundary_index {
@@ -507,7 +518,7 @@ impl Method {
             None => panic!("boundary_index is invalid type (None)"),
         }
         match content_type {
-            Some( tmp ) => return Result::Ok(Body { content_type : tmp, content : body }),
+            Some( tmp ) => return Result::Ok(Option::Some(Body { content_type : tmp, content : body })),
             None => panic!("content_type is invalid type (None)"),
         }
     }

@@ -419,9 +419,9 @@ impl Method {
             return Result::Err(ParserError::InvalidMethod(Option::Some(String::from("request must have more than 0 lines"))));
         }
 
-        let mut method;
-        let mut target;
-        let mut version;
+        let method;
+        let target;
+        let version;
         
         match Method::get_start_line(&request[0]) {
             Ok(tmp) => {
@@ -452,9 +452,9 @@ impl Method {
     fn get_start_line<'a>(start_line: &'a str) -> Result<(&'a str, &'a str, &'a str), ParserError> {
         let mut start_line = start_line.split_whitespace();
         
-        let method : &str = start_line.next().ok_or(ParserError::InvalidMethod)?;
-        let target : &str = start_line.next().ok_or(ParserError::InvalidMethod)?;
-        let version : &str = start_line.next().ok_or(ParserError::InvalidMethod)?;
+        let method : &str = start_line.next().ok_or(ParserError::InvalidMethod(Option::None))?;
+        let target : &str = start_line.next().ok_or(ParserError::InvalidMethod(Option::None))?;
+        let version : &str = start_line.next().ok_or(ParserError::InvalidMethod(Option::None))?;
 
         Result::Ok((method, target, version))
     }

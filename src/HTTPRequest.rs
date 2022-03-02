@@ -24,8 +24,13 @@ pub enum Method {
     OPTIONS {
         URL : String,
     },
-    TRACE,
-    PATCH
+    TRACE {
+        file : String,
+    },
+    PATCH {
+        file : String,
+        body : Body,
+    },
 }
 
 #[derive(Debug)]
@@ -449,8 +454,8 @@ impl Method {
             "DELETE"    => return Result::Ok(Method::DELETE{ file : target.to_string(), body : Method::get_body(&request)?}),
             "CONNECT"   => return Result::Ok(Method::CONNECT{ URL : target.to_string() }),
             "OPTIONS"   => return Result::Ok(Method::OPTIONS{ URL : target.to_string() }),
-            "TRACE"     => return Result::Err(ParserError::NotImplemented),
-            "PATCH"     => return Result::Err(ParserError::NotImplemented),
+            "TRACE"     => return Result::Ok(Method::TRACE{ file : target.to_string() }),
+            "PATCH"     => return Result::Ok(Method::PATCH{ file : target.to_string(), body : body_unwrap(Method::get_body(&request)?)?}),
             _           => return Result::Err(ParserError::InvalidMethod(Option::Some(String::from(format!("{} is an invalid method name", method.as_str()))))),
         }
     }

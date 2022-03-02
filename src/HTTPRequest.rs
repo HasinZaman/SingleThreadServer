@@ -465,26 +465,30 @@ impl Method {
 
         //get content type
         for i1 in 1..request.len() {
-            if 13 <= request[i1].len() {
-                let content_type_result = HTTPBody::ContentType::new(request[i1]);
-
-                match content_type_result {
-                    Ok( tmp ) => {
-                        content_type = Option::Some(tmp);
-                    },
+            match request[i1].split_once(":") {
+                Some((key, value)) => {
+                    if key.to_lowercase() == "content-type" {
                         let content_type_result = HTTPBody::ContentType::new(value.trim_start());
+        
+                        match content_type_result {
+                            Ok( tmp ) => {
+                                content_type = Option::Some(tmp);
+                            },
+                            Err(err) => return Result::Err(err),
+                        }
+                    }
+                },
+                None => {
+                    if &request[i1] == &"" {
+                        if content_type.is_none() {
                             return Result::Err(ParserError::InvalidMethod(Option::Some(String::from("No content type before beginning of body"))))
+                        }
+        
+                        boundary_index = Option::Some(i1);
+                        break;
+                    }
                 }
             }
-            else if 0 == request[i1].len() {
-                if content_type.is_none() {
-                    return Result::Err(ParserError::InvalidMethod)
-                }
-
-                boundary_index = Option::Some(i1);
-                break;
-            }
-            println!("{}", request[i1].to_string());
         };
 
         let mut body : String = String::from("");
@@ -492,13 +496,16 @@ impl Method {
         match boundary_index {
             Some(tmp) => {
                 for i1 in tmp..request.len() {
+                    println!("{} : {}", i1, request[i1]);
+                    if request[i1].contains("\u{0}") {
+                        body.push_str(request[i1].trim_end_matches('\u{0}'));
+                        break;
+                    }
                     body.push_str(request[i1]);
                 }
             },
             None => panic!("boundary_index is invalid type (None)"),
         }
-        
-
         match content_type {
             Some( tmp ) => return Result::Ok(Body { content_type : tmp, content : body }),
             None => panic!("content_type is invalid type (None)"),
@@ -536,7 +543,6 @@ impl ToString for Method {
             Method::PATCH => {
                 return String::from("PATCH");
             }
-            _ => panic!("Not implemented variant"),
         }
     }
 }

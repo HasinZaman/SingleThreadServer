@@ -1,6 +1,7 @@
 use std::io::prelude::*;
 use std::net::TcpListener;
 use std::net::TcpStream;
+use HTTPRequest::Method::Method;
 
 //import HTTPRequest.rs
 mod HTTPRequest;
@@ -21,7 +22,7 @@ fn handle_connection(mut stream: TcpStream) {
     
     println!("--Request--\n{}", String::from_utf8_lossy(&buffer[..]));
     
-    match HTTPRequest::Method::new(buffer) {
+    match Method::new(buffer) {
         Ok(request) => {
             println!("{:#?}", request);
         },

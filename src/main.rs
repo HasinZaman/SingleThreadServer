@@ -5,6 +5,7 @@ use HTTPRequest::Method::Method;
 
 //import HTTPRequest
 mod HTTPRequest;
+mod FileReader;
 
 fn main() {
     let listener = TcpListener::bind("localhost:8080").unwrap();

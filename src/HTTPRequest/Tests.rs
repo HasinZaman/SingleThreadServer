@@ -787,8 +787,187 @@ mod http_request_parse_test {
     }
 
     //delete test
-    //connect test
+    #[test]
+    fn delete_parse_test() {
+        //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
+
+        let get_method_result : Result<Method, ParserError> = Method::new(
+            make_HTTP_Request(
+                "DELETE /file.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>"
+            )
+        );
+
+        assert!(get_method_result.is_ok(),"{}", format!("{:?}", get_method_result));
+        match get_method_result {
+            Ok(get_method_actual) => {
+                match get_method_actual {
+                    Method::DELETE{ file, body } => {
+                        assert_eq!(file, String::from("/file.html"));
+
+                        match body {
+                            Some(body) => {
+                                assert_eq!(body.content_type.to_string(), "text/html");
+
+                                assert_eq!(body.content, "<p>New File</p>");
+                            },
+                            None => {
+                                panic!("Missing body");
+                            }
+                        }
+                        
+                    }
+                    _ => {
+                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
+                    }
+                }
+            },
+            Err(err) => {
+                panic!("{:?}", err);
+            }
+        }
+    }
+
+    #[test]
+    fn delete_no_body_parse_test() {
+        //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
+
+        let get_method_result : Result<Method, ParserError> = Method::new(
+            make_HTTP_Request(
+                "DELETE /file.html HTTP/1.1\nHost: example.com"
+            )
+        );
+
+        assert!(get_method_result.is_ok(),"{}", format!("{:?}", get_method_result));
+        match get_method_result {
+            Ok(get_method_actual) => {
+                match get_method_actual {
+                    Method::DELETE{ file, body } => {
+                        assert_eq!(file, String::from("/file.html"));
+
+                        assert!(body.is_none());
+                    }
+                    _ => {
+                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
+                    }
+                }
+            },
+            Err(err) => {
+                panic!("{:?}", err);
+            }
+        }
+    }
+
+    //connect
+    #[test]
+    fn connect_parse_test() {
+        //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/CONNECT
+
+        let get_method_result : Result<Method, ParserError> = Method::new(
+            make_HTTP_Request("CONNECT www.example.com:443 HTTP/1.1")
+        );
+
+        assert_eq!(get_method_result.is_ok(), true);
+        match get_method_result {
+            Ok(get_method_actual) => {
+                match get_method_actual {
+                    Method::CONNECT{ URL } => {
+                        assert_eq!(URL, String::from("www.example.com:443"));
+                    }
+                    _ => {
+                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
+                    }
+                }
+            },
+            Err(err) => {
+                panic!("{:?}", err);
+            }
+        }
+    }
+
     //options test
+    #[test]
+    fn options_parse_test() {
+        //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
+
+        let get_method_result : Result<Method, ParserError> = Method::new(
+            make_HTTP_Request("OPTIONS https://example.org -i")
+        );
+
+        assert_eq!(get_method_result.is_ok(), true);
+        match get_method_result {
+            Ok(get_method_actual) => {
+                match get_method_actual {
+                    Method::OPTIONS{ URL } => {
+                        assert_eq!(URL, String::from("https://example.org"));
+                    }
+                    _ => {
+                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
+                    }
+                }
+            },
+            Err(err) => {
+                panic!("{:?}", err);
+            }
+        }
+    }
+
     //trace test
+    #[test]
+    fn trace_parse_test() {
+        //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
+
+        let get_method_result : Result<Method, ParserError> = Method::new(
+            make_HTTP_Request("TRACE /index.html HTTP/1.1")
+        );
+
+        assert_eq!(get_method_result.is_ok(), true);
+        match get_method_result {
+            Ok(get_method_actual) => {
+                match get_method_actual {
+                    Method::TRACE{ file } => {
+                        assert_eq!(file, String::from("/index.html"));
+                    }
+                    _ => {
+                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
+                    }
+                }
+            },
+            Err(err) => {
+                panic!("{:?}", err);
+            }
+        }
+    }
+    
     //patch test
+    #[test]
+    fn patch_parse_test() {
+        //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
+
+        let get_method_result : Result<Method, ParserError> = Method::new(
+            make_HTTP_Request(
+                "PATCH /file.txt HTTP/1.1\nHost: www.example.com\nContent-Type: application/example\nIf-Match: 'e0023aa4e'\nContent-Length: 100\n\n[description of changes]"
+            )
+        );
+
+        assert!(get_method_result.is_ok(),"{}", format!("{:?}", get_method_result));
+        match get_method_result {
+            Ok(get_method_actual) => {
+                match get_method_actual {
+                    Method::PATCH{ file, body } => {
+                        assert_eq!(file, String::from("/file.txt"));
+
+                        assert_eq!(body.content_type.to_string(), "application/example");
+
+                        assert_eq!(body.content, "[description of changes]");
+                    }
+                    _ => {
+                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
+                    }
+                }
+            },
+            Err(err) => {
+                panic!("{:?}", err);
+            }
+        }
+    }
 }

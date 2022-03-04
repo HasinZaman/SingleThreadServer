@@ -3,7 +3,7 @@ use std::net::TcpListener;
 use std::net::TcpStream;
 use HTTPRequest::Method::Method;
 
-//import HTTPRequest.rs
+//import HTTPRequest
 mod HTTPRequest;
 
 fn main() {

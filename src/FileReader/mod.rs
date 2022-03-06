@@ -1,28 +1,64 @@
 use std::fs::File;
 use std::io::prelude::*;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-pub fn get_file_path(url : &str) -> &Path {
-    //split website & URL variables
-    let url_parts = url.split("?");
+pub fn parse(url : &str) -> PathBuf{
+    let mut url_char : char;
+    let mut tmp_index : usize = 0;
+    let mut i1 : usize = 0;
 
-    //get url portion of request
-    let mut file_name = match url_parts.next() {
-        None => panic!()/*There should exist a string*/,
-        Some(file_name) => url, 
+    let mut url_iter = url.chars().into_iter().map(|x|{
+        url_char = x;
+        x
+    });
+
+    let define_range = |start : usize, checkpoint_char : Option<char>, end_char : Option<char>| -> ([usize; 2], bool) {
+        let range : [usize; 2] = [start, 0];
+        let mut end_cond : bool = true;
+
+        while url_iter.next().is_some() {
+            let tmp = Option::Some(url_char);
+
+            if tmp == checkpoint_char {
+                tmp_index = i1;
+            }
+            if tmp == end_char {
+                range[1] = tmp_index;
+                end_cond = false;
+            }
+            i1+=1;
+        }
+
+        if end_cond {
+            range[1] = i1;
+        }
+
+        (range, end_cond)
     };
 
-    let mut path : &Path = Path::new(format!("/Site/{}", file_name));
+    let (path_range, file_name_exist) = define_range(0, Option::Some('\\'), Option::Some('.'));
 
-    if path.extension().is_none() {
-        path = Path::new(format!("/Site/{}/index.html", file_name));
+    if file_name_exist {
+        return PathBuf::from(
+            format!(
+                "{}\\index.html",
+                url[path_range[0]..path_range[1]]
+            )
+        )
     }
 
-    if !path.exists() {
-        path = Path::new(format!("/Site/404.html"));
-    }
+    let (name_range, extension_exist) = define_range(path_range[1] + 1, Option::Some('.'), Option::Some('.'));
 
-    return path;
+    let (extension_range, extension_exist) = define_range(name_range[1] + 1, Option::None, Option::Some('?'));
+
+    return PathBuf::from(
+        format!(
+            "{}\\{}{}",
+            url[path_range[0]..path_range[1]],
+            url[name_range[0]..name_range[1]],
+            url[extension_range[0]..extension_range[1]]
+        )
+    );
 }
 
 pub fn get_file_content(file_path : &Path) -> Option<String> {

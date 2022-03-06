@@ -3,7 +3,7 @@ use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 
 #[cfg(test)]
-mod Tests;
+mod tests;
 
 pub fn parse(url : &str) -> PathBuf {
     let path_buffer = url_to_path_buffer(url);

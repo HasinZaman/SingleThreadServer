@@ -3,4 +3,4 @@ pub mod Method;
 pub mod ParserError;
 
 #[cfg(test)]
-mod Tests;
+mod tests;

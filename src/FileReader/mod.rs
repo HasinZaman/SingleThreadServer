@@ -3,7 +3,40 @@ use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 
 pub fn parse(url : &str) -> PathBuf{
-    let mut url_char : char;
+    let last_slash = url.rfind('\\');
+    let last_dot = url.rfind('.');
+    let last_question_mark = url.rfind('?');
+
+    let url_end : usize;
+
+    match last_question_mark {
+        Some(index) => url_end = index - 1,
+        None => url_end = url.len(),
+    }
+
+    match last_slash {
+        None => {
+            return PathBuf::from("index.html");
+        },
+        _ => {},
+    }
+    let last_slash = last_slash.unwrap();
+    let url_path : &str = &url[0..last_slash - 1];
+
+    match last_dot {
+        None => {
+            return PathBuf::from(format!("{}\\index.html", url_path));
+        },
+        _ => {},
+    }
+    let last_dot = last_dot.unwrap();
+    let url_file_name : &str = &url[last_slash + 1..last_dot-1];
+
+    let url_extension : &str = &url[last_dot + 1..url_end];
+
+    return PathBuf::from(format!("{}\\{}.{}", url_path, url_file_name, url_extension));
+    
+    /*let mut url_char : char;
     let mut tmp_index : usize = 0;
     let mut i1 : usize = 0;
 
@@ -59,6 +92,7 @@ pub fn parse(url : &str) -> PathBuf{
             url[extension_range[0]..extension_range[1]]
         )
     );
+    */
 }
 
 pub fn get_file_content(file_path : &Path) -> Option<String> {

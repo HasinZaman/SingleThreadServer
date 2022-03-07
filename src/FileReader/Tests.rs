@@ -1,8 +1,7 @@
 
 mod file_Parser {
     use super::super::{url_to_path_buffer, parse};
-    use std::io::prelude::*;
-    use std::path::{Path, PathBuf};
+    use std::path::PathBuf;
 
     fn create_test(url : &str, expected1 : &str, expected2 : &str) {
         assert_eq!(url_to_path_buffer(url), PathBuf::from(expected1));

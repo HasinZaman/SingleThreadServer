@@ -48,6 +48,9 @@ fn url_to_path_buffer(url : &str) -> PathBuf{
         },
     }
 
+    //todo
+    // check for invalid paths
+
     match last_dot {
         None => {
             return PathBuf::from(format!("Site\\{}\\index.html", path));
@@ -57,6 +60,10 @@ fn url_to_path_buffer(url : &str) -> PathBuf{
             extension = &url[index..url_end].trim_start_matches('.');
         },
     }
+
+    //todo
+    // check for file names
+    // check for invalid extensions
 
     return PathBuf::from(
         format!(

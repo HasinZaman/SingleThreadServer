@@ -1,45 +1,21 @@
 mod response_status_code{
-    use strum::IntoEnumIterator;
+    use super::super::ResponseStatusCode::ResponseStatusCode;
 
-    macro_rules! range_test_gen {
-        {$min:literal, $max:literal, $enumeration:ident} => (
-            use super::super::ResponseStatusCode::$enumeration;
-            for variant in $enumeration::iter() {
-                let val = *(&variant) as usize;
-                assert!(
-                    ($min..$max).contains(&val),
-                    "Value must be between {} & {} . Got {:?}:{} instead",
-                    $min,
-                    $max,
-                    variant,
-                    val
-                );
-            }
-        )
+    #[test]
+    fn generic_to_string_test(){
+        let response_status_code : ResponseStatusCode = ResponseStatusCode::Ok;
+        assert_eq!(response_status_code.to_string(), "200 Ok");
     }
 
     #[test]
-    fn information_range_value_test(){
-        range_test_gen!(100usize, 199usize, Information);
+    fn multi_word_to_string_test(){
+        let response_status_code : ResponseStatusCode = ResponseStatusCode::MultipleChoice;
+        assert_eq!(response_status_code.to_string(), "300 Multiple Choice");
     }
 
     #[test]
-    fn successful_range_value_test(){
-        range_test_gen!(200usize, 299usize, Successful);
-    }
-
-    #[test]
-    fn redirection_range_value_test(){
-        range_test_gen!(300usize, 399usize, Redirection);
-    }
-
-    #[test]
-    fn client_error_range_value_test(){
-        range_test_gen!(400usize, 499usize, ClientError);
-    }
-
-    #[test]
-    fn server_error_range_value_test(){
-        range_test_gen!(500usize, 599usize, ServerError);
+    fn non_defined_enum_to_string_test(){
+        let response_status_code : ResponseStatusCode = ResponseStatusCode::Created;
+        assert_eq!(response_status_code.to_string(), "201 Created");
     }
 }

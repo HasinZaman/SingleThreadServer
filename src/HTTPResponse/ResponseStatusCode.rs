@@ -1,30 +1,16 @@
-use strum_macros::EnumIter;
+use std::convert::AsRef;
+use strum_macros::AsRefStr;
 
 ///
 /// For more infomation about HTTP reponse status codes - visit https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-#[derive(Debug, EnumIter)]
-pub enum Response{
-    Information(Information),
-    Successful(Successful),
-    Redirection(Redirection),
-    ClientError(ClientError),
-    ServerError(ServerError),
-}
-
-
-#[derive(Debug, EnumIter, Copy, Clone)]
-pub enum Information{
+#[derive(Debug, AsRefStr, Clone)]
+pub enum ResponseStatusCode{
+    //Information
     Continue = 100,
     SwitchingProtocols,
     Processing,
     EarlyHints,
-}
-impl Default for Information {
-    fn default() -> Self { Information::Continue }
-}
-
-#[derive(Debug, EnumIter, Copy, Clone)]
-pub enum Successful{
+    //Successful
     Ok = 200,
     Created,
     Accepted,
@@ -34,26 +20,14 @@ pub enum Successful{
     PartialContent,
     MultiStatus,
     AlreadyReported,
-}
-impl Default for Successful {
-    fn default() -> Self { Successful::Ok }
-}
-
-#[derive(Debug, EnumIter, Copy, Clone)]
-pub enum Redirection{
+    //Redirection
     MultipleChoice = 300,
     Found,
     SeeOther,
     NotModified,
     TemporaryRedirect = 307,
     PermanentRedirect,
-}
-impl Default for Redirection {
-    fn default() -> Self { Redirection::MultipleChoice }
-}
-
-#[derive(Debug, EnumIter, Copy, Clone)]
-pub enum ClientError{
+    //ClientError
     BadRequest = 400,
     Unauthorized,
     PaymentRequired,
@@ -83,13 +57,7 @@ pub enum ClientError{
     TooManyRequests,
     RequestHeaderFieldsTooLarge = 431,
     UnavailableForLegalReasons = 451,
-}
-impl Default for ClientError {
-    fn default() -> Self { ClientError::BadRequest }
-}
-
-#[derive(Debug, EnumIter, Copy, Clone)]
-pub enum ServerError{
+    //ServerError
     InternalServerError = 500,
     NotImplemented,
     BadGateway,
@@ -102,6 +70,33 @@ pub enum ServerError{
     NotExtended = 510,
     NetworkAuthenticationRequired,
 }
-impl Default for ServerError {
-    fn default() -> Self { ServerError::InternalServerError }
+
+impl ResponseStatusCode {
+    pub fn get_code(&self) -> u16{
+        self.clone() as u16
+    }
+}
+
+impl ToString for ResponseStatusCode{
+    fn to_string(&self) -> String {
+        format!("{} {}", self.get_code(),split_at_capital(self.as_ref()))
+    }
+}
+
+fn split_at_capital(input : &str) -> String {
+    let mut tmp = String::from("");
+
+    let mut iter = input.chars();
+
+    //adds first character without adding space infront of char
+    tmp.push(iter.next().unwrap());
+
+    for c in iter {
+        if c.is_uppercase(){
+            tmp.push(' ');
+        }
+        tmp.push(c)
+    }
+
+    tmp
 }

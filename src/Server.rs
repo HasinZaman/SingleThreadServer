@@ -7,6 +7,9 @@ use std::net::TcpStream;
 
 use std::io::prelude::*;
 
+use chrono;
+
+
 pub struct MethodLogic {
     pub get : Box<dyn Fn(Method)->Response>,
     pub head : Box<dyn Fn(Method)->Response>,
@@ -177,7 +180,8 @@ fn handle_connection(mut stream: TcpStream, method_action : &MethodLogic) {
     let method = Method::new(buffer);
     
     let response : Response;
-
+    
+    println!("{:?}", chrono::offset::Utc::now());
     match method {
         Ok(request) => {
             println!("request:\n{:?}", &request);
@@ -204,7 +208,7 @@ fn handle_connection(mut stream: TcpStream, method_action : &MethodLogic) {
     }
 
     println!("response:\n{}\n", response.to_string());
-
+    
     stream.write(response.to_string().as_bytes()).unwrap();
     stream.flush().unwrap();
 }

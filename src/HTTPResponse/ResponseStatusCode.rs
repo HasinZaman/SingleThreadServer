@@ -3,6 +3,7 @@ use strum_macros::AsRefStr;
 
 ///
 /// For more infomation about HTTP reponse status codes - visit https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+#[allow(dead_code)]
 #[derive(Debug, AsRefStr, Clone)]
 pub enum ResponseStatusCode{
     //Information

@@ -1,36 +1,26 @@
-use std::io::prelude::*;
-use std::net::TcpListener;
-use std::net::TcpStream;
-use HTTPRequest::Method::Method;
-
 //import HTTPRequest
 mod HTTPRequest;
 mod FileReader;
+mod SQLReader;
 mod HTTPResponse;
+mod Server;
+
+use crate::Server::MethodLogic;
 
 fn main() {
-    let listener = TcpListener::bind("localhost:8080").unwrap();
 
-    for stream in listener.incoming() {
-        let stream = stream.unwrap();
-        handle_connection(stream);
-    }
+    let logic : MethodLogic = MethodLogic{
+        get : MethodLogic::default_logic(),
+        head : MethodLogic::default_logic(),
+        post : MethodLogic::default_logic(),
+        put : MethodLogic::default_logic(),
+        delete : MethodLogic::default_logic(),
+        connect : MethodLogic::default_logic(),
+        option : MethodLogic::default_logic(),
+        trace : MethodLogic::default_logic(),
+        patch : MethodLogic::default_logic(),
+    };
+
+    Server::start(logic);
 }
 
-fn handle_connection(mut stream: TcpStream) {
-
-    let mut buffer = [0; 1024];
-    stream.read(&mut buffer).unwrap();
-    
-    println!("--Request--\n{}", String::from_utf8_lossy(&buffer[..]));
-    
-    match Method::new(buffer) {
-        Ok(request) => {
-            println!("{:#?}", request);
-        },
-        Err(error) => {
-            println!("{:#?}", error);
-        }
-    }
-    //println!("--Parse Result--\n{}",requestParser(&stream))
-}

@@ -13,12 +13,12 @@ trait VariantName {
 
 //https://www.geeksforgeeks.org/http-headers-content-type/
 pub enum ContentType {
-    Application {value : Value::Application},
-    Audio {value : Value::Audio},
-    Image {value : Value::Image},
-    Multipart {value : Value::Multipart},
-    Text {value : Value::Text},
-    Video {value : Value::Video},
+    Application {value : value::Application},
+    Audio {value : value::Audio},
+    Image {value : value::Image},
+    Multipart {value : value::Multipart},
+    Text {value : value::Text},
+    Video {value : value::Video},
 }
 
 impl ContentType {
@@ -35,32 +35,32 @@ impl ContentType {
 
         match type_raw {
             "application" => {
-                let content_type_value = Value::parse_value::<Value::Application>(value)?;
+                let content_type_value = value::parse_value::<value::Application>(value)?;
                 let content_type = ContentType::Application{ value : content_type_value };
                 return Ok(content_type);
             }, 
             "audio" => {
-                let content_type_value = Value::parse_value::<Value::Audio>(value)?;
+                let content_type_value = value::parse_value::<value::Audio>(value)?;
                 let content_type = ContentType::Audio{ value : content_type_value };
                 return Ok(content_type);
             },
             "image" => {
-                let content_type_value = Value::parse_value::<Value::Image>(value)?;
+                let content_type_value = value::parse_value::<value::Image>(value)?;
                 let content_type = ContentType::Image{ value : content_type_value };
                 return Ok(content_type);
             },
             "multipart" => {
-                let content_type_value = Value::parse_value::<Value::Multipart>(value)?;
+                let content_type_value = value::parse_value::<value::Multipart>(value)?;
                 let content_type = ContentType::Multipart{ value : content_type_value };
                 return Ok(content_type);
             },
             "text" => {
-                let content_type_value = Value::parse_value::<Value::Text>(value)?;
+                let content_type_value = value::parse_value::<value::Text>(value)?;
                 let content_type = ContentType::Text{ value : content_type_value };
                 return Ok(content_type);
             },
             "video" => {
-                let content_type_value = Value::parse_value::<Value::Video>(value)?;
+                let content_type_value = value::parse_value::<value::Video>(value)?;
                 let content_type = ContentType::Video{ value : content_type_value };
                 return Ok(content_type);
             },
@@ -113,7 +113,7 @@ impl Debug for ContentType {
     }
 }
 
-pub mod Value{
+pub mod value{
     use crate::HTTPRequest::ParserError;
 
     pub trait Constructor<V>{

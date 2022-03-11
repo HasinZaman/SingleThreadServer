@@ -5,13 +5,31 @@ use std::vec::Vec;
 
 #[derive(Debug)]
 pub struct DataBase {
-    pub db_host : String,
-    pub db_port : String,
-    pub db_name : String,
-    pub db_username : String,
-    pub db_password : String,
+    db_host : String,
+    db_port : String,
+    db_name : String,
+    db_username : String,
+    db_password : String,
 }
 impl DataBase {
+    pub fn execute<B, F : Fn(mysql::Row)->B>(&self, command : &str, row_logic : F) -> Vec<B> {
+        let mut conn = self.get_conn();
+
+        let stmp = conn.prep(command).unwrap();
+
+        let result = conn.exec_iter(stmp, ())
+            .unwrap()
+            .map(|wrapped_row| row_logic(wrapped_row.unwrap()));
+
+        let mut return_val : Vec<B> = Vec::new();
+
+        for r in result{
+            return_val.push(r);
+        }
+
+        return_val
+    }
+
     fn get_conn(&self) -> mysql::PooledConn {
         let url = format!(
             "mysql://{}:{}@{}:{}/{}",
@@ -30,41 +48,6 @@ impl DataBase {
 
         pool.get_conn().unwrap()
     }
-
-    pub fn execute<B, F : Fn(mysql::Row)->B>(&self, command : &str, row_logic : F) -> Vec<B> {
-        let mut conn = self.get_conn();
-
-        let stmp = conn.prep(command).unwrap();
-
-        let result = conn.exec_iter(stmp, ())
-            .unwrap()
-            .map(|wrapped_row| row_logic(wrapped_row.unwrap()));
-
-        let mut return_val : Vec<B> = Vec::new();
-
-        for r in result{
-            return_val.push(r);
-        }
-
-        return_val
-    }
-}
-
-pub fn get_connection(){
-    let args: Vec<String> = env::args().collect();
-
-    let get_env = |key| {
-        match env::var(key){
-            Ok(val) => return val,
-            Err(err) => panic!("Error"),
-        }
-    };
-    let sql_user = get_env("sql_user");
-    let sql_password = get_env("sql_password");
-    let sql_addr = get_env("sql_addr");
-    let sql_port = get_env("sql_port");
-
-    //"mysql://root:password@localhost:3307/db_name";
 }
 
 macro_rules! env_var_to_variable {
@@ -79,7 +62,7 @@ macro_rules! env_var_to_variable {
     };
 }
 
-fn get_env_var() -> Option<DataBase>{
+fn get_database() -> Option<DataBase>{
     let db_host : String;
     let db_port : String;
     let db_name : String;

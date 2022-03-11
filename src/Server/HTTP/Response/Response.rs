@@ -1,4 +1,4 @@
-use crate::HTTPRequest::HTTPBody::Body;
+use crate::Server::HTTP::Body::Body;
 use super::ResponseStatusCode::*;
 
 pub struct Response {

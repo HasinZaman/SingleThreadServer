@@ -1,11 +1,7 @@
 //import HTTPRequest
-mod HTTPRequest;
-mod FileReader;
-mod SQLReader;
-mod HTTPResponse;
 mod Server;
 
-use crate::Server::MethodLogic;
+use crate::Server::MethodLogic::MethodLogic;
 
 fn main() {
 

@@ -1,13 +1,13 @@
-use crate::HTTPRequest::{Method::Method, HTTPBody};
-use crate::HTTPResponse::{Response::Response, ResponseStatusCode::ResponseStatusCode};
-use crate::FileReader;
-
-use std::net::TcpListener;
-use std::net::TcpStream;
-
-use std::io::prelude::*;
-
-use chrono;
+use super::HTTP::{
+    Method::Method,
+    Response::{
+        ResponseStatusCode::ResponseStatusCode,
+        Response::Response
+    }
+};
+use super::FileReader;
+use super::HTTP::Body::{ ContentType, Body };
+use super::HTTP::Body::{ Application, Audio, Image, Multipart, Text, Video };
 
 pub struct MethodLogic {
     pub get : Box<dyn Fn(Method)->Response>,
@@ -38,6 +38,7 @@ impl MethodLogic {
             |request : Method | {
                 match request {
                     Method::GET{ file } => {
+
                         let path_buf = FileReader::parse(&file);
 
                         let file_name = match &path_buf.file_name(){
@@ -52,9 +53,9 @@ impl MethodLogic {
                                 return Response {
                                     status : ResponseStatusCode::NotFound,
                                     body : Option::Some(
-                                        HTTPBody::Body {
-                                            content_type: HTTPBody::ContentType::Text{
-                                                value: HTTPBody::value::Text::html
+                                        Body {
+                                            content_type: ContentType::Text{
+                                                value: Text::html
                                             },
                                             content: body,
                                         }
@@ -65,65 +66,65 @@ impl MethodLogic {
                                 let content_type = path_buf.extension().unwrap();
                                 let content_type = content_type.to_str().unwrap();
 
-                                let content_type : HTTPBody::ContentType = match content_type {
+                                let content_type : ContentType = match content_type {
                                     "gif" => {
-                                        HTTPBody::ContentType::Image{
-                                            value: HTTPBody::value::Image::gif
+                                        ContentType::Image{
+                                            value: Image::gif
                                         }
                                     },
                                     "jpg" | "jpeg" | "jpe" | "jfif" => {
-                                        HTTPBody::ContentType::Image{
-                                            value: HTTPBody::value::Image::jpeg
+                                        ContentType::Image{
+                                            value: Image::jpeg
                                         }
                                     },
                                     "png" => {
-                                        HTTPBody::ContentType::Image{
-                                            value: HTTPBody::value::Image::png
+                                        ContentType::Image{
+                                            value: Image::png
                                         }
                                     },
                                     "tif" | "tiff" => {
-                                        HTTPBody::ContentType::Image{
-                                            value: HTTPBody::value::Image::tiff
+                                        ContentType::Image{
+                                            value: Image::tiff
                                         }
                                     },
                                     "css" => {
-                                        HTTPBody::ContentType::Text{
-                                            value: HTTPBody::value::Text::css
+                                        ContentType::Text{
+                                            value: Text::css
                                         }
                                     },
                                     "csv" => {
-                                        HTTPBody::ContentType::Text{
-                                            value: HTTPBody::value::Text::csv
+                                        ContentType::Text{
+                                            value: Text::csv
                                         }
                                     },
                                     "html" => {
-                                        HTTPBody::ContentType::Text{
-                                            value: HTTPBody::value::Text::html
+                                        ContentType::Text{
+                                            value: Text::html
                                         }
                                     },
-                                    "javascript" => {
-                                        HTTPBody::ContentType::Text{
-                                            value: HTTPBody::value::Text::javascript
+                                    ".js" => {
+                                        ContentType::Text{
+                                            value: Text::javascript
                                         }
                                     },
                                     "xml" => {
-                                        HTTPBody::ContentType::Text{
-                                            value: HTTPBody::value::Text::xml
+                                        ContentType::Text{
+                                            value: Text::xml
                                         }
                                     },
                                     "mpeg" => {
-                                        HTTPBody::ContentType::Video{
-                                            value: HTTPBody::value::Video::mpeg
+                                        ContentType::Video{
+                                            value: Video::mpeg
                                         }
                                     },
                                     "mp4" => {
-                                        HTTPBody::ContentType::Video{
-                                            value: HTTPBody::value::Video::mp4
+                                        ContentType::Video{
+                                            value: Video::mp4
                                         }
                                     },
                                     "webm" => {
-                                        HTTPBody::ContentType::Video{
-                                            value: HTTPBody::value::Video::webm
+                                        ContentType::Video{
+                                            value: Video::webm
                                         }
                                     },
                                     _=>{
@@ -139,7 +140,7 @@ impl MethodLogic {
                                 return Response {
                                     status : ResponseStatusCode::Ok,
                                     body : Option::Some(
-                                        HTTPBody::Body {
+                                        Body {
                                             content_type: content_type,
                                             content: body,
                                         }
@@ -159,55 +160,4 @@ impl MethodLogic {
             }
         )
     }
-}
-
-pub fn start(method_action : MethodLogic) {
-    let listener = TcpListener::bind("localhost:8080").unwrap();
-
-    for stream in listener.incoming() {
-        let stream = stream.unwrap();
-        handle_connection(stream, &method_action);
-    }
-}
-
-fn handle_connection(mut stream: TcpStream, method_action : &MethodLogic) {
-
-    let mut buffer = [0; 1024];
-    stream.read(&mut buffer).unwrap();
-    
-    
-    let method = Method::new(buffer);
-    
-    let response : Response;
-    
-    println!("{:?}", chrono::offset::Utc::now());
-    match method {
-        Ok(request) => {
-            println!("request:\n{:?}", &request);
-            response = match &request {
-                GET => (method_action.get)(request),
-                HEAD => (method_action.head)(request),
-                POST => (method_action.post)(request),
-                PUT => (method_action.put)(request),
-                DELETE => (method_action.delete)(request),
-                CONNECT => (method_action.connect)(request),
-                OPTIONS => (method_action.option)(request),
-                TRACE => (method_action.trace)(request),
-                PATCH => (method_action.patch)(request),
-                _ => Response{ status : ResponseStatusCode::InternalServerError, body : Option::None },
-            }
-        },
-        Err(_error) => {
-            println!("{:?}", _error);
-            response = Response{
-                status : ResponseStatusCode::BadRequest,
-                body : Option::None
-            };
-        }
-    }
-
-    println!("response:\n{}\n", response.to_string());
-    
-    stream.write(response.to_string().as_bytes()).unwrap();
-    stream.flush().unwrap();
 }

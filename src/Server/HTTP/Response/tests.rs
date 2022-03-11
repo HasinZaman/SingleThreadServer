@@ -23,8 +23,7 @@ mod response_status_code{
 mod response{
     use super::super::Response::Response;
     use super::super::ResponseStatusCode::ResponseStatusCode;
-    use crate::HTTPRequest::HTTPBody::{Body, ContentType, value};
-    //use crate::HTTPRequest::HTTPBody::*;
+    use crate::Server::HTTP::Body::{Body, ContentType, Value};
 
     #[test]
     fn no_body_test(){
@@ -42,7 +41,7 @@ mod response{
             status : ResponseStatusCode::Ok,
             body : Option::Some(
                 Body {
-                    content_type : ContentType::Text { value : value::Text::html },
+                    content_type : ContentType::Text { value : Value::Text::html },
                     content: String::from("<p>New File</p>")
                 }
             )

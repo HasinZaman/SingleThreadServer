@@ -1,5 +1,12 @@
-use crate::HTTPRequest::ParserError::ParserError;
+use super::Request::ParserError::ParserError;
 use std::fmt::{Debug, Formatter, Error};
+
+pub use Value::Application as Application;
+pub use Value::Audio as Audio;
+pub use Value::Image as Image;
+pub use Value::Multipart as Multipart;
+pub use Value::Text as Text;
+pub use Value::Video as Video;
 
 #[derive(Debug)]
 pub struct Body {
@@ -13,12 +20,12 @@ trait VariantName {
 
 //https://www.geeksforgeeks.org/http-headers-content-type/
 pub enum ContentType {
-    Application {value : value::Application},
-    Audio {value : value::Audio},
-    Image {value : value::Image},
-    Multipart {value : value::Multipart},
-    Text {value : value::Text},
-    Video {value : value::Video},
+    Application {value : Value::Application},
+    Audio {value : Value::Audio},
+    Image {value : Value::Image},
+    Multipart {value : Value::Multipart},
+    Text {value : Value::Text},
+    Video {value : Value::Video},
 }
 
 impl ContentType {
@@ -35,32 +42,32 @@ impl ContentType {
 
         match type_raw {
             "application" => {
-                let content_type_value = value::parse_value::<value::Application>(value)?;
+                let content_type_value = Value::parse_value::<Value::Application>(value)?;
                 let content_type = ContentType::Application{ value : content_type_value };
                 return Ok(content_type);
             }, 
             "audio" => {
-                let content_type_value = value::parse_value::<value::Audio>(value)?;
+                let content_type_value = Value::parse_value::<Value::Audio>(value)?;
                 let content_type = ContentType::Audio{ value : content_type_value };
                 return Ok(content_type);
             },
             "image" => {
-                let content_type_value = value::parse_value::<value::Image>(value)?;
+                let content_type_value = Value::parse_value::<Value::Image>(value)?;
                 let content_type = ContentType::Image{ value : content_type_value };
                 return Ok(content_type);
             },
             "multipart" => {
-                let content_type_value = value::parse_value::<value::Multipart>(value)?;
+                let content_type_value = Value::parse_value::<Value::Multipart>(value)?;
                 let content_type = ContentType::Multipart{ value : content_type_value };
                 return Ok(content_type);
             },
             "text" => {
-                let content_type_value = value::parse_value::<value::Text>(value)?;
+                let content_type_value = Value::parse_value::<Value::Text>(value)?;
                 let content_type = ContentType::Text{ value : content_type_value };
                 return Ok(content_type);
             },
             "video" => {
-                let content_type_value = value::parse_value::<value::Video>(value)?;
+                let content_type_value = Value::parse_value::<Value::Video>(value)?;
                 let content_type = ContentType::Video{ value : content_type_value };
                 return Ok(content_type);
             },
@@ -113,13 +120,14 @@ impl Debug for ContentType {
     }
 }
 
-pub mod value{
-    use crate::HTTPRequest::ParserError;
+pub mod Value{
+    use super::super::Request::ParserError::ParserError;
 
     pub trait Constructor<V>{
-        fn new(value_raw : &str) -> Result<V, ParserError::ParserError>;
+        fn new(value_raw : &str) -> Result<V, ParserError>;
     }
 
+    #[allow(non_camel_case_types)]
     pub enum Application {
         EDI_X12,
         EDIFACT,
@@ -156,7 +164,7 @@ pub mod value{
         }
     }
     impl Constructor<Application> for Application{
-        fn new(value_raw : &str) -> Result<Application, ParserError::ParserError> {
+        fn new(value_raw : &str) -> Result<Application, ParserError> {
             let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();
 
             let value : &str = value_paramater_vec[0];
@@ -179,6 +187,7 @@ pub mod value{
         }
     }
 
+    #[allow(non_camel_case_types)]
     pub enum Audio {
         mpeg,
         x_ms_wma,
@@ -197,7 +206,7 @@ pub mod value{
         }
     }
     impl Constructor<Audio> for Audio{
-        fn new(value_raw : &str) -> Result<Audio, ParserError::ParserError> {
+        fn new(value_raw : &str) -> Result<Audio, ParserError> {
             let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();
 
             let value : &str = value_paramater_vec[0];
@@ -211,6 +220,7 @@ pub mod value{
         }
     }
 
+    #[allow(non_camel_case_types)]
     pub enum Image {
         gif,
         jpeg,
@@ -237,7 +247,7 @@ pub mod value{
         }
     }
     impl Constructor<Image> for Image{
-        fn new(value_raw : &str) -> Result<Image, ParserError::ParserError>{
+        fn new(value_raw : &str) -> Result<Image, ParserError>{
             let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();
 
             let value : &str = value_paramater_vec[0];
@@ -255,6 +265,7 @@ pub mod value{
         }
     }
 
+    #[allow(non_camel_case_types)]
     pub enum Multipart {
         mixed,
         alternative,
@@ -273,7 +284,7 @@ pub mod value{
         }
     }
     impl Constructor<Multipart> for Multipart{
-        fn new(value_raw : &str) -> Result<Multipart, ParserError::ParserError>{
+        fn new(value_raw : &str) -> Result<Multipart, ParserError>{
             let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();
 
             let value : &str = value_paramater_vec[0];
@@ -287,6 +298,7 @@ pub mod value{
         }
     }
 
+    #[allow(non_camel_case_types)]
     pub enum Text {
         css,
         csv,
@@ -309,7 +321,7 @@ pub mod value{
         }
     }
     impl Constructor<Text> for Text{
-        fn new(value_raw : &str) -> Result<Text, ParserError::ParserError>{
+        fn new(value_raw : &str) -> Result<Text, ParserError>{
             let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();
 
             let value : &str = value_paramater_vec[0];
@@ -325,6 +337,7 @@ pub mod value{
         }
     }
 
+    #[allow(non_camel_case_types)]
     pub enum Video {
         mpeg,
         mp4,
@@ -349,7 +362,7 @@ pub mod value{
         }
     }
     impl Constructor<Video> for Video{
-        fn new(value_raw : &str) -> Result<Video, ParserError::ParserError>{
+        fn new(value_raw : &str) -> Result<Video, ParserError>{
             let value_paramater_vec : Vec<&str> = value_raw.split(";").collect();
 
             let value : &str = value_paramater_vec[0];
@@ -366,7 +379,7 @@ pub mod value{
         }
     }
 
-    pub fn parse_value<V>(value : &str) -> Result<V, ParserError::ParserError> where V : Constructor<V> {
+    pub fn parse_value<V>(value : &str) -> Result<V, ParserError> where V : Constructor<V> {
         V::new(value)
     }
 }

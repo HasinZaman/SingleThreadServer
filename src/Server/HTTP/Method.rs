@@ -1,5 +1,6 @@
-use crate::HTTPRequest::HTTPBody::{Body, ContentType};
-use crate::HTTPRequest::ParserError::ParserError;
+use super::Body::{Body, ContentType};
+use super::Request::ParserError::ParserError;
+
 #[derive(Debug)]
 pub enum Method {
     GET {

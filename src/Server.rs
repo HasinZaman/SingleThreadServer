@@ -9,7 +9,6 @@ use std::io::prelude::*;
 
 use chrono;
 
-
 pub struct MethodLogic {
     pub get : Box<dyn Fn(Method)->Response>,
     pub head : Box<dyn Fn(Method)->Response>,

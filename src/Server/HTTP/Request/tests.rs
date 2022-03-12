@@ -653,7 +653,6 @@ mod http_body_enum_test {
 }
 mod http_request_parse_test {
     use crate::Server::HTTP::Method::Method;
-    use crate::Server::HTTP::Request::ParserError::ParserError;
     use super::super::Request;
 
     fn make_HTTP_Request(input_str : &str) -> [u8; 1024]{
@@ -671,7 +670,7 @@ mod http_request_parse_test {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
         //GET /index.html
 
-        let (method, meta_data) = match Request::parse(make_HTTP_Request("GET /index.html HTTP/1.1")) {
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("GET /index.html HTTP/1.1"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
@@ -692,7 +691,7 @@ mod http_request_parse_test {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD
         //HEAD /index.html
 
-        let (method, meta_data) = match Request::parse(make_HTTP_Request("HEAD /index.html HTTP/1.1")) {
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("HEAD /index.html HTTP/1.1"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
@@ -712,7 +711,7 @@ mod http_request_parse_test {
     fn post_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
 
-        let (method, meta_data) = match Request::parse(make_HTTP_Request("POST /test HTTP/1.1\nHost: foo.example\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 27\n\nfield1=value1&field2=value2")) {
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("POST /test HTTP/1.1\nHost: foo.example\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 27\n\nfield1=value1&field2=value2"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
@@ -737,7 +736,7 @@ mod http_request_parse_test {
     fn put_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
 
-        let (method, meta_data) = match Request::parse(make_HTTP_Request("PUT /new.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>")) {
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("PUT /new.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
@@ -761,7 +760,7 @@ mod http_request_parse_test {
     fn delete_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 
-        let (method, meta_data) = match Request::parse(make_HTTP_Request("DELETE /file.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>")) {
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("DELETE /file.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
@@ -792,7 +791,7 @@ mod http_request_parse_test {
     fn delete_no_body_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 
-        let (method, meta_data) = match Request::parse(make_HTTP_Request("DELETE /file.html HTTP/1.1\nHost: example.com")) {
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("DELETE /file.html HTTP/1.1\nHost: example.com"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
@@ -815,7 +814,7 @@ mod http_request_parse_test {
     fn connect_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/CONNECT
 
-        let (method, meta_data) = match Request::parse(make_HTTP_Request("CONNECT www.example.com:443 HTTP/1.1")) {
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("CONNECT www.example.com:443 HTTP/1.1"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
@@ -835,7 +834,7 @@ mod http_request_parse_test {
     fn options_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
 
-        let (method, meta_data) = match Request::parse(make_HTTP_Request("OPTIONS https://example.org -i")) {
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("OPTIONS https://example.org -i"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
@@ -855,7 +854,7 @@ mod http_request_parse_test {
     fn trace_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
 
-        let (method, meta_data) = match Request::parse(make_HTTP_Request("TRACE /index.html HTTP/1.1")) {
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("TRACE /index.html HTTP/1.1"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
@@ -875,7 +874,7 @@ mod http_request_parse_test {
     fn patch_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
 
-        let (method, meta_data) = match Request::parse(make_HTTP_Request("PATCH /file.txt HTTP/1.1\nHost: www.example.com\nContent-Type: application/pdf\nIf-Match: 'e0023aa4e'\nContent-Length: 100\n\n[description of changes]")) {
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("PATCH /file.txt HTTP/1.1\nHost: www.example.com\nContent-Type: application/pdf\nIf-Match: 'e0023aa4e'\nContent-Length: 100\n\n[description of changes]"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };

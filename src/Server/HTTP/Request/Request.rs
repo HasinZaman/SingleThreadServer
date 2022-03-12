@@ -5,7 +5,7 @@ use super::ParserError::ParserError;
 use std::collections::HashMap;
 use std::str::Split;
 
-pub fn parse(request_data : [u8; 1024]) -> Result<(Method, HashMap<String, String>), ParserError> {
+pub fn parse(request_data : [u8; 1024], domain : &str) -> Result<(Method, HashMap<String, String>), ParserError> {
     let request : String = String::from_utf8_lossy(&request_data[..]).to_string();
 
     println!("{:?}", request);
@@ -19,10 +19,11 @@ pub fn parse(request_data : [u8; 1024]) -> Result<(Method, HashMap<String, Strin
 
     let method =  method.to_uppercase();
 
-    let (body, meta_data) = get_data(request)?;
+    let (body, meta_data) = get_data(request, domain)?;
 
     let method : Method = Method::new(method.to_string(), target.to_string(), body)?;
 
+    println!("\n\n{:?}\n{:?}\n\n", method, meta_data);
     Result::Ok((method, meta_data))
 }
 
@@ -42,7 +43,7 @@ fn get_start_line<'a>(start_line: Option<&'a str>) -> Result<(&'a str, &'a str, 
     Result::Ok((method, target, version))
 }
 
-fn get_data<'a>(mut line_iter : Split<&'a str>) -> Result<(Option<Body>, HashMap<String, String>), ParserError> {
+fn get_data<'a>(mut line_iter : Split<&'a str>, domain : &str) -> Result<(Option<Body>, HashMap<String, String>), ParserError> {
     let mut meta_data : HashMap<String, String> = HashMap::new();
 
     let mut content_type : Option<&str> = Option::None;
@@ -64,7 +65,12 @@ fn get_data<'a>(mut line_iter : Split<&'a str>) -> Result<(Option<Body>, HashMap
         let value = value.trim();
         
         if key == "host" {
-
+            match get_sub_domain(value, domain)? {
+                Some(sub_domain) => {
+                    meta_data.insert("sub-domain".to_owned(), sub_domain);
+                },
+                None => {},
+            }
         }
         else if key == "content-type" {
             content_type = Option::Some(value);
@@ -115,4 +121,20 @@ fn get_key_value_pair<'a>(line : &'a str) -> Result<(&'a str, &'a str), ParserEr
     let value = line.next().ok_or(ParserError::InvalidMethod(Option::Some(String::from("No value in key value pair"))))?;
     
     Result::Ok((key, value))
+}
+
+fn get_sub_domain<'a>( address : &'a str, domain :&str) -> Result<Option<String>, ParserError> {
+
+    let end : usize = match address.match_indices(domain).next(){
+        Some(index) => index.0,
+        None => {
+            return Result::Err(ParserError::InvalidMethod(Option::Some(format!("Host does not include domain({}). got {} instead", domain, address))))
+        }
+    };
+
+    if end == 0usize {
+        return Result::Ok(Option::None)
+    }
+    
+    return Result::Ok(Option::Some(address[0..end].trim_end_matches(".").to_string()))
 }

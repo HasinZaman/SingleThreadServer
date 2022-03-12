@@ -20,13 +20,13 @@ pub fn start(method_action : MethodLogic::MethodLogic) {
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
-        handle_connection(stream, &method_action);
+        handle_connection(stream, &method_action, "localhost");
     }
 }
 
 
 #[allow(unused_variables, non_snake_case, unreachable_patterns)]
-fn handle_connection(mut stream: TcpStream, method_action : &MethodLogic::MethodLogic) {
+fn handle_connection(mut stream: TcpStream, method_action : &MethodLogic::MethodLogic, domain : &str) {
 
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
@@ -35,7 +35,7 @@ fn handle_connection(mut stream: TcpStream, method_action : &MethodLogic::Method
     let meta_data : HashMap<String, String>;
     let response : Response;
 
-    match HTTP::Request::parse(buffer) {
+    match HTTP::Request::parse(buffer, &domain) {
         Ok(val) => {
             println!("Success");
             method = val.0;

@@ -13,6 +13,8 @@ use HTTP::Method::Method as Method;
 use HTTP::Response::Response::Response as Response;
 use HTTP::Response::ResponseStatusCode::ResponseStatusCode as ResponseStatusCode;
 
+use std::collections::HashMap;
+
 pub fn start(method_action : MethodLogic::MethodLogic) {
     let listener = TcpListener::bind("localhost:8080").unwrap();
 
@@ -28,39 +30,46 @@ fn handle_connection(mut stream: TcpStream, method_action : &MethodLogic::Method
 
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
-    
-    let method = Method::new(buffer);
-    
+
+    let method : Method;
+    let meta_data : HashMap<String, String>;
     let response : Response;
-    
-    println!("{:?}", chrono::offset::Utc::now());
-    match method {
-        Ok(request) => {
-            println!("request:\n{:?}", &request);
-            response = match &request {
-                GET => (method_action.get)(request),
-                HEAD => (method_action.head)(request),
-                POST => (method_action.post)(request),
-                PUT => (method_action.put)(request),
-                DELETE => (method_action.delete)(request),
-                CONNECT => (method_action.connect)(request),
-                OPTIONS => (method_action.option)(request),
-                TRACE => (method_action.trace)(request),
-                PATCH => (method_action.patch)(request),
-                _ => Response{ status : ResponseStatusCode::InternalServerError, body : Option::None },
-            }
+
+    match HTTP::Request::parse(buffer) {
+        Ok(val) => {
+            println!("Success");
+            method = val.0;
+            meta_data = val.1;
+            response = handle_method(method, method_action);
         },
-        Err(_error) => {
-            println!("{:?}", _error);
+        Err(err) => {
+            println!("Failure:{:?}", err);
             response = Response{
                 status : ResponseStatusCode::BadRequest,
                 body : Option::None
             };
-        }
+        },
     }
-
+    println!("{:?}", chrono::offset::Utc::now());
+    
     println!("response:\n{}\n", response.to_string());
     
     stream.write(response.to_string().as_bytes()).unwrap();
     stream.flush().unwrap();
+}
+
+#[allow(unused_variables)]
+fn handle_method(method : Method, method_action : &MethodLogic::MethodLogic) -> Response {
+    match &method {
+        GET => (method_action.get)(method),
+        HEAD => (method_action.head)(method),
+        POST => (method_action.post)(method),
+        PUT => (method_action.put)(method),
+        DELETE => (method_action.delete)(method),
+        CONNECT => (method_action.connect)(method),
+        OPTIONS => (method_action.option)(method),
+        TRACE => (method_action.trace)(method),
+        PATCH => (method_action.patch)(method),
+        _ => Response{ status : ResponseStatusCode::InternalServerError, body : Option::None },
+    }
 }

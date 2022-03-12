@@ -1,4 +1,5 @@
 pub mod Request;
 pub mod Response;
 pub mod Body;
-pub mod Method;
+
+pub use Request::Method as Method;

@@ -32,7 +32,7 @@ mod response{
             body : Option::None
         };
 
-        assert_eq!(response.to_string(), "200 Ok\r");
+        assert_eq!(response.to_string(), "HTTP/1.1 200 Ok");
     }
 
     #[test]
@@ -47,6 +47,6 @@ mod response{
             )
         };
 
-        assert_eq!(response.to_string(), "200 Ok\r\nContent-Length: 15\r\nContent-Type: text/html\r\n\n<p>New File</p>");
+        assert_eq!(response.to_string(), "HTTP/1.1 200 Ok\r\nContent-Length: 15\r\nContent-Type: text/html\r\n\n<p>New File</p>");
     }
 }

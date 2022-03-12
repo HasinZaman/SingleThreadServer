@@ -654,6 +654,7 @@ mod http_body_enum_test {
 mod http_request_parse_test {
     use crate::Server::HTTP::Method::Method;
     use crate::Server::HTTP::Request::ParserError::ParserError;
+    use super::super::Request;
 
     fn make_HTTP_Request(input_str : &str) -> [u8; 1024]{
         let mut request : [u8; 1024] = [0; 1024];
@@ -670,24 +671,17 @@ mod http_request_parse_test {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
         //GET /index.html
 
-        let get_method_result : Result<Method, ParserError> = Method::new(
-            make_HTTP_Request("GET /index.html HTTP/1.1")
-        );
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("GET /index.html HTTP/1.1")) {
+            Ok(val) => val,
+            Err(err) => panic!("{:?}", err),
+        };
 
-        assert_eq!(get_method_result.is_ok(), true);
-        match get_method_result {
-            Ok(get_method_actual) => {
-                match get_method_actual {
-                    Method::GET{ file } => {
-                        assert_eq!(file, String::from("/index.html"));
-                    }
-                    _ => {
-                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
-                    }
-                }
-            },
-            Err(err) => {
-                panic!("{:?}", err);
+        match method {
+            Method::GET{ file } => {
+                assert_eq!(file, String::from("/index.html"));
+            }
+            _ => {
+                panic!("Incorect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -698,24 +692,17 @@ mod http_request_parse_test {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD
         //HEAD /index.html
 
-        let get_method_result : Result<Method, ParserError> = Method::new(
-            make_HTTP_Request("HEAD /index.html HTTP/1.1")
-        );
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("HEAD /index.html HTTP/1.1")) {
+            Ok(val) => val,
+            Err(err) => panic!("{:?}", err),
+        };
 
-        assert_eq!(get_method_result.is_ok(), true);
-        match get_method_result {
-            Ok(get_method_actual) => {
-                match get_method_actual {
-                    Method::HEAD{ file } => {
-                        assert_eq!(file, String::from("/index.html"));
-                    }
-                    _ => {
-                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
-                    }
-                }
-            },
-            Err(err) => {
-                panic!("{:?}", err);
+        match method {
+            Method::HEAD{ file } => {
+                assert_eq!(file, String::from("/index.html"));
+            }
+            _ => {
+                panic!("Incorect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -725,32 +712,24 @@ mod http_request_parse_test {
     fn post_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
 
-        let get_method_result : Result<Method, ParserError> = Method::new(
-            make_HTTP_Request(
-                "POST /test HTTP/1.1\nHost: foo.example\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 27\n\nfield1=value1&field2=value2"
-            )
-        );
-        assert!(get_method_result.is_ok(),"{}", format!("{:?}", get_method_result));
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("POST /test HTTP/1.1\nHost: foo.example\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 27\n\nfield1=value1&field2=value2")) {
+            Ok(val) => val,
+            Err(err) => panic!("{:?}", err),
+        };
 
-        match get_method_result {
-            Ok(get_method_actual) => {
-                match get_method_actual {
-                    Method::POST{ file, body } => {
-                        assert_eq!(file, String::from("/test"));
+        match method {
+            Method::POST{ file, body } => {
+                assert_eq!(file, String::from("/test"));
 
-                        assert_eq!(body.content_type.to_string(), "application/x-www-form-urlencoded");
+                assert_eq!(body.content_type.to_string(), "application/x-www-form-urlencoded");
 
-                        assert_eq!(body.content, "field1=value1&field2=value2");
-                    }
-                    _ => {
-                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
-                    }
-                }
-            },
-            Err(err) => {
-                panic!("{:?}", err);
+                assert_eq!(body.content, "field1=value1&field2=value2");
+            }
+            _ => {
+                panic!("Incorect variant. Got {} instead", method.to_string());
             }
         }
+            
     }
 
     //put test
@@ -758,30 +737,21 @@ mod http_request_parse_test {
     fn put_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
 
-        let get_method_result : Result<Method, ParserError> = Method::new(
-            make_HTTP_Request(
-                "PUT /new.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>"
-            )
-        );
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("PUT /new.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>")) {
+            Ok(val) => val,
+            Err(err) => panic!("{:?}", err),
+        };
 
-        assert!(get_method_result.is_ok(),"{}", format!("{:?}", get_method_result));
-        match get_method_result {
-            Ok(get_method_actual) => {
-                match get_method_actual {
-                    Method::PUT{ file, body } => {
-                        assert_eq!(file, String::from("/new.html"));
+        match method {
+            Method::PUT{ file, body } => {
+                assert_eq!(file, String::from("/new.html"));
 
-                        assert_eq!(body.content_type.to_string(), "text/html");
+                assert_eq!(body.content_type.to_string(), "text/html");
 
-                        assert_eq!(body.content, "<p>New File</p>");
-                    }
-                    _ => {
-                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
-                    }
-                }
-            },
-            Err(err) => {
-                panic!("{:?}", err);
+                assert_eq!(body.content, "<p>New File</p>");
+            }
+            _ => {
+                panic!("Incorect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -791,38 +761,29 @@ mod http_request_parse_test {
     fn delete_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 
-        let get_method_result : Result<Method, ParserError> = Method::new(
-            make_HTTP_Request(
-                "DELETE /file.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>"
-            )
-        );
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("DELETE /file.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>")) {
+            Ok(val) => val,
+            Err(err) => panic!("{:?}", err),
+        };
 
-        assert!(get_method_result.is_ok(),"{}", format!("{:?}", get_method_result));
-        match get_method_result {
-            Ok(get_method_actual) => {
-                match get_method_actual {
-                    Method::DELETE{ file, body } => {
-                        assert_eq!(file, String::from("/file.html"));
+        match method {
+            Method::DELETE{ file, body } => {
+                assert_eq!(file, String::from("/file.html"));
 
-                        match body {
-                            Some(body) => {
-                                assert_eq!(body.content_type.to_string(), "text/html");
+                match body {
+                    Some(body) => {
+                        assert_eq!(body.content_type.to_string(), "text/html");
 
-                                assert_eq!(body.content, "<p>New File</p>");
-                            },
-                            None => {
-                                panic!("Missing body");
-                            }
-                        }
-                        
-                    }
-                    _ => {
-                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
+                        assert_eq!(body.content, "<p>New File</p>");
+                    },
+                    None => {
+                        panic!("Missing body");
                     }
                 }
-            },
-            Err(err) => {
-                panic!("{:?}", err);
+                
+            }
+            _ => {
+                panic!("Incorect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -831,30 +792,22 @@ mod http_request_parse_test {
     fn delete_no_body_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 
-        let get_method_result : Result<Method, ParserError> = Method::new(
-            make_HTTP_Request(
-                "DELETE /file.html HTTP/1.1\nHost: example.com"
-            )
-        );
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("DELETE /file.html HTTP/1.1\nHost: example.com")) {
+            Ok(val) => val,
+            Err(err) => panic!("{:?}", err),
+        };
 
-        assert!(get_method_result.is_ok(),"{}", format!("{:?}", get_method_result));
-        match get_method_result {
-            Ok(get_method_actual) => {
-                match get_method_actual {
-                    Method::DELETE{ file, body } => {
-                        assert_eq!(file, String::from("/file.html"));
+        match method {
+            Method::DELETE{ file, body } => {
+                assert_eq!(file, String::from("/file.html"));
 
-                        assert!(body.is_none());
-                    }
-                    _ => {
-                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
-                    }
-                }
-            },
-            Err(err) => {
-                panic!("{:?}", err);
+                assert!(body.is_none());
+            }
+            _ => {
+                panic!("Incorect variant. Got {} instead", method.to_string());
             }
         }
+            
     }
 
     //connect
@@ -862,24 +815,17 @@ mod http_request_parse_test {
     fn connect_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/CONNECT
 
-        let get_method_result : Result<Method, ParserError> = Method::new(
-            make_HTTP_Request("CONNECT www.example.com:443 HTTP/1.1")
-        );
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("CONNECT www.example.com:443 HTTP/1.1")) {
+            Ok(val) => val,
+            Err(err) => panic!("{:?}", err),
+        };
 
-        assert_eq!(get_method_result.is_ok(), true);
-        match get_method_result {
-            Ok(get_method_actual) => {
-                match get_method_actual {
-                    Method::CONNECT{ URL } => {
-                        assert_eq!(URL, String::from("www.example.com:443"));
-                    }
-                    _ => {
-                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
-                    }
-                }
-            },
-            Err(err) => {
-                panic!("{:?}", err);
+        match method {
+            Method::CONNECT{ URL } => {
+                assert_eq!(URL, String::from("www.example.com:443"));
+            }
+            _ => {
+                panic!("Incorect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -889,24 +835,17 @@ mod http_request_parse_test {
     fn options_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
 
-        let get_method_result : Result<Method, ParserError> = Method::new(
-            make_HTTP_Request("OPTIONS https://example.org -i")
-        );
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("OPTIONS https://example.org -i")) {
+            Ok(val) => val,
+            Err(err) => panic!("{:?}", err),
+        };
 
-        assert_eq!(get_method_result.is_ok(), true);
-        match get_method_result {
-            Ok(get_method_actual) => {
-                match get_method_actual {
-                    Method::OPTIONS{ URL } => {
-                        assert_eq!(URL, String::from("https://example.org"));
-                    }
-                    _ => {
-                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
-                    }
-                }
-            },
-            Err(err) => {
-                panic!("{:?}", err);
+        match method {
+            Method::OPTIONS{ URL } => {
+                assert_eq!(URL, String::from("https://example.org"));
+            }
+            _ => {
+                panic!("Incorect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -916,24 +855,17 @@ mod http_request_parse_test {
     fn trace_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
 
-        let get_method_result : Result<Method, ParserError> = Method::new(
-            make_HTTP_Request("TRACE /index.html HTTP/1.1")
-        );
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("TRACE /index.html HTTP/1.1")) {
+            Ok(val) => val,
+            Err(err) => panic!("{:?}", err),
+        };
 
-        assert_eq!(get_method_result.is_ok(), true);
-        match get_method_result {
-            Ok(get_method_actual) => {
-                match get_method_actual {
-                    Method::TRACE{ file } => {
-                        assert_eq!(file, String::from("/index.html"));
-                    }
-                    _ => {
-                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
-                    }
-                }
-            },
-            Err(err) => {
-                panic!("{:?}", err);
+        match method {
+            Method::TRACE{ file } => {
+                assert_eq!(file, String::from("/index.html"));
+            }
+            _ => {
+                panic!("Incorect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -943,30 +875,21 @@ mod http_request_parse_test {
     fn patch_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
 
-        let get_method_result : Result<Method, ParserError> = Method::new(
-            make_HTTP_Request(
-                "PATCH /file.txt HTTP/1.1\nHost: www.example.com\nContent-Type: application/example\nIf-Match: 'e0023aa4e'\nContent-Length: 100\n\n[description of changes]"
-            )
-        );
+        let (method, meta_data) = match Request::parse(make_HTTP_Request("PATCH /file.txt HTTP/1.1\nHost: www.example.com\nContent-Type: application/pdf\nIf-Match: 'e0023aa4e'\nContent-Length: 100\n\n[description of changes]")) {
+            Ok(val) => val,
+            Err(err) => panic!("{:?}", err),
+        };
 
-        assert!(get_method_result.is_ok(),"{}", format!("{:?}", get_method_result));
-        match get_method_result {
-            Ok(get_method_actual) => {
-                match get_method_actual {
-                    Method::PATCH{ file, body } => {
-                        assert_eq!(file, String::from("/file.txt"));
+        match method {
+            Method::PATCH{ file, body } => {
+                assert_eq!(file, String::from("/file.txt"));
 
-                        assert_eq!(body.content_type.to_string(), "application/example");
+                assert_eq!(body.content_type.to_string(), "application/pdf");
 
-                        assert_eq!(body.content, "[description of changes]");
-                    }
-                    _ => {
-                        panic!("Incorect variant. Got {} instead", get_method_actual.to_string());
-                    }
-                }
-            },
-            Err(err) => {
-                panic!("{:?}", err);
+                assert_eq!(body.content, "[description of changes]");
+            }
+            _ => {
+                panic!("Incorect variant. Got {} instead", method.to_string());
             }
         }
     }

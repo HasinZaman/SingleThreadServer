@@ -109,7 +109,7 @@ fn get_data<'a>(mut line_iter : Split<&'a str>, domain : &str) -> Result<(Option
         Ok(val) => val,
         Err(err) => return Result::Err(err),
     };
-    
+
     let body = Body { content_type : content_type, content : body };
     
     return Result::Ok((Option::Some(body), meta_data));

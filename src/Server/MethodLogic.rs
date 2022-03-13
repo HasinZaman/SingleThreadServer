@@ -54,9 +54,7 @@ impl MethodLogic {
                                     status : ResponseStatusCode::NotFound,
                                     body : Option::Some(
                                         Body {
-                                            content_type: ContentType::Text{
-                                                value: Text::html
-                                            },
+                                            content_type: ContentType::Text(Text::html),
                                             content: body,
                                         }
                                     )
@@ -68,64 +66,40 @@ impl MethodLogic {
 
                                 let content_type : ContentType = match content_type {
                                     "gif" => {
-                                        ContentType::Image{
-                                            value: Image::gif
-                                        }
+                                        ContentType::Image(Image::gif)
                                     },
                                     "jpg" | "jpeg" | "jpe" | "jfif" => {
-                                        ContentType::Image{
-                                            value: Image::jpeg
-                                        }
+                                        ContentType::Image(Image::jpeg)
                                     },
                                     "png" => {
-                                        ContentType::Image{
-                                            value: Image::png
-                                        }
+                                        ContentType::Image(Image::png)
                                     },
                                     "tif" | "tiff" => {
-                                        ContentType::Image{
-                                            value: Image::tiff
-                                        }
+                                        ContentType::Image(Image::tiff)
                                     },
                                     "css" => {
-                                        ContentType::Text{
-                                            value: Text::css
-                                        }
+                                        ContentType::Text(Text::css)
                                     },
                                     "csv" => {
-                                        ContentType::Text{
-                                            value: Text::csv
-                                        }
+                                        ContentType::Text(Text::csv)
                                     },
                                     "html" => {
-                                        ContentType::Text{
-                                            value: Text::html
-                                        }
+                                        ContentType::Text(Text::html)
                                     },
-                                    ".js" => {
-                                        ContentType::Text{
-                                            value: Text::javascript
-                                        }
+                                    "js" => {
+                                        ContentType::Text(Text::javascript)
                                     },
                                     "xml" => {
-                                        ContentType::Text{
-                                            value: Text::xml
-                                        }
+                                        ContentType::Text(Text::xml)
                                     },
                                     "mpeg" => {
-                                        ContentType::Video{
-                                            value: Video::mpeg
-                                        }
+                                        ContentType::Video(Video::mpeg)
                                     },
                                     "mp4" => {
-                                        ContentType::Video{
-                                            value: Video::mp4
-                                        }
+                                        ContentType::Video(Video::mp4)
                                     },
                                     "webm" => {
-                                        ContentType::Video{
-                                            value: Video::webm
-                                        }
+                                        ContentType::Video(Video::webm)
                                     },
                                     _=>{
                                         return Response {

@@ -41,7 +41,7 @@ mod response{
             status : ResponseStatusCode::Ok,
             body : Option::Some(
                 Body {
-                    content_type : ContentType::Text { value : Value::Text::html },
+                    content_type : ContentType::Text ( Value::Text::html ),
                     content: String::from("<p>New File</p>")
                 }
             )

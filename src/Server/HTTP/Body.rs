@@ -20,12 +20,12 @@ trait VariantName {
 
 //https://www.geeksforgeeks.org/http-headers-content-type/
 pub enum ContentType {
-    Application {value : Value::Application},
-    Audio {value : Value::Audio},
-    Image {value : Value::Image},
-    Multipart {value : Value::Multipart},
-    Text {value : Value::Text},
-    Video {value : Value::Video},
+    Application(Value::Application),
+    Audio(Value::Audio),
+    Image(Value::Image),
+    Multipart(Value::Multipart),
+    Text(Value::Text),
+    Video(Value::Video),
 }
 
 impl ContentType {
@@ -43,32 +43,32 @@ impl ContentType {
         match type_raw {
             "application" => {
                 let content_type_value = Value::parse_value::<Value::Application>(value)?;
-                let content_type = ContentType::Application{ value : content_type_value };
+                let content_type = ContentType::Application(content_type_value);
                 return Ok(content_type);
             }, 
             "audio" => {
                 let content_type_value = Value::parse_value::<Value::Audio>(value)?;
-                let content_type = ContentType::Audio{ value : content_type_value };
+                let content_type = ContentType::Audio(content_type_value );
                 return Ok(content_type);
             },
             "image" => {
                 let content_type_value = Value::parse_value::<Value::Image>(value)?;
-                let content_type = ContentType::Image{ value : content_type_value };
+                let content_type = ContentType::Image(content_type_value);
                 return Ok(content_type);
             },
             "multipart" => {
                 let content_type_value = Value::parse_value::<Value::Multipart>(value)?;
-                let content_type = ContentType::Multipart{ value : content_type_value };
+                let content_type = ContentType::Multipart(content_type_value);
                 return Ok(content_type);
             },
             "text" => {
                 let content_type_value = Value::parse_value::<Value::Text>(value)?;
-                let content_type = ContentType::Text{ value : content_type_value };
+                let content_type = ContentType::Text(content_type_value);
                 return Ok(content_type);
             },
             "video" => {
                 let content_type_value = Value::parse_value::<Value::Video>(value)?;
-                let content_type = ContentType::Video{ value : content_type_value };
+                let content_type = ContentType::Video(content_type_value);
                 return Ok(content_type);
             },
             _ => return Result::Err(ParserError::InvalidMethod(Option::Some(String::from("Invalid type")))),
@@ -78,12 +78,12 @@ impl ContentType {
 impl VariantName for ContentType {
     fn get_variant(&self) -> String{
         match &self {
-            ContentType::Application { value } => return String::from("application"),
-            ContentType::Audio { value } => return String::from("audio"),
-            ContentType::Image { value } => return String::from("image"),
-            ContentType::Multipart { value } => return String::from("multipart"),
-            ContentType::Text { value } => return String::from("text"),
-            ContentType::Video { value } => return String::from("video"),
+            ContentType::Application ( _value ) => String::from("application"),
+            ContentType::Audio ( _value ) => String::from("audio"),
+            ContentType::Image ( _value ) => String::from("image"),
+            ContentType::Multipart ( _value ) => String::from("multipart"),
+            ContentType::Text ( _value ) => String::from("text"),
+            ContentType::Video ( _value ) => String::from("video"),
             _ => panic!("Invalid variant type"),
         }
     }
@@ -91,22 +91,22 @@ impl VariantName for ContentType {
 impl ToString for ContentType {
     fn to_string(&self) -> String {
         match &self {
-            ContentType::Application { value }  => {
+            ContentType::Application ( value ) => {
                 return format!("{}/{}", &self.get_variant(), value.get_variant())
             },
-            ContentType::Audio { value }   => {
+            ContentType::Audio ( value )   => {
                 return format!("{}/{}", &self.get_variant(), value.get_variant())
             },
-                ContentType::Image { value }   => {
+                ContentType::Image ( value )   => {
                 return format!("{}/{}", &self.get_variant(), value.get_variant())
             },
-                ContentType::Multipart { value }   => {
+                ContentType::Multipart ( value )   => {
                 return format!("{}/{}", &self.get_variant(), value.get_variant())
             },
-                ContentType::Text { value }   => {
+                ContentType::Text ( value )   => {
                 return format!("{}/{}", &self.get_variant(), value.get_variant())
             },
-                ContentType::Video { value } => {
+                ContentType::Video ( value ) => {
                 return format!("{}/{}", &self.get_variant(), value.get_variant())
             },
             _ => panic!("Not implemented variant"),

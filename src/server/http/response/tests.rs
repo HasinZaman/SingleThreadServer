@@ -1,5 +1,5 @@
 mod response_status_code {
-    use super::super::ResponseStatusCode::ResponseStatusCode;
+    use super::super::responseStatusCode::ResponseStatusCode;
 
     #[test]
     fn generic_to_string_test() {
@@ -21,9 +21,9 @@ mod response_status_code {
 }
 
 mod response {
-    use super::super::Response::Response;
-    use super::super::ResponseStatusCode::ResponseStatusCode;
-    use crate::Server::HTTP::Body::{Body, ContentType, Value};
+    use super::super::response::Response;
+    use super::super::responseStatusCode::ResponseStatusCode;
+    use crate::server::http::body::{Body, ContentType, Value};
 
     #[test]
     fn no_body_test() {

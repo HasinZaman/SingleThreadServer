@@ -1,6 +1,6 @@
-use super::super::Body::{Body, ContentType};
-use super::Method::Method;
-use super::ParserError::ParserError;
+use super::super::body::{Body, ContentType};
+use super::method::Method;
+use super::parser_error::ParserError;
 
 use std::collections::HashMap;
 use std::str::Split;

@@ -1,9 +1,9 @@
-use super::FileReader;
-use super::HTTP::Body::{Application, Audio, Image, Multipart, Text, Video};
-use super::HTTP::Body::{Body, ContentType};
-use super::HTTP::{
-    Method::Method,
-    Response::{Response::Response, ResponseStatusCode::ResponseStatusCode},
+use super::file_reader;
+use super::http::body::{Application, Audio, Image, Multipart, Text, Video};
+use super::http::body::{Body, ContentType};
+use super::http::{
+    method::Method,
+    response::{response::Response, responseStatusCode::ResponseStatusCode},
 };
 
 pub struct MethodLogic {
@@ -29,7 +29,7 @@ impl MethodLogic {
     pub fn default_get_logic() -> Box<dyn Fn(Method) -> Response> {
         Box::new(|request: Method| match request {
             Method::GET { file } => {
-                let path_buf = FileReader::parse(&file);
+                let path_buf = file_reader::parse(&file);
 
                 let file_name = match &path_buf.file_name() {
                     Some(name) => name.to_str().unwrap(),
@@ -39,7 +39,7 @@ impl MethodLogic {
                     ),
                 };
 
-                let body = FileReader::get_file_content(&path_buf).unwrap();
+                let body = file_reader::get_file_content(&path_buf).unwrap();
 
                 match file_name {
                     "404.html" => {

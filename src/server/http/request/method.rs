@@ -1,5 +1,5 @@
-use super::super::Body::{Body, ContentType};
-use super::ParserError::ParserError;
+use super::super::body::{Body, ContentType};
+use super::parser_error::ParserError;
 
 #[derive(Debug)]
 pub enum Method {

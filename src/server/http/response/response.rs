@@ -1,5 +1,5 @@
-use super::ResponseStatusCode::*;
-use crate::Server::HTTP::Body::Body;
+use super::responseStatusCode::*;
+use crate::server::http::body::Body;
 
 pub struct Response {
     pub status: ResponseStatusCode,

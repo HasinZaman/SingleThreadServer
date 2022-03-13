@@ -5,17 +5,17 @@ use std::io::prelude::*;
 
 use chrono;
 
-pub mod FileReader;
-pub mod HTTP;
-pub mod MethodLogic;
+pub mod file_reader;
+pub mod http;
+pub mod method_logic;
 
-use HTTP::Method::Method;
-use HTTP::Response::Response::Response;
-use HTTP::Response::ResponseStatusCode::ResponseStatusCode;
+use http::method::Method;
+use http::response::response::Response;
+use http::response::responseStatusCode::ResponseStatusCode;
 
 use std::collections::HashMap;
 
-pub fn start(method_action: MethodLogic::MethodLogic) {
+pub fn start(method_action: method_logic::MethodLogic) {
     let listener = TcpListener::bind("localhost:8080").unwrap();
 
     for stream in listener.incoming() {
@@ -27,7 +27,7 @@ pub fn start(method_action: MethodLogic::MethodLogic) {
 #[allow(unused_variables, non_snake_case, unreachable_patterns)]
 fn handle_connection(
     mut stream: TcpStream,
-    method_action: &MethodLogic::MethodLogic,
+    method_action: &method_logic::MethodLogic,
     domain: &str,
 ) {
     let mut buffer = [0; 1024];
@@ -37,7 +37,7 @@ fn handle_connection(
     let meta_data: HashMap<String, String>;
     let response: Response;
 
-    match HTTP::Request::parse(buffer, &domain) {
+    match http::request::parse(buffer, &domain) {
         Ok(val) => {
             println!("Success");
             method = val.0;
@@ -61,7 +61,7 @@ fn handle_connection(
 }
 
 #[allow(unused_variables)]
-fn handle_method(method: Method, method_action: &MethodLogic::MethodLogic) -> Response {
+fn handle_method(method: Method, method_action: &method_logic::MethodLogic) -> Response {
     match &method {
         GET => (method_action.get)(method),
         HEAD => (method_action.head)(method),

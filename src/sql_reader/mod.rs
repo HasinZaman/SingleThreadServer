@@ -11,23 +11,27 @@ pub struct DataBase {
     db_username : String,
     db_password : String,
 }
+
+struct addres {
+    street : String
+    //...
+}
+
+// excute(
+//     "Select address, phone from users", 
+//     |row| -> addres{row.index(0), row.index(1)}
+// )
+
 impl DataBase {
     pub fn execute<B, F : Fn(mysql::Row)->B>(&self, command : &str, row_logic : F) -> Vec<B> {
         let mut conn = self.get_conn();
 
         let stmp = conn.prep(command).unwrap();
 
-        let result = conn.exec_iter(stmp, ())
+        return conn.exec_iter(stmp, ())
             .unwrap()
-            .map(|wrapped_row| row_logic(wrapped_row.unwrap()));
-
-        let mut return_val : Vec<B> = Vec::new();
-
-        for r in result{
-            return_val.push(r);
-        }
-
-        return_val
+            .map(|wrapped_row| row_logic(wrapped_row.unwrap()))
+            .collect();
     }
 
     fn get_conn(&self) -> mysql::PooledConn {

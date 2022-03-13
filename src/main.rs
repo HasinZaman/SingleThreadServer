@@ -1,7 +1,7 @@
 //import HTTPRequest
-mod Server;
+mod server;
 
-use crate::Server::MethodLogic::MethodLogic;
+use crate::server::method_logic::MethodLogic;
 
 fn main() {
     let logic: MethodLogic = MethodLogic {
@@ -16,5 +16,5 @@ fn main() {
         patch: MethodLogic::default_not_allowed_logic(),
     };
 
-    Server::start(logic);
+    server::start(logic);
 }

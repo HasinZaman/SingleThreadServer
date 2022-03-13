@@ -1,4 +1,4 @@
-use super::Request::ParserError::ParserError;
+use super::request::parser_error::ParserError;
 use std::fmt::{Debug, Error, Formatter};
 
 pub use Value::Application;
@@ -127,7 +127,7 @@ impl Debug for ContentType {
 }
 
 pub mod Value {
-    use super::super::Request::ParserError::ParserError;
+    use super::super::request::parser_error::ParserError;
 
     pub trait Constructor<V> {
         fn new(value_raw: &str) -> Result<V, ParserError>;

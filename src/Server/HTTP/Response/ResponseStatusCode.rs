@@ -5,7 +5,7 @@ use strum_macros::AsRefStr;
 /// For more infomation about HTTP reponse status codes - visit https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 #[allow(dead_code)]
 #[derive(Debug, AsRefStr, Clone)]
-pub enum ResponseStatusCode{
+pub enum ResponseStatusCode {
     //Information
     Continue = 100,
     SwitchingProtocols,
@@ -73,18 +73,18 @@ pub enum ResponseStatusCode{
 }
 
 impl ResponseStatusCode {
-    pub fn get_code(&self) -> u16{
+    pub fn get_code(&self) -> u16 {
         self.clone() as u16
     }
 }
 
-impl ToString for ResponseStatusCode{
+impl ToString for ResponseStatusCode {
     fn to_string(&self) -> String {
-        format!("{} {}", self.get_code(),split_at_capital(self.as_ref()))
+        format!("{} {}", self.get_code(), split_at_capital(self.as_ref()))
     }
 }
 
-fn split_at_capital(input : &str) -> String {
+fn split_at_capital(input: &str) -> String {
     let mut tmp = String::from("");
 
     let mut iter = input.chars();
@@ -93,7 +93,7 @@ fn split_at_capital(input : &str) -> String {
     tmp.push(iter.next().unwrap());
 
     for c in iter {
-        if c.is_uppercase(){
+        if c.is_uppercase() {
             tmp.push(' ');
         }
         tmp.push(c)

@@ -1,14 +1,14 @@
-use crate::Server::HTTP::Body::Body;
 use super::ResponseStatusCode::*;
+use crate::Server::HTTP::Body::Body;
 
 pub struct Response {
-    pub status : ResponseStatusCode,
-    pub body : Option<Body>
+    pub status: ResponseStatusCode,
+    pub body: Option<Body>,
 }
 
 impl ToString for Response {
     fn to_string(&self) -> String {
-        let mut tmp : String = format!("HTTP/1.1 {}", self.status.to_string());
+        let mut tmp: String = format!("HTTP/1.1 {}", self.status.to_string());
 
         match &self.body {
             Some(body) => {
@@ -22,8 +22,8 @@ impl ToString for Response {
 
                 let content = format!("\n{}", &(body.content));
                 tmp.push_str(&content);
-            },
-            None => {},
+            }
+            None => {}
         }
 
         tmp

@@ -1,52 +1,53 @@
-mod response_status_code{
+mod response_status_code {
     use super::super::ResponseStatusCode::ResponseStatusCode;
 
     #[test]
-    fn generic_to_string_test(){
-        let response_status_code : ResponseStatusCode = ResponseStatusCode::Ok;
+    fn generic_to_string_test() {
+        let response_status_code: ResponseStatusCode = ResponseStatusCode::Ok;
         assert_eq!(response_status_code.to_string(), "200 Ok");
     }
 
     #[test]
-    fn multi_word_to_string_test(){
-        let response_status_code : ResponseStatusCode = ResponseStatusCode::MultipleChoice;
+    fn multi_word_to_string_test() {
+        let response_status_code: ResponseStatusCode = ResponseStatusCode::MultipleChoice;
         assert_eq!(response_status_code.to_string(), "300 Multiple Choice");
     }
 
     #[test]
-    fn non_defined_enum_to_string_test(){
-        let response_status_code : ResponseStatusCode = ResponseStatusCode::Created;
+    fn non_defined_enum_to_string_test() {
+        let response_status_code: ResponseStatusCode = ResponseStatusCode::Created;
         assert_eq!(response_status_code.to_string(), "201 Created");
     }
 }
 
-mod response{
+mod response {
     use super::super::Response::Response;
     use super::super::ResponseStatusCode::ResponseStatusCode;
     use crate::Server::HTTP::Body::{Body, ContentType, Value};
 
     #[test]
-    fn no_body_test(){
+    fn no_body_test() {
         let response = Response {
-            status : ResponseStatusCode::Ok,
-            body : Option::None
+            status: ResponseStatusCode::Ok,
+            body: Option::None,
         };
 
         assert_eq!(response.to_string(), "HTTP/1.1 200 Ok");
     }
 
     #[test]
-    fn body_test(){
+    fn body_test() {
         let response = Response {
-            status : ResponseStatusCode::Ok,
-            body : Option::Some(
-                Body {
-                    content_type : ContentType::Text ( Value::Text::html ),
-                    content: String::from("<p>New File</p>")
-                }
-            )
+            status: ResponseStatusCode::Ok,
+            body: Option::Some(Body {
+                content_type: ContentType::Text(Value::Text::html),
+                content: String::from("<p>New File</p>"),
+            }),
         };
 
-        assert_eq!(response.to_string(), "HTTP/1.1 200 Ok\r\nContent-Length: 15\r\nContent-Type: text/html\r\n\n<p>New File</p>");
+        assert_eq!(
+            response.to_string(),
+            "HTTP/1.1 200 Ok\r\nContent-Length: 15\r\nContent-Type: text/html\r\n\n<p>New File</p>"
+        );
     }
 }

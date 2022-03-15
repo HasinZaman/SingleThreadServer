@@ -6,64 +6,80 @@ mod file_Parser {
 
     #[test]
     fn file_does_not_exist_test() {
+        let allowed_extension = vec![String::from("txt")];
         assert_eq!(
-            parse("\\tests\\file_does_not_exist_test.txt", "tmp"),
+            parse(
+                "\\tests\\file_does_not_exist_test.txt",
+                "tmp",
+                &allowed_extension
+            ),
             Option::None
         );
     }
 
     #[test]
     fn no_file_name_1_test() {
+        let allowed_extension = vec![String::from("html")];
         assert_eq!(
-            parse("\\", "tmp"),
+            parse("\\", "tmp", &allowed_extension),
             Option::Some(PathBuf::from("Site\\tmp\\index.html"))
         );
     }
 
     #[test]
     fn no_file_name_2_test() {
+        let allowed_extension = vec![String::from("html")];
         assert_eq!(
-            parse("\\tests\\", "tmp"),
+            parse("\\tests\\", "tmp", &allowed_extension),
             Option::Some(PathBuf::from("Site\\tmp\\tests\\index.html"))
         );
     }
 
     #[test]
     fn file_with_url_variables_1_test() {
+        let allowed_extension = vec![String::from("html")];
         assert_eq!(
-            parse("\\?v=A", "tmp"),
+            parse("\\?v=A", "tmp", &allowed_extension),
             Option::Some(PathBuf::from("Site\\tmp\\index.html"))
         );
     }
 
     #[test]
     fn file_with_url_variables_2_test() {
+        let allowed_extension = vec![String::from("html")];
         assert_eq!(
-            parse("\\tests\\index.html?v=A", "tmp"),
+            parse("\\tests\\index.html?v=A", "tmp", &allowed_extension),
             Option::Some(PathBuf::from("Site\\tmp\\tests\\index.html"))
         );
     }
 
     #[test]
     fn file_with_url_variables_3_test() {
+        let allowed_extension = vec![String::from("meta")];
         assert_eq!(
-            parse("\\tests\\test_file.html.meta?v=A", "tmp"),
+            parse(
+                "\\tests\\test_file.html.meta?v=A",
+                "tmp",
+                &allowed_extension
+            ),
             Option::Some(PathBuf::from("Site\\tmp\\tests\\test_file.html.meta"))
         );
     }
 
     #[test]
     fn general_file_1_test() {
+        let allowed_extension = vec![String::from("html")];
         assert_eq!(
-            parse("\\tests\\index.html", "tmp"),
+            parse("\\tests\\index.html", "tmp", &allowed_extension),
             Option::Some(PathBuf::from("Site\\tmp\\tests\\index.html"))
         );
     }
 
     #[test]
     fn general_file_2_test() {
+        let allowed_extension = vec![String::from("meta")];
         assert_eq!(
-            parse("\\tests\\test_file.html.meta", "tmp"),
+            parse("\\tests\\test_file.html.meta", "tmp", &allowed_extension),
             Option::Some(PathBuf::from("Site\\tmp\\tests\\test_file.html.meta"))
         );
     }
@@ -75,7 +91,8 @@ mod file_reader {
 
     #[test]
     fn general_file_read_1_test() {
-        let pathBuf: Option<PathBuf> = parse("\\tests\\index.html", "tmp");
+        let allowed_extension = vec![String::from("html")];
+        let pathBuf: Option<PathBuf> = parse("\\tests\\index.html", "tmp", &allowed_extension);
 
         assert!(pathBuf.is_some());
 
@@ -87,7 +104,9 @@ mod file_reader {
 
     #[test]
     fn general_file_read_2_test() {
-        let pathBuf: Option<PathBuf> = parse("\\tests\\test_file.html.meta", "tmp");
+        let allowed_extension = vec![String::from("meta")];
+        let pathBuf: Option<PathBuf> =
+            parse("\\tests\\test_file.html.meta", "tmp", &allowed_extension);
 
         assert!(pathBuf.is_some());
 
@@ -99,7 +118,8 @@ mod file_reader {
 
     #[test]
     fn general_file_read_3_test() {
-        let pathBuf: Option<PathBuf> = parse("\\tests\\test_page.html", "tmp");
+        let allowed_extension = vec![String::from("html")];
+        let pathBuf: Option<PathBuf> = parse("\\tests\\test_page.html", "tmp", &allowed_extension);
 
         assert!(pathBuf.is_some());
 

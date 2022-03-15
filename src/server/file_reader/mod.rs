@@ -1,4 +1,4 @@
-use std::alloc::System;
+use std::ffi::OsStr;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 #[cfg(test)]
 mod tests;
 
-pub fn parse(url: &str, search_folder: &str) -> Option<PathBuf> {
+pub fn parse(url: &str, search_folder: &str, allowed_extension: &Vec<String>) -> Option<PathBuf> {
     let url = url.trim_matches('\\').trim_matches('/');
 
     let mut path_buffer = PathBuf::new();
@@ -26,7 +26,14 @@ pub fn parse(url: &str, search_folder: &str) -> Option<PathBuf> {
 
     println!("path:{:?}", path_buffer);
 
-    if path_buffer.exists() {
+    let extension = match path_buffer.extension() {
+        Some(extension) => extension.to_str().unwrap(),
+        None => panic!("path_buffer has no file extension"),
+    };
+
+    let valid_extension = allowed_extension.iter().any(|e| e == extension);
+
+    if path_buffer.exists() && valid_extension {
         return Option::Some(path_buffer);
     }
 

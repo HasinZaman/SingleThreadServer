@@ -9,7 +9,10 @@ pub mod file_reader;
 pub mod http;
 pub mod method_logic;
 
+mod logger;
 mod setting;
+
+pub use logger::log;
 
 use http::method::Method;
 use http::response::response::Response;
@@ -21,6 +24,8 @@ use std::collections::HashMap;
 //future features
 // implement start, handle_connection and handle_method to server_settings. (so &self can be used rather than being moved through the paramater of functions)
 pub fn start(method_action: method_logic::MethodLogic) {
+    logger::set_up();
+
     let server_setting = ServerSetting::load();
 
     println!("{:?}", server_setting);
@@ -48,22 +53,23 @@ fn handle_connection(
 
     match http::request::parse(buffer) {
         Ok(val) => {
-            println!("Success");
             method = val.0;
             meta_data = val.1;
+
+            log("Method", format!("{:?}", method));
+
             response = handle_method(method, method_action, &server_settings, meta_data);
         }
         Err(err) => {
-            println!("Failure:{:?}", err);
+            log("Parse Failure", format!("Failure:{:?}", err));
             response = Response {
                 status: ResponseStatusCode::BadRequest,
                 body: Option::None,
             };
         }
     }
-    println!("{:?}", chrono::offset::Utc::now());
 
-    println!("response:\n{}\n", response.to_string());
+    log("response", response.to_string());
 
     stream.write(response.to_string().as_bytes()).unwrap();
     stream.flush().unwrap();

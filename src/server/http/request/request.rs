@@ -5,12 +5,13 @@ use super::parser_error::ParserError;
 use std::collections::HashMap;
 use std::str::Split;
 
-pub fn parse(
-    request_data: [u8; 1024]
-) -> Result<(Method, HashMap<String, String>), ParserError> {
-    let request: String = String::from_utf8_lossy(&request_data[..]).to_string();
+use super::super::super::log;
 
-    println!("{:?}", request);
+pub fn parse(request_data: [u8; 1024]) -> Result<(Method, HashMap<String, String>), ParserError> {
+    let request: String = String::from_utf8_lossy(&request_data[..]).to_string();
+    
+    log("request", request.to_string());
+    println!("{:?}\n", request.to_string().trim_end_matches('\u{0}'));
 
     let mut request = request.split("\n");
 
@@ -24,8 +25,6 @@ pub fn parse(
     let (body, meta_data) = get_data(request)?;
 
     let method: Method = Method::new(method.to_string(), target.to_string(), body)?;
-
-    println!("\n\n{:?}\n{:?}\n\n", method, meta_data);
     Result::Ok((method, meta_data))
 }
 
@@ -63,7 +62,7 @@ fn get_start_line<'a>(
 }
 
 fn get_data<'a>(
-    mut line_iter: Split<&'a str>
+    mut line_iter: Split<&'a str>,
 ) -> Result<(Option<Body>, HashMap<String, String>), ParserError> {
     let mut meta_data: HashMap<String, String> = HashMap::new();
 

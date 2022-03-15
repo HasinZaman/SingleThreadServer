@@ -661,9 +661,9 @@ mod http_request_parse_test {
     fn delete_no_body_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 
-        let (method, _meta_data) = match request::parse(
-            make_http_request("DELETE /file.html HTTP/1.1\nHost: example.com")
-        ) {
+        let (method, _meta_data) = match request::parse(make_http_request(
+            "DELETE /file.html HTTP/1.1\nHost: example.com",
+        )) {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
@@ -685,12 +685,11 @@ mod http_request_parse_test {
     fn connect_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/CONNECT
 
-        let (method, _meta_data) = match request::parse(
-            make_http_request("CONNECT www.example.com:443 HTTP/1.1")
-        ) {
-            Ok(val) => val,
-            Err(err) => panic!("{:?}", err),
-        };
+        let (method, _meta_data) =
+            match request::parse(make_http_request("CONNECT www.example.com:443 HTTP/1.1")) {
+                Ok(val) => val,
+                Err(err) => panic!("{:?}", err),
+            };
 
         match method {
             Method::Connect { url } => {
@@ -707,12 +706,11 @@ mod http_request_parse_test {
     fn options_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
 
-        let (method, _meta_data) = match request::parse(
-            make_http_request("OPTIONS https://example.org -i")
-        ) {
-            Ok(val) => val,
-            Err(err) => panic!("{:?}", err),
-        };
+        let (method, _meta_data) =
+            match request::parse(make_http_request("OPTIONS https://example.org -i")) {
+                Ok(val) => val,
+                Err(err) => panic!("{:?}", err),
+            };
 
         match method {
             Method::Options { url } => {

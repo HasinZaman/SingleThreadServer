@@ -23,7 +23,7 @@ mod response_status_code {
 mod response {
     use super::super::response::Response;
     use super::super::response_status_code::ResponseStatusCode;
-    use crate::server::http::body::{Body, ContentType, value};
+    use crate::server::http::body::{value, Body, ContentType};
 
     #[test]
     fn no_body_test() {

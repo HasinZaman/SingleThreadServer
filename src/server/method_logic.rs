@@ -62,10 +62,11 @@ impl MethodLogic {
                         }
                     };
 
-                    println!("{}", host_path);
                     let path_buf = match file_reader::parse(&file, &host_path, allowed_extension) {
                         Some(path_buf) => path_buf,
-                        None => file_reader::parse("404.html", &host_path, &allowed_extension).unwrap(),
+                        None => {
+                            file_reader::parse("404.html", &host_path, &allowed_extension).unwrap()
+                        }
                     };
 
                     let file_name = match &path_buf.file_name() {
@@ -77,7 +78,6 @@ impl MethodLogic {
                     };
 
                     let body = file_reader::get_file_content_string(&path_buf).unwrap();
-
 
                     match file_name {
                         "404.html" => {

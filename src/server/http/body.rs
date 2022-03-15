@@ -280,7 +280,7 @@ pub mod value {
                 Multipart::alternative => String::from("alternative"),
                 Multipart::related => String::from("related"),
                 #[allow(unused_variables)]
-                Multipart::form_data { boundary} => String::from("form-data"),
+                Multipart::form_data { boundary } => String::from("form-data"),
             }
         }
     }

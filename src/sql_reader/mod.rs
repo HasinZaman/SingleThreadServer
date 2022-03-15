@@ -32,8 +32,6 @@ impl DataBase {
             self.db_username, self.db_password, self.db_host, self.db_port, self.db_name
         );
 
-        println!("{}", url);
-
         let url: Opts = Opts::from_url(&url).unwrap();
 
         let pool = Pool::new(url).unwrap();
@@ -46,7 +44,6 @@ macro_rules! env_var_to_variable {
     ($key : literal, $var : ident) => {
         match env::var($key) {
             Err(_err) => {
-                println!("{} not assigned", $key);
                 return Option::None;
             }
             Ok(ok) => $var = ok,

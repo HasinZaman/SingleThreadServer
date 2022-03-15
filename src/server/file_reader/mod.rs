@@ -23,8 +23,6 @@ pub fn parse(url: &str, search_folder: &str, allowed_extension: &Vec<String>) ->
         path_buffer.push("index.html");
     }
 
-    println!("path:{:?}", path_buffer);
-
     let extension = match path_buffer.extension() {
         Some(extension) => extension.to_str().unwrap(),
         None => panic!("path_buffer has no file extension"),

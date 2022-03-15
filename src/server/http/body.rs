@@ -20,12 +20,12 @@ trait VariantName {
 
 //https://www.geeksforgeeks.org/http-headers-content-type/
 pub enum ContentType {
-    Application(Value::Application),
-    Audio(Value::Audio),
-    Image(Value::Image),
-    Multipart(Value::Multipart),
-    Text(Value::Text),
-    Video(Value::Video),
+    Application(Application),
+    Audio(Audio),
+    Image(Image),
+    Multipart(Multipart),
+    Text(Text),
+    Video(Video),
 }
 
 impl ContentType {

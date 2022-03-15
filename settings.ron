@@ -1,0 +1,19 @@
+(
+    domain: "localhost",
+    paths : {
+        "localhost" : (
+            path : "tmp",
+            allow : [
+                "html",
+                "css",
+                "js"
+            ]
+        ),
+        "subdomain.localhost" : (
+            path : "subdomain",
+            allow : [
+                "html"
+            ]
+        ),
+    }
+)

@@ -87,14 +87,7 @@ fn get_data<'a>(
         let key = key.trim().to_ascii_lowercase();
         let value = value.trim();
 
-        if key == "host" {
-            match get_sub_domain(value, domain)? {
-                Some(sub_domain) => {
-                    meta_data.insert("sub-domain".to_owned(), sub_domain);
-                }
-                None => {}
-            }
-        } else if key == "content-type" {
+        if key == "content-type" {
             content_type = Option::Some(value);
         } else if key == "content-length" {
             content_lenght = Option::Some(value);
@@ -152,24 +145,4 @@ fn get_key_value_pair<'a>(line: &'a str) -> Result<(&'a str, &'a str), ParserErr
         ))))?;
 
     Result::Ok((key, value))
-}
-
-fn get_sub_domain<'a>(address: &'a str, domain: &str) -> Result<Option<String>, ParserError> {
-    let end: usize = match address.match_indices(domain).next() {
-        Some(index) => index.0,
-        None => {
-            return Result::Err(ParserError::InvalidMethod(Option::Some(format!(
-                "Host does not include domain({}). got {} instead",
-                domain, address
-            ))))
-        }
-    };
-
-    if end == 0usize {
-        return Result::Ok(Option::None);
-    }
-
-    return Result::Ok(Option::Some(
-        address[0..end].trim_end_matches(".").to_string(),
-    ));
 }

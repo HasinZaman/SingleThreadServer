@@ -9,18 +9,27 @@ pub mod file_reader;
 pub mod http;
 pub mod method_logic;
 
+mod setting;
+
 use http::method::Method;
 use http::response::response::Response;
 use http::response::responseStatusCode::ResponseStatusCode;
 
+use setting::ServerSetting;
 use std::collections::HashMap;
 
+//future features
+// implement start, handle_connection and handle_method to server_settings. (so &self can be used rather than being moved through the paramater of functions)
 pub fn start(method_action: method_logic::MethodLogic) {
-    let listener = TcpListener::bind("localhost:8080").unwrap();
+    let server_setting = ServerSetting::load();
+
+    println!("{:?}", server_setting);
+
+    let listener = TcpListener::bind(format!("{}:8080", server_setting.domain)).unwrap();
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
-        handle_connection(stream, &method_action, "localhost");
+        handle_connection(stream, &method_action, &server_setting);
     }
 }
 
@@ -28,7 +37,7 @@ pub fn start(method_action: method_logic::MethodLogic) {
 fn handle_connection(
     mut stream: TcpStream,
     method_action: &method_logic::MethodLogic,
-    domain: &str,
+    server_settings: &ServerSetting,
 ) {
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
@@ -37,12 +46,12 @@ fn handle_connection(
     let meta_data: HashMap<String, String>;
     let response: Response;
 
-    match http::request::parse(buffer, &domain) {
+    match http::request::parse(buffer, &server_settings.domain) {
         Ok(val) => {
             println!("Success");
             method = val.0;
             meta_data = val.1;
-            response = handle_method(method, method_action);
+            response = handle_method(method, method_action, &server_settings, meta_data);
         }
         Err(err) => {
             println!("Failure:{:?}", err);
@@ -60,18 +69,23 @@ fn handle_connection(
     stream.flush().unwrap();
 }
 
-#[allow(unused_variables)]
-fn handle_method(method: Method, method_action: &method_logic::MethodLogic) -> Response {
+#[allow(unused_variables, unreachable_patterns)]
+fn handle_method(
+    method: Method,
+    method_action: &method_logic::MethodLogic,
+    server_settings: &ServerSetting,
+    meta_data: HashMap<String, String>,
+) -> Response {
     match &method {
-        GET => (method_action.get)(method),
-        HEAD => (method_action.head)(method),
-        POST => (method_action.post)(method),
-        PUT => (method_action.put)(method),
-        DELETE => (method_action.delete)(method),
-        CONNECT => (method_action.connect)(method),
-        OPTIONS => (method_action.option)(method),
-        TRACE => (method_action.trace)(method),
-        PATCH => (method_action.patch)(method),
+        get => (method_action.get)(method, &server_settings, &meta_data),
+        head => (method_action.head)(method, &server_settings, &meta_data),
+        post => (method_action.post)(method, &server_settings, &meta_data),
+        put => (method_action.put)(method, &server_settings, &meta_data),
+        delete => (method_action.delete)(method, &server_settings, &meta_data),
+        connect => (method_action.connect)(method, &server_settings, &meta_data),
+        options => (method_action.option)(method, &server_settings, &meta_data),
+        trace => (method_action.trace)(method, &server_settings, &meta_data),
+        patch => (method_action.patch)(method, &server_settings, &meta_data),
         _ => Response {
             status: ResponseStatusCode::InternalServerError,
             body: Option::None,

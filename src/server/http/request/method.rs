@@ -1,17 +1,17 @@
-use super::super::body::{Body, ContentType};
+use super::super::body::Body;
 use super::parser_error::ParserError;
 
 #[derive(Debug)]
 pub enum Method {
-    GET { file: String },
-    HEAD { file: String },
-    POST { file: String, body: Body },
-    PUT { file: String, body: Body },
-    DELETE { file: String, body: Option<Body> },
-    CONNECT { URL: String },
-    OPTIONS { URL: String },
-    TRACE { file: String },
-    PATCH { file: String, body: Body },
+    Get { file: String },
+    Head { file: String },
+    Post { file: String, body: Body },
+    Put { file: String, body: Body },
+    Delete { file: String, body: Option<Body> },
+    Connect { url: String },
+    Options { url: String },
+    Trace { file: String },
+    Patch { file: String, body: Body },
 }
 
 impl Method {
@@ -27,52 +27,52 @@ impl Method {
             }
         };
 
-        match method.as_str() {
+        match method.to_ascii_uppercase().as_str() {
             "GET" => {
-                return Result::Ok(Method::GET {
+                return Result::Ok(Method::Get {
                     file: target.to_string(),
                 })
             }
             "HEAD" => {
-                return Result::Ok(Method::HEAD {
+                return Result::Ok(Method::Head {
                     file: target.to_string(),
                 })
             }
             "POST" => {
-                return Result::Ok(Method::POST {
+                return Result::Ok(Method::Post {
                     file: target.to_string(),
                     body: body_unwrap(body)?,
                 })
             }
             "PUT" => {
-                return Result::Ok(Method::PUT {
+                return Result::Ok(Method::Put {
                     file: target.to_string(),
                     body: body_unwrap(body)?,
                 })
             }
             "DELETE" => {
-                return Result::Ok(Method::DELETE {
+                return Result::Ok(Method::Delete {
                     file: target.to_string(),
                     body: body,
                 })
             }
             "CONNECT" => {
-                return Result::Ok(Method::CONNECT {
-                    URL: target.to_string(),
+                return Result::Ok(Method::Connect {
+                    url: target.to_string(),
                 })
             }
             "OPTIONS" => {
-                return Result::Ok(Method::OPTIONS {
-                    URL: target.to_string(),
+                return Result::Ok(Method::Options {
+                    url: target.to_string(),
                 })
             }
             "TRACE" => {
-                return Result::Ok(Method::TRACE {
+                return Result::Ok(Method::Trace {
                     file: target.to_string(),
                 })
             }
             "PATCH" => {
-                return Result::Ok(Method::PATCH {
+                return Result::Ok(Method::Patch {
                     file: target.to_string(),
                     body: body_unwrap(body)?,
                 })
@@ -89,31 +89,31 @@ impl Method {
 impl ToString for Method {
     fn to_string(&self) -> String {
         match &self {
-            Method::GET { file } => {
+            Method::Get { file } => {
                 return String::from(format!("GET file={}", file));
             }
-            Method::HEAD { file } => {
+            Method::Head { file } => {
                 return String::from(format!("Head file={}", file));
             }
-            Method::POST { file, body } => {
+            Method::Post { file, body } => {
                 return String::from(format!("POST file={}", file));
             }
-            Method::PUT { file, body } => {
+            Method::Put { file, body } => {
                 return String::from(format!("PUT file={}", file));
             }
-            Method::DELETE { file, body } => {
+            Method::Delete { file, body } => {
                 return String::from(format!("DELETE file={}", file));
             }
-            Method::CONNECT { URL } => {
+            Method::Connect { url: URL } => {
                 return String::from(format!("CONNECT URL={}", URL));
             }
-            Method::OPTIONS { URL } => {
+            Method::Options { url: URL } => {
                 return String::from(format!("OPTIONS URL={}", URL));
             }
-            Method::TRACE { file } => {
+            Method::Trace { file } => {
                 return String::from(format!("TRACE file={}", file));
             }
-            Method::PATCH { file, body } => {
+            Method::Patch { file, body } => {
                 return String::from(format!("PATCH file={}", file));
             }
         }

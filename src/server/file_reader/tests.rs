@@ -1,73 +1,70 @@
 mod file_Parser {
-    use super::super::{parse, url_to_path_buffer};
+    use super::super::parse;
     use std::path::PathBuf;
 
-    fn create_test(url: &str, expected1: &str, expected2: &str) {
-        assert_eq!(url_to_path_buffer(url), PathBuf::from(expected1));
-        assert_eq!(parse(url), PathBuf::from(expected2));
-    }
+    fn create_test(url: &str, expected1: &str, expected2: Option<PathBuf>) {}
 
     #[test]
     fn file_does_not_exist_test() {
-        create_test(
-            "\\tests\\file_does_not_exist_test.txt",
-            "Site\\tests\\file_does_not_exist_test.txt",
-            "Site\\404.html",
+        assert_eq!(
+            parse("\\tests\\file_does_not_exist_test.txt", "tmp"),
+            Option::None
         );
     }
 
     #[test]
     fn no_file_name_1_test() {
-        create_test("\\", "Site\\index.html", "Site\\index.html");
+        assert_eq!(
+            parse("\\", "tmp"),
+            Option::Some(PathBuf::from("Site\\tmp\\index.html"))
+        );
     }
 
     #[test]
     fn no_file_name_2_test() {
-        create_test(
-            "\\tests\\",
-            "Site\\tests\\index.html",
-            "Site\\tests\\index.html",
+        assert_eq!(
+            parse("\\tests\\", "tmp"),
+            Option::Some(PathBuf::from("Site\\tmp\\tests\\index.html"))
         );
     }
 
     #[test]
     fn file_with_url_variables_1_test() {
-        create_test("\\?v=A", "Site\\index.html", "Site\\index.html");
+        assert_eq!(
+            parse("\\?v=A", "tmp"),
+            Option::Some(PathBuf::from("Site\\tmp\\index.html"))
+        );
     }
 
     #[test]
     fn file_with_url_variables_2_test() {
-        create_test(
-            "\\tests\\index.html?v=A",
-            "Site\\tests\\index.html",
-            "Site\\tests\\index.html",
+        assert_eq!(
+            parse("\\tests\\index.html?v=A", "tmp"),
+            Option::Some(PathBuf::from("Site\\tmp\\tests\\index.html"))
         );
     }
 
     #[test]
     fn file_with_url_variables_3_test() {
-        create_test(
-            "\\tests\\test_file.html.meta?v=A",
-            "Site\\tests\\test_file.html.meta",
-            "Site\\tests\\test_file.html.meta",
+        assert_eq!(
+            parse("\\tests\\test_file.html.meta?v=A", "tmp"),
+            Option::Some(PathBuf::from("Site\\tmp\\tests\\test_file.html.meta"))
         );
     }
 
     #[test]
     fn general_file_1_test() {
-        create_test(
-            "\\tests\\index.html",
-            "Site\\tests\\index.html",
-            "Site\\tests\\index.html",
+        assert_eq!(
+            parse("\\tests\\index.html", "tmp"),
+            Option::Some(PathBuf::from("Site\\tmp\\tests\\index.html"))
         );
     }
 
     #[test]
     fn general_file_2_test() {
-        create_test(
-            "\\tests\\test_file.html.meta",
-            "Site\\tests\\test_file.html.meta",
-            "Site\\tests\\test_file.html.meta",
+        assert_eq!(
+            parse("\\tests\\test_file.html.meta", "tmp"),
+            Option::Some(PathBuf::from("Site\\tmp\\tests\\test_file.html.meta"))
         );
     }
 }
@@ -78,30 +75,36 @@ mod file_reader {
 
     #[test]
     fn general_file_read_1_test() {
-        let pathBuf: PathBuf = parse("\\tests\\index.html");
+        let pathBuf: Option<PathBuf> = parse("\\tests\\index.html", "tmp");
+
+        assert!(pathBuf.is_some());
 
         assert_eq!(
-            get_file_content(pathBuf.as_path()),
+            get_file_content(pathBuf.unwrap().as_path()),
             Option::Some("Hello, world\r\nTest Page".to_string())
         );
     }
 
     #[test]
     fn general_file_read_2_test() {
-        let pathBuf: PathBuf = parse("\\tests\\test_file.html.meta");
+        let pathBuf: Option<PathBuf> = parse("\\tests\\test_file.html.meta", "tmp");
+
+        assert!(pathBuf.is_some());
 
         assert_eq!(
-            get_file_content(pathBuf.as_path()),
+            get_file_content(pathBuf.unwrap().as_path()),
             Option::Some("some meta data?".to_string())
         );
     }
 
     #[test]
     fn general_file_read_3_test() {
-        let pathBuf: PathBuf = parse("\\tests\\test_page.html");
+        let pathBuf: Option<PathBuf> = parse("\\tests\\test_page.html", "tmp");
+
+        assert!(pathBuf.is_some());
 
         assert_eq!(
-            get_file_content(pathBuf.as_path()),
+            get_file_content(pathBuf.unwrap().as_path()),
             Option::Some("test_page".to_string())
         );
     }

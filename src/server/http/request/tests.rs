@@ -1,9 +1,3 @@
-macro_rules! enum_to_string_test_gen {
-    ($func_name:ident, $type:ty) => {
-        fn $func_name
-    };
-}
-
 mod http_body_enum_test {
 
     mod enum_to_string_test {
@@ -12,7 +6,7 @@ mod http_body_enum_test {
         #[test]
         fn application_test() {
             {
-                let actual: ContentType = ContentType::Application(Value::Application::EDI_X12);
+                let actual: ContentType = ContentType::Application(Application::EDI_X12);
                 assert_eq!(actual.to_string(), "application/EDI-X12");
             }
 
@@ -258,7 +252,7 @@ mod http_body_enum_test {
         }
 
         #[test]
-        fn application_EDI_X12_test() {
+        fn application_edi_x12_test() {
             string_to_enum_test(
                 "application/EDI-X12",
                 ContentType::Application(Value::Application::EDI_X12),
@@ -266,7 +260,7 @@ mod http_body_enum_test {
         }
 
         #[test]
-        fn application_EDIFACT_test() {
+        fn application_edifact_test() {
             string_to_enum_test(
                 "application/EDIFACT",
                 ContentType::Application(Value::Application::EDIFACT),
@@ -527,7 +521,7 @@ mod http_request_parse_test {
     use super::super::request;
     use crate::server::http::method::Method;
 
-    fn make_HTTP_Request(input_str: &str) -> [u8; 1024] {
+    fn make_http_request(input_str: &str) -> [u8; 1024] {
         let mut request: [u8; 1024] = [0; 1024];
 
         input_str
@@ -543,14 +537,14 @@ mod http_request_parse_test {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
         //GET /index.html
 
-        let (method, meta_data) =
-            match request::parse(make_HTTP_Request("GET /index.html HTTP/1.1"), "example") {
+        let (method, _meta_data) =
+            match request::parse(make_http_request("GET /index.html HTTP/1.1"), "example") {
                 Ok(val) => val,
                 Err(err) => panic!("{:?}", err),
             };
 
         match method {
-            Method::GET { file } => {
+            Method::Get { file } => {
                 assert_eq!(file, String::from("/index.html"));
             }
             _ => {
@@ -565,14 +559,14 @@ mod http_request_parse_test {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD
         //HEAD /index.html
 
-        let (method, meta_data) =
-            match request::parse(make_HTTP_Request("HEAD /index.html HTTP/1.1"), "example") {
+        let (method, _meta_data) =
+            match request::parse(make_http_request("HEAD /index.html HTTP/1.1"), "example") {
                 Ok(val) => val,
                 Err(err) => panic!("{:?}", err),
             };
 
         match method {
-            Method::HEAD { file } => {
+            Method::Head { file } => {
                 assert_eq!(file, String::from("/index.html"));
             }
             _ => {
@@ -586,13 +580,13 @@ mod http_request_parse_test {
     fn post_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
 
-        let (method, meta_data) = match request::parse(make_HTTP_Request("POST /test HTTP/1.1\nHost: foo.example\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 27\n\nfield1=value1&field2=value2"), "example") {
+        let (method, _meta_data) = match request::parse(make_http_request("POST /test HTTP/1.1\nHost: foo.example\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 27\n\nfield1=value1&field2=value2"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
 
         match method {
-            Method::POST { file, body } => {
+            Method::Post { file, body } => {
                 assert_eq!(file, String::from("/test"));
 
                 assert_eq!(
@@ -613,13 +607,13 @@ mod http_request_parse_test {
     fn put_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
 
-        let (method, meta_data) = match request::parse(make_HTTP_Request("PUT /new.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>"), "example") {
+        let (method, _meta_data) = match request::parse(make_http_request("PUT /new.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
 
         match method {
-            Method::PUT { file, body } => {
+            Method::Put { file, body } => {
                 assert_eq!(file, String::from("/new.html"));
 
                 assert_eq!(body.content_type.to_string(), "text/html");
@@ -637,13 +631,13 @@ mod http_request_parse_test {
     fn delete_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 
-        let (method, meta_data) = match request::parse(make_HTTP_Request("DELETE /file.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>"), "example") {
+        let (method, _meta_data) = match request::parse(make_http_request("DELETE /file.html HTTP/1.1\nHost: example.com\nContent-type: text/html\nContent-length: 16\n\n<p>New File</p>"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
 
         match method {
-            Method::DELETE { file, body } => {
+            Method::Delete { file, body } => {
                 assert_eq!(file, String::from("/file.html"));
 
                 match body {
@@ -667,8 +661,8 @@ mod http_request_parse_test {
     fn delete_no_body_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 
-        let (method, meta_data) = match request::parse(
-            make_HTTP_Request("DELETE /file.html HTTP/1.1\nHost: example.com"),
+        let (method, _meta_data) = match request::parse(
+            make_http_request("DELETE /file.html HTTP/1.1\nHost: example.com"),
             "example",
         ) {
             Ok(val) => val,
@@ -676,7 +670,7 @@ mod http_request_parse_test {
         };
 
         match method {
-            Method::DELETE { file, body } => {
+            Method::Delete { file, body } => {
                 assert_eq!(file, String::from("/file.html"));
 
                 assert!(body.is_none());
@@ -692,8 +686,8 @@ mod http_request_parse_test {
     fn connect_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/CONNECT
 
-        let (method, meta_data) = match request::parse(
-            make_HTTP_Request("CONNECT www.example.com:443 HTTP/1.1"),
+        let (method, _meta_data) = match request::parse(
+            make_http_request("CONNECT www.example.com:443 HTTP/1.1"),
             "example",
         ) {
             Ok(val) => val,
@@ -701,7 +695,7 @@ mod http_request_parse_test {
         };
 
         match method {
-            Method::CONNECT { URL } => {
+            Method::Connect { url: URL } => {
                 assert_eq!(URL, String::from("www.example.com:443"));
             }
             _ => {
@@ -715,8 +709,8 @@ mod http_request_parse_test {
     fn options_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
 
-        let (method, meta_data) = match request::parse(
-            make_HTTP_Request("OPTIONS https://example.org -i"),
+        let (method, _meta_data) = match request::parse(
+            make_http_request("OPTIONS https://example.org -i"),
             "example",
         ) {
             Ok(val) => val,
@@ -724,7 +718,7 @@ mod http_request_parse_test {
         };
 
         match method {
-            Method::OPTIONS { URL } => {
+            Method::Options { url: URL } => {
                 assert_eq!(URL, String::from("https://example.org"));
             }
             _ => {
@@ -738,14 +732,14 @@ mod http_request_parse_test {
     fn trace_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
 
-        let (method, meta_data) =
-            match request::parse(make_HTTP_Request("TRACE /index.html HTTP/1.1"), "example") {
+        let (method, _meta_data) =
+            match request::parse(make_http_request("TRACE /index.html HTTP/1.1"), "example") {
                 Ok(val) => val,
                 Err(err) => panic!("{:?}", err),
             };
 
         match method {
-            Method::TRACE { file } => {
+            Method::Trace { file } => {
                 assert_eq!(file, String::from("/index.html"));
             }
             _ => {
@@ -759,13 +753,13 @@ mod http_request_parse_test {
     fn patch_parse_test() {
         //test modeled from syntax form https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
 
-        let (method, meta_data) = match request::parse(make_HTTP_Request("PATCH /file.txt HTTP/1.1\nHost: www.example.com\nContent-Type: application/pdf\nIf-Match: 'e0023aa4e'\nContent-Length: 100\n\n[description of changes]"), "example") {
+        let (method, _meta_data) = match request::parse(make_http_request("PATCH /file.txt HTTP/1.1\nHost: www.example.com\nContent-Type: application/pdf\nIf-Match: 'e0023aa4e'\nContent-Length: 100\n\n[description of changes]"), "example") {
             Ok(val) => val,
             Err(err) => panic!("{:?}", err),
         };
 
         match method {
-            Method::PATCH { file, body } => {
+            Method::Patch { file, body } => {
                 assert_eq!(file, String::from("/file.txt"));
 
                 assert_eq!(body.content_type.to_string(), "application/pdf");

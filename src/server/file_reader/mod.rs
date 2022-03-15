@@ -1,3 +1,4 @@
+use std::alloc::System;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
@@ -5,81 +6,43 @@ use std::path::{Path, PathBuf};
 #[cfg(test)]
 mod tests;
 
-pub fn parse(url: &str) -> PathBuf {
-    let path_buffer = url_to_path_buffer(url);
+pub fn parse(url: &str, search_folder: &str) -> Option<PathBuf> {
+    let url = url.trim_matches('\\').trim_matches('/');
 
-    let path = path_buffer.as_path();
+    let mut path_buffer = PathBuf::new();
 
-    if path.exists() {
-        return path_buffer;
+    path_buffer.push(r"Site");
+
+    path_buffer.push(&search_folder);
+
+    match url.rfind('?') {
+        Some(index) => path_buffer.push(url[0..index].trim_matches('\\')),
+        None => path_buffer.push(url.trim_matches('\\')),
     }
 
-    let path_buffer = PathBuf::from("Site\\404.html");
-
-    path_buffer
-}
-
-fn url_to_path_buffer(url: &str) -> PathBuf {
-    let url = url.trim_start_matches('\\');
-
-    let last_slash = url.rfind('\\');
-    let last_dot = url.rfind('.');
-    let last_question_mark = url.rfind('?');
-
-    let url_end: usize;
-
-    let file_name: &str;
-    let extension: &str;
-    let path: &str;
-
-    match last_question_mark {
-        Some(index) => {
-            url_end = index;
-        }
-        None => url_end = url.len(),
+    if path_buffer.extension().is_none() {
+        path_buffer.push("index.html");
     }
 
-    match last_slash {
-        None => {
-            path = "";
-        }
-        Some(index) => {
-            path = &url[0..index].trim_matches('\\');
-        }
+    println!("path:{:?}", path_buffer);
+
+    if path_buffer.exists() {
+        return Option::Some(path_buffer);
     }
 
-    //todo
-    // check for invalid paths
-
-    match last_dot {
-        None => {
-            return PathBuf::from(format!("Site\\{}\\index.html", path));
-        }
-        Some(index) => {
-            file_name = &url[path.len()..index]
-                .trim_start_matches('\\')
-                .trim_end_matches('.');
-            extension = &url[index..url_end].trim_start_matches('.');
-        }
-    }
-
-    //todo
-    // check for file names
-    // check for invalid extensions
-
-    return PathBuf::from(format!("Site\\{}\\{}.{}", path, file_name, extension));
+    return Option::None;
 }
 
 pub fn get_file_content(file_path: &Path) -> Option<String> {
     let mut file = match File::open(file_path) {
-        Err(err) => return Option::None,
+        Err(_err) => return Option::None,
         Ok(file) => file,
     };
 
     let mut contents: String = String::new();
 
     match file.read_to_string(&mut contents) {
-        Err(err) => return Option::None,
+        Err(_err) => return Option::None,
         Ok(_) => return Option::Some(contents),
     }
 }

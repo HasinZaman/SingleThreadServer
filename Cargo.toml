@@ -1,5 +1,5 @@
 [package]
-name = "SingleThreadServer"
+name = "single_thread_server"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,3 +10,5 @@ strum = "0.24"
 strum_macros = "0.24"
 chrono = "0.4"
 mysql = "*"
+ron = "0.7"
+serde = { version = "1", features = ["derive"] }

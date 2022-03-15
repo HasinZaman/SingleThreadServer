@@ -3,8 +3,6 @@ use std::net::TcpStream;
 
 use std::io::prelude::*;
 
-use chrono;
-
 pub mod file_reader;
 pub mod http;
 pub mod method_logic;

@@ -6,7 +6,8 @@
             allow : [
                 "html",
                 "css",
-                "js"
+                "js",
+                "jpg"
             ]
         ),
         "subdomain.localhost" : (

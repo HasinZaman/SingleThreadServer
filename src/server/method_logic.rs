@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::str;
 
 use super::file_reader;
 use super::http::body::{Body, ContentType};
@@ -75,7 +76,8 @@ impl MethodLogic {
                         ),
                     };
 
-                    let body = file_reader::get_file_content(&path_buf).unwrap();
+                    let body = file_reader::get_file_content_string(&path_buf).unwrap();
+
 
                     match file_name {
                         "404.html" => {

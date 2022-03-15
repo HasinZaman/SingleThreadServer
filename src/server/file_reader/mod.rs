@@ -40,7 +40,7 @@ pub fn parse(url: &str, search_folder: &str, allowed_extension: &Vec<String>) ->
     return Option::None;
 }
 
-pub fn get_file_content(file_path: &Path) -> Option<String> {
+pub fn get_file_content_string(file_path: &Path) -> Option<String> {
     let mut file = match File::open(file_path) {
         Err(_err) => return Option::None,
         Ok(file) => file,
@@ -49,6 +49,20 @@ pub fn get_file_content(file_path: &Path) -> Option<String> {
     let mut contents: String = String::new();
 
     match file.read_to_string(&mut contents) {
+        Err(_err) => return Option::None,
+        Ok(_) => return Option::Some(contents),
+    }
+}
+
+pub fn get_file_content_bytes(file_path: &Path) -> Option<Vec<u8>> {
+    let mut file = match File::open(file_path) {
+        Err(_err) => return Option::None,
+        Ok(file) => file,
+    };
+
+    let mut contents: Vec<u8> = Vec::new();
+
+    match file.read_to_end(&mut contents) {
         Err(_err) => return Option::None,
         Ok(_) => return Option::Some(contents),
     }

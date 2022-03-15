@@ -86,7 +86,7 @@ mod file_Parser {
 }
 
 mod file_reader {
-    use super::super::{get_file_content, parse};
+    use super::super::{get_file_content_string, parse};
     use std::path::PathBuf;
 
     #[test]
@@ -97,7 +97,7 @@ mod file_reader {
         assert!(pathBuf.is_some());
 
         assert_eq!(
-            get_file_content(pathBuf.unwrap().as_path()),
+            get_file_content_string(pathBuf.unwrap().as_path()),
             Option::Some("Hello, world\r\nTest Page".to_string())
         );
     }
@@ -111,7 +111,7 @@ mod file_reader {
         assert!(pathBuf.is_some());
 
         assert_eq!(
-            get_file_content(pathBuf.unwrap().as_path()),
+            get_file_content_string(pathBuf.unwrap().as_path()),
             Option::Some("some meta data?".to_string())
         );
     }
@@ -124,7 +124,7 @@ mod file_reader {
         assert!(pathBuf.is_some());
 
         assert_eq!(
-            get_file_content(pathBuf.unwrap().as_path()),
+            get_file_content_string(pathBuf.unwrap().as_path()),
             Option::Some("test_page".to_string())
         );
     }

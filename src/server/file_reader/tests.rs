@@ -1,8 +1,6 @@
-mod file_Parser {
+mod file_parser {
     use super::super::parse;
     use std::path::PathBuf;
-
-    fn create_test(url: &str, expected1: &str, expected2: Option<PathBuf>) {}
 
     #[test]
     fn file_does_not_exist_test() {
@@ -92,12 +90,12 @@ mod file_reader {
     #[test]
     fn general_file_read_1_test() {
         let allowed_extension = vec![String::from("html")];
-        let pathBuf: Option<PathBuf> = parse("\\tests\\index.html", "tmp", &allowed_extension);
+        let path_buf: Option<PathBuf> = parse("\\tests\\index.html", "tmp", &allowed_extension);
 
-        assert!(pathBuf.is_some());
+        assert!(path_buf.is_some());
 
         assert_eq!(
-            get_file_content_string(pathBuf.unwrap().as_path()),
+            get_file_content_string(path_buf.unwrap().as_path()),
             Option::Some("Hello, world\r\nTest Page".to_string())
         );
     }
@@ -105,13 +103,13 @@ mod file_reader {
     #[test]
     fn general_file_read_2_test() {
         let allowed_extension = vec![String::from("meta")];
-        let pathBuf: Option<PathBuf> =
+        let path_buf: Option<PathBuf> =
             parse("\\tests\\test_file.html.meta", "tmp", &allowed_extension);
 
-        assert!(pathBuf.is_some());
+        assert!(path_buf.is_some());
 
         assert_eq!(
-            get_file_content_string(pathBuf.unwrap().as_path()),
+            get_file_content_string(path_buf.unwrap().as_path()),
             Option::Some("some meta data?".to_string())
         );
     }
@@ -119,12 +117,12 @@ mod file_reader {
     #[test]
     fn general_file_read_3_test() {
         let allowed_extension = vec![String::from("html")];
-        let pathBuf: Option<PathBuf> = parse("\\tests\\test_page.html", "tmp", &allowed_extension);
+        let path_buf: Option<PathBuf> = parse("\\tests\\test_page.html", "tmp", &allowed_extension);
 
-        assert!(pathBuf.is_some());
+        assert!(path_buf.is_some());
 
         assert_eq!(
-            get_file_content_string(pathBuf.unwrap().as_path()),
+            get_file_content_string(path_buf.unwrap().as_path()),
             Option::Some("test_page".to_string())
         );
     }

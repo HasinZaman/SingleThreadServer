@@ -13,7 +13,7 @@ mod setting;
 
 use http::method::Method;
 use http::response::response::Response;
-use http::response::responseStatusCode::ResponseStatusCode;
+use http::response::response_status_code::ResponseStatusCode;
 
 use setting::ServerSetting;
 use std::collections::HashMap;
@@ -46,7 +46,7 @@ fn handle_connection(
     let meta_data: HashMap<String, String>;
     let response: Response;
 
-    match http::request::parse(buffer, &server_settings.domain) {
+    match http::request::parse(buffer) {
         Ok(val) => {
             println!("Success");
             method = val.0;

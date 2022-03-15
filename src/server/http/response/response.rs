@@ -1,4 +1,4 @@
-use super::responseStatusCode::*;
+use super::response_status_code::*;
 use crate::server::http::body::Body;
 
 pub struct Response {

@@ -6,8 +6,7 @@ use std::collections::HashMap;
 use std::str::Split;
 
 pub fn parse(
-    request_data: [u8; 1024],
-    domain: &str,
+    request_data: [u8; 1024]
 ) -> Result<(Method, HashMap<String, String>), ParserError> {
     let request: String = String::from_utf8_lossy(&request_data[..]).to_string();
 
@@ -15,14 +14,14 @@ pub fn parse(
 
     let mut request = request.split("\n");
 
-    let (method, target, version) = match get_start_line(request.next()) {
+    let (method, target, _version) = match get_start_line(request.next()) {
         Ok(ok) => ok,
         Err(err) => return Result::Err(err),
     };
 
     let method = method.to_uppercase();
 
-    let (body, meta_data) = get_data(request, domain)?;
+    let (body, meta_data) = get_data(request)?;
 
     let method: Method = Method::new(method.to_string(), target.to_string(), body)?;
 
@@ -64,8 +63,7 @@ fn get_start_line<'a>(
 }
 
 fn get_data<'a>(
-    mut line_iter: Split<&'a str>,
-    domain: &str,
+    mut line_iter: Split<&'a str>
 ) -> Result<(Option<Body>, HashMap<String, String>), ParserError> {
     let mut meta_data: HashMap<String, String> = HashMap::new();
 
@@ -101,7 +99,7 @@ fn get_data<'a>(
     }
 
     let content_type = content_type.unwrap();
-    let content_lenght = content_lenght.unwrap();
+    let _content_lenght = content_lenght.unwrap();
 
     let mut body: String = String::from("");
 

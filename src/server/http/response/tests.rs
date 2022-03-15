@@ -1,5 +1,5 @@
 mod response_status_code {
-    use super::super::responseStatusCode::ResponseStatusCode;
+    use super::super::response_status_code::ResponseStatusCode;
 
     #[test]
     fn generic_to_string_test() {
@@ -22,8 +22,8 @@ mod response_status_code {
 
 mod response {
     use super::super::response::Response;
-    use super::super::responseStatusCode::ResponseStatusCode;
-    use crate::server::http::body::{Body, ContentType, Value};
+    use super::super::response_status_code::ResponseStatusCode;
+    use crate::server::http::body::{Body, ContentType, value};
 
     #[test]
     fn no_body_test() {
@@ -40,7 +40,7 @@ mod response {
         let response = Response {
             status: ResponseStatusCode::Ok,
             body: Option::Some(Body {
-                content_type: ContentType::Text(Value::Text::html),
+                content_type: ContentType::Text(value::Text::html),
                 content: String::from("<p>New File</p>"),
             }),
         };

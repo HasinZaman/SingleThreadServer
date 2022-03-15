@@ -6,7 +6,7 @@ use super::http::body::{Body, ContentType};
 use super::http::body::{Image, Text, Video};
 use super::http::{
     method::Method,
-    response::{response::Response, responseStatusCode::ResponseStatusCode},
+    response::{response::Response, response_status_code::ResponseStatusCode},
 };
 use super::setting::ServerSetting;
 

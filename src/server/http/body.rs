@@ -1,12 +1,12 @@
 use super::request::parser_error::ParserError;
 use std::fmt::{Debug, Error, Formatter};
 
-pub use Value::Application;
-pub use Value::Audio;
-pub use Value::Image;
-pub use Value::Multipart;
-pub use Value::Text;
-pub use Value::Video;
+pub use value::Application;
+pub use value::Audio;
+pub use value::Image;
+pub use value::Multipart;
+pub use value::Text;
+pub use value::Video;
 
 #[derive(Debug)]
 pub struct Body {
@@ -44,32 +44,32 @@ impl ContentType {
 
         match type_raw {
             "application" => {
-                let content_type_value = Value::parse_value::<Value::Application>(value)?;
+                let content_type_value = value::parse_value::<value::Application>(value)?;
                 let content_type = ContentType::Application(content_type_value);
                 return Ok(content_type);
             }
             "audio" => {
-                let content_type_value = Value::parse_value::<Value::Audio>(value)?;
+                let content_type_value = value::parse_value::<value::Audio>(value)?;
                 let content_type = ContentType::Audio(content_type_value);
                 return Ok(content_type);
             }
             "image" => {
-                let content_type_value = Value::parse_value::<Value::Image>(value)?;
+                let content_type_value = value::parse_value::<value::Image>(value)?;
                 let content_type = ContentType::Image(content_type_value);
                 return Ok(content_type);
             }
             "multipart" => {
-                let content_type_value = Value::parse_value::<Value::Multipart>(value)?;
+                let content_type_value = value::parse_value::<value::Multipart>(value)?;
                 let content_type = ContentType::Multipart(content_type_value);
                 return Ok(content_type);
             }
             "text" => {
-                let content_type_value = Value::parse_value::<Value::Text>(value)?;
+                let content_type_value = value::parse_value::<value::Text>(value)?;
                 let content_type = ContentType::Text(content_type_value);
                 return Ok(content_type);
             }
             "video" => {
-                let content_type_value = Value::parse_value::<Value::Video>(value)?;
+                let content_type_value = value::parse_value::<value::Video>(value)?;
                 let content_type = ContentType::Video(content_type_value);
                 return Ok(content_type);
             }
@@ -90,7 +90,6 @@ impl VariantName for ContentType {
             ContentType::Multipart(_value) => String::from("multipart"),
             ContentType::Text(_value) => String::from("text"),
             ContentType::Video(_value) => String::from("video"),
-            _ => panic!("Invalid variant type"),
         }
     }
 }
@@ -115,7 +114,6 @@ impl ToString for ContentType {
             ContentType::Video(value) => {
                 return format!("{}/{}", &self.get_variant(), value.get_variant())
             }
-            _ => panic!("Not implemented variant"),
         }
     }
 }
@@ -126,7 +124,7 @@ impl Debug for ContentType {
     }
 }
 
-pub mod Value {
+pub mod value {
     use super::super::request::parser_error::ParserError;
 
     pub trait Constructor<V> {
@@ -165,7 +163,6 @@ pub mod Value {
                 Application::xml => return String::from("xml"),
                 Application::zip => return String::from("zip"),
                 Application::x_www_form_urlencoded => return String::from("x-www-form-urlencoded"),
-                _ => panic!("Invalid variant type"),
             }
         }
     }
@@ -207,7 +204,6 @@ pub mod Value {
                 Audio::x_ms_wma => return String::from("x-ms-wma"),
                 Audio::vnd_rn_realaudio => return String::from("vnd.rn-realaudio"),
                 Audio::x_wav => return String::from("x-wav"),
-                _ => panic!("Invalid variant type"),
             }
         }
     }
@@ -248,7 +244,6 @@ pub mod Value {
                 Image::x_icon => return String::from("x-icon"),
                 Image::vnd_djvu => return String::from("vnd.djvu"),
                 Image::svg_xml => return String::from("svg+xml"),
-                _ => panic!("Invalid variant type"),
             }
         }
     }
@@ -284,8 +279,8 @@ pub mod Value {
                 Multipart::mixed => String::from("mixed"),
                 Multipart::alternative => String::from("alternative"),
                 Multipart::related => String::from("related"),
-                Multipart::form_data { boundary } => String::from("form-data"),
-                _ => panic!("Invalid variant type"),
+                #[allow(unused_variables)]
+                Multipart::form_data { boundary} => String::from("form-data"),
             }
         }
     }
@@ -326,7 +321,6 @@ pub mod Value {
                 Text::javascript => String::from("javascript"),
                 Text::plain => String::from("plain"),
                 Text::xml => String::from("xml"),
-                _ => panic!("Invalid variant type"),
             }
         }
     }
@@ -367,7 +361,6 @@ pub mod Value {
                 Video::x_msvideo => String::from("x-msvideo"),
                 Video::x_flv => String::from("x-flv"),
                 Video::webm => String::from("webm"),
-                _ => panic!("Invalid variant type"),
             }
         }
     }

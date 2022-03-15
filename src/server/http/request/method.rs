@@ -88,6 +88,7 @@ impl Method {
 
 impl ToString for Method {
     fn to_string(&self) -> String {
+        #[allow(unused_variables)]
         match &self {
             Method::Get { file } => {
                 return String::from(format!("GET file={}", file));
@@ -104,11 +105,11 @@ impl ToString for Method {
             Method::Delete { file, body } => {
                 return String::from(format!("DELETE file={}", file));
             }
-            Method::Connect { url: URL } => {
-                return String::from(format!("CONNECT URL={}", URL));
+            Method::Connect { url } => {
+                return String::from(format!("CONNECT URL={}", url));
             }
-            Method::Options { url: URL } => {
-                return String::from(format!("OPTIONS URL={}", URL));
+            Method::Options { url } => {
+                return String::from(format!("OPTIONS URL={}", url));
             }
             Method::Trace { file } => {
                 return String::from(format!("TRACE file={}", file));

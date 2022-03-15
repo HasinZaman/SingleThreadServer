@@ -3,6 +3,7 @@ use mysql::*;
 use std::env;
 use std::vec::Vec;
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct DataBase {
     db_host: String,
@@ -11,15 +12,6 @@ pub struct DataBase {
     db_username: String,
     db_password: String,
 }
-
-struct addres {
-    street: String, //...
-}
-
-// excute(
-//     "Select address, phone from users",
-//     |row| -> addres{row.index(0), row.index(1)}
-// )
 
 impl DataBase {
     pub fn execute<B, F: Fn(mysql::Row) -> B>(&self, command: &str, row_logic: F) -> Vec<B> {

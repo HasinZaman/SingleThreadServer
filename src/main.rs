@@ -1,5 +1,6 @@
 //import HTTPRequest
 mod server;
+mod sql_reader;
 
 use crate::server::method_logic::MethodLogic;
 

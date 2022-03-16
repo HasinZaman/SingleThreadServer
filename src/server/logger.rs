@@ -17,7 +17,10 @@ pub fn log(tag: &str, message: String) {
     }
 
     let time_stamp = chrono::offset::Utc::now();
-    let line = format!("\n---\t---\t---\n{}\t({})\n{}\n---\t---\t---\n", tag, time_stamp, message);
+    let line = format!(
+        "\n---\t---\t---\n{}\t({})\n{}\n---\t---\t---\n",
+        tag, time_stamp, message
+    );
 
     let mut file = match OpenOptions::new().read(true).write(true).open("log.txt") {
         Err(err) => {
@@ -31,15 +34,15 @@ pub fn log(tag: &str, message: String) {
     match file.read_to_end(&mut tmp) {
         Err(err) => {
             panic!("failed to seek to end: {:?}", err);
-        },
-        _ => {},
+        }
+        _ => {}
     }
 
     match file.seek_write(line.as_bytes(), tmp.len() as u64) {
         Err(err) => {
             panic!("failed to write at end: {:?}", err);
-        },
-        _ => {},
+        }
+        _ => {}
     }
 }
 

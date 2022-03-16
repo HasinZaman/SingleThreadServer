@@ -77,7 +77,7 @@ impl MethodLogic {
                         ),
                     };
 
-                    let body = file_reader::get_file_content_string(&path_buf).unwrap();
+                    let body = file_reader::get_file_content_bytes(&path_buf).unwrap();
 
                     match file_name {
                         "404.html" => {

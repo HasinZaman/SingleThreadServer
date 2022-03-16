@@ -67,9 +67,20 @@ fn handle_connection(
         }
     }
 
-    log("response", response.to_string());
+    log("response", format!("{:?}", response.status));
 
-    stream.write(response.to_string().as_bytes()).unwrap();
+    let mut tmp: [u8; 1] = [0];
+    for byte in response.as_bytes() {
+        tmp[0] = byte.clone();
+        match stream.write(&tmp as &[u8]) {
+            Err(err) => {
+                println!("{}", err);
+                break;
+            },
+            _ => {}
+        }
+    }
+
     stream.flush().unwrap();
 }
 

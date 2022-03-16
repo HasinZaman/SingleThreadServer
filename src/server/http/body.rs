@@ -11,7 +11,7 @@ pub use value::Video;
 #[derive(Debug)]
 pub struct Body {
     pub content_type: ContentType,
-    pub content: String,
+    pub content: Vec<u8>,
 }
 
 trait VariantName {

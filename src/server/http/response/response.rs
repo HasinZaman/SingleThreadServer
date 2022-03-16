@@ -6,26 +6,51 @@ pub struct Response {
     pub body: Option<Body>,
 }
 
-impl ToString for Response {
-    fn to_string(&self) -> String {
-        let mut tmp: String = format!("HTTP/1.1 {}", self.status.to_string());
+macro_rules! append_to {
+    ($list:ident, $value:expr) => {
+        for byte in $value.as_bytes() {
+            $list.push(byte.clone());
+        }
+    };
+    ($list:ident, $value:ident) => {
+        for byte in $value {
+            $list.append(byte.clone());
+        }
+    };
+}
+
+impl Response {
+    pub fn as_bytes(&self) -> Vec<u8> {
+        let mut output: Vec<u8> = Vec::new();
+
+        append_to!(output, format!("HTTP/1.1 {}", self.status.to_string()));
 
         match &self.body {
             Some(body) => {
-                tmp.push_str("\r\n");
+                append_to!(output, format!("\r\n"));
 
-                let content_length = format!("Content-Length: {}\r\n", body.content.len());
-                tmp.push_str(&content_length);
+                append_to!(
+                    output,
+                    format!("Content-Length: {}\r\n", body.content.len())
+                );
 
-                let content_type = format!("Content-Type: {}\r\n", body.content_type.to_string());
-                tmp.push_str(&content_type);
+                append_to!(
+                    output,
+                    format!("Content-Type: {}\r\n", body.content_type.to_string())
+                );
 
-                let content = format!("\n{}", &(body.content));
-                tmp.push_str(&content);
+                append_to!(
+                    output,
+                    format!("Content-Type: {}\r\n", body.content_type.to_string())
+                );
+
+                append_to!(output, "\n");
+
+                output.append(&mut body.content.clone());
             }
             None => {}
         }
 
-        tmp
+        output
     }
 }

@@ -594,7 +594,7 @@ mod http_request_parse_test {
                     "application/x-www-form-urlencoded"
                 );
 
-                assert_eq!(body.content, "field1=value1&field2=value2");
+                assert_eq!(body.content, "field1=value1&field2=value2".as_bytes());
             }
             _ => {
                 panic!("Incorect variant. Got {} instead", method.to_string());
@@ -618,7 +618,7 @@ mod http_request_parse_test {
 
                 assert_eq!(body.content_type.to_string(), "text/html");
 
-                assert_eq!(body.content, "<p>New File</p>");
+                assert_eq!(body.content, "<p>New File</p>".as_bytes());
             }
             _ => {
                 panic!("Incorect variant. Got {} instead", method.to_string());
@@ -644,7 +644,7 @@ mod http_request_parse_test {
                     Some(body) => {
                         assert_eq!(body.content_type.to_string(), "text/html");
 
-                        assert_eq!(body.content, "<p>New File</p>");
+                        assert_eq!(body.content, "<p>New File</p>".as_bytes());
                     }
                     None => {
                         panic!("Missing body");
@@ -759,7 +759,7 @@ mod http_request_parse_test {
 
                 assert_eq!(body.content_type.to_string(), "application/pdf");
 
-                assert_eq!(body.content, "[description of changes]");
+                assert_eq!(body.content, "[description of changes]".as_bytes());
             }
             _ => {
                 panic!("Incorect variant. Got {} instead", method.to_string());

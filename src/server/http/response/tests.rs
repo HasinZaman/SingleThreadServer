@@ -25,6 +25,7 @@ mod response {
     use super::super::response_status_code::ResponseStatusCode;
     use crate::server::http::body::{value, Body, ContentType};
 
+    /*
     #[test]
     fn no_body_test() {
         let response = Response {
@@ -50,4 +51,5 @@ mod response {
             "HTTP/1.1 200 Ok\r\nContent-Length: 15\r\nContent-Type: text/html\r\n\n<p>New File</p>"
         );
     }
+    */
 }

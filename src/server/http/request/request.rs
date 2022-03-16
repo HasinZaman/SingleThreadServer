@@ -9,7 +9,7 @@ use super::super::super::log;
 
 pub fn parse(request_data: [u8; 1024]) -> Result<(Method, HashMap<String, String>), ParserError> {
     let request: String = String::from_utf8_lossy(&request_data[..]).to_string();
-    
+
     log("request", request.to_string());
     println!("{:?}\n", request.to_string().trim_end_matches('\u{0}'));
 
@@ -122,7 +122,7 @@ fn get_data<'a>(
 
     let body = Body {
         content_type: content_type,
-        content: body,
+        content: body.as_bytes().to_vec(),
     };
 
     return Result::Ok((Option::Some(body), meta_data));

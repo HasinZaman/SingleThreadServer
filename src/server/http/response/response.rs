@@ -1,6 +1,8 @@
+//! response module is responsible for structs and functions related to HTTP responses
 use super::response_status_code::*;
 use crate::server::http::body::Body;
 
+/// Response struct define the Response structure
 pub struct Response {
     pub status: ResponseStatusCode,
     pub body: Option<Body>,
@@ -20,6 +22,7 @@ macro_rules! append_to {
 }
 
 impl Response {
+    /// as_bytes provides a bytes required in order send response
     pub fn as_bytes(&self) -> Vec<u8> {
         let mut output: Vec<u8> = Vec::new();
 

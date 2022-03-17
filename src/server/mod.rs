@@ -56,7 +56,17 @@ fn handle_connection(
 
             log("Method", format!("{:?}", method));
 
-            response = handle_method(method, method_action, &server_settings, meta_data);
+            response = match &method {
+                Method::Get { file: _ } => (method_action.get)(method, &server_settings, &meta_data),
+                Method::Head { file: _ } => (method_action.head)(method, &server_settings, &meta_data),
+                Method::Post { file: _, body: _ } => (method_action.post)(method, &server_settings, &meta_data),
+                Method::Put { file: _, body: _ } => (method_action.put)(method, &server_settings, &meta_data),
+                Method::Delete { file: _, body: _ } => (method_action.delete)(method, &server_settings, &meta_data),
+                Method::Connect { url: _ } => (method_action.connect)(method, &server_settings, &meta_data),
+                Method::Options { url: _ } => (method_action.option)(method, &server_settings, &meta_data),
+                Method::Trace { file: _ } => (method_action.trace)(method, &server_settings, &meta_data),
+                Method::Patch { file: _, body: _ } => (method_action.patch)(method, &server_settings, &meta_data),
+            };
         }
         Err(err) => {
             log("Parse Failure", format!("Failure:{:?}", err));
@@ -82,28 +92,4 @@ fn handle_connection(
     }
 
     stream.flush().unwrap();
-}
-
-#[allow(unused_variables, unreachable_patterns)]
-fn handle_method(
-    method: Method,
-    method_action: &method_logic::MethodLogic,
-    server_settings: &ServerSetting,
-    meta_data: HashMap<String, String>,
-) -> Response {
-    match &method {
-        get => (method_action.get)(method, &server_settings, &meta_data),
-        head => (method_action.head)(method, &server_settings, &meta_data),
-        post => (method_action.post)(method, &server_settings, &meta_data),
-        put => (method_action.put)(method, &server_settings, &meta_data),
-        delete => (method_action.delete)(method, &server_settings, &meta_data),
-        connect => (method_action.connect)(method, &server_settings, &meta_data),
-        options => (method_action.option)(method, &server_settings, &meta_data),
-        trace => (method_action.trace)(method, &server_settings, &meta_data),
-        patch => (method_action.patch)(method, &server_settings, &meta_data),
-        _ => Response {
-            status: ResponseStatusCode::InternalServerError,
-            body: Option::None,
-        },
-    }
 }

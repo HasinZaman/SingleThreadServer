@@ -1,8 +1,13 @@
 use std::convert::AsRef;
 use strum_macros::AsRefStr;
 
-///
-/// For more information about HTTP response status codes - visit https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+/// ResponseStatusCode is a enum of all HTTP [response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
+/// 
+/// Variants between 100 - 199 relate to Information codes
+/// Variants between 200 - 299 relate to Successful codes
+/// Variants between 300 - 399 relate to Redirection codes
+/// Variants between 400 - 499 relate to Client Error codes
+/// Variants between 500 - 599 relate to Server Error codes
 #[allow(dead_code)]
 #[derive(Debug, AsRefStr, Clone)]
 pub enum ResponseStatusCode {
@@ -73,6 +78,7 @@ pub enum ResponseStatusCode {
 }
 
 impl ResponseStatusCode {
+    /// get_code method gets the code number of enum variant
     pub fn get_code(&self) -> u16 {
         self.clone() as u16
     }
@@ -84,6 +90,7 @@ impl ToString for ResponseStatusCode {
     }
 }
 
+/// split_at_capital returns a string of ResponseStatusCode variant with spaces between upper case letters
 fn split_at_capital(input: &str) -> String {
     let mut tmp = String::from("");
 

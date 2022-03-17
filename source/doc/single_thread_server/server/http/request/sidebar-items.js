@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["method","Method module define enums and method that store useable information for each HTTP method"],["parser_error","Parser_error module defines enums required to parsing errors"],["request","request module is responsible for functions parsing HTTP requests"]]});

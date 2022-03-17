@@ -8,13 +8,28 @@
                 "html",
                 "css",
                 "js",
-                "jpg"
+                "jpg",
+                "png",
+                "svg"
             ]
         ),
         "subdomain.localhost" : (
             path : "subdomain",
             allow : [
                 "html"
+            ]
+        ),
+        "doc.localhost" : (
+            path : "doc",
+            allow : [
+                "html",
+                "css",
+                "js",
+                "jpg",
+                "png",
+                "txt",
+                "woff2",
+                "svg"
             ]
         ),
     }

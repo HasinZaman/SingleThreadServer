@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Method","Method enum define the HTTP Method and inputted parameters"]]});

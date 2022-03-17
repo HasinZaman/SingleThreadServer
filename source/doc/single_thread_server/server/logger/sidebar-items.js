@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["log","log method adds message to log.txt"],["log_file_check","log_file_check checks if log.txt exists"],["set_up","set_up method ensures there exists a “log.txt” for logging"]]});

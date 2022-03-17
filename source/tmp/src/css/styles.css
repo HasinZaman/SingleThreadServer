@@ -1,0 +1,249 @@
+/* line 10, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body {
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  color: white;
+}
+
+/* line 17, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body {
+  width: 100%;
+}
+
+/* line 21, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #header {
+  position: relative;
+  width: 100vw;
+  height: fit-content;
+  overflow: hidden;
+  margin: none;
+}
+
+/* line 28, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #header .overlay {
+  z-index: 2;
+  background: linear-gradient(0deg, #360361 0%, rgba(54, 3, 97, 0.75) 50%);
+}
+
+/* line 33, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #header :not(:first-child) {
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  margin: 0;
+}
+
+/* line 41, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #menu {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: #360361;
+}
+
+/* line 47, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #menu a {
+  display: block-inline;
+  position: relative;
+  padding: 10px;
+  margin-left: 2px;
+  margin-right: 2px;
+  font-size: 20px;
+  padding-bottom: 10px;
+  cursor: pointer;
+}
+
+/* line 58, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #menu a:hover:after {
+  transform: scaleX(1);
+}
+
+/* line 62, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #menu a:after {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  content: '';
+  bottom: 5px;
+  left: 0;
+  transform: scaleX(0);
+  transition: transform 250ms ease-in-out;
+}
+
+/* line 76, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #aboutMe {
+  width: 100%;
+  height: 300px;
+}
+
+/* line 82, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #aboutMe div {
+  padding: 10px;
+  width: calc(50% - 10px * 2);
+}
+
+/* line 87, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #aboutMe div:first-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* line 95, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #skills {
+  width: 100vw;
+  height: fit-content;
+  margin: 10px 5vw;
+}
+
+/* line 102, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #skills div {
+  width: 90vw;
+  height: 90vh;
+  position: relative;
+  border: solid white 2px;
+}
+
+/* line 113, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #skills div * {
+  position: absolute;
+}
+
+/* line 117, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #skills div canvas {
+  transform-origin: left top;
+  height: 100%;
+  width: 100%;
+}
+
+/* line 123, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #skills div .ball {
+  width: calc((50px - 3px) * 2);
+  height: calc((50px - 3px) * 2);
+  border: 3px solid white;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* line 134, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #skills div .ball img {
+  width: 80%;
+  height: auto;
+}
+
+/* line 140, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #skills div p {
+  left: 50%;
+  transform: translate(-50%, 0%);
+  display: block;
+  position: absolute;
+  opacity: 1;
+  transition: opacity 10s cubic-bezier(1, 0, 1, 0);
+}
+
+@media screen and (min-width: 768px) {
+  /* line 153, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+  body #skills div p::before {
+    content: "Click on ";
+  }
+}
+
+@media screen and (max-width: 768px) {
+  /* line 159, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+  body #skills div p::before {
+    content: "Tap on ";
+  }
+}
+
+/* line 165, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #skills .infoBox {
+  display: none;
+}
+
+/* line 182, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+body #skills:hover p {
+  opacity: 0;
+  transition: opacity 500ms cubic-bezier(0, 1, 0.5, 1);
+}
+
+/* line 195, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+/* line 204, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+.content {
+  display: flex;
+  width: 100%;
+}
+
+/* line 211, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+.cube {
+  width: 15vw !important;
+  height: 15vw !important;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 1000ms ease-in-out;
+  padding: 0 !important;
+}
+
+/* line 222, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+.cube div {
+  width: calc(15vw - 2px) !important;
+  height: calc(15vw - 2px) !important;
+  position: absolute;
+  padding: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid white 2px;
+  background-color: black;
+}
+
+/* line 234, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+.cube .front {
+  transform: translateZ(7.5vw);
+}
+
+/* line 238, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+.cube .back {
+  transform: translateZ(-7.5vw) scaleX(-1);
+}
+
+/* line 242, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+.cube .left {
+  transform: translateX(-7.5vw) rotateY(90deg) scaleX(-1);
+}
+
+/* line 246, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+.cube .right {
+  transform: translateX(7.5vw) rotateY(-90deg);
+}
+
+/* line 250, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+.cube .up {
+  transform: translateY(-7.5vw) rotateX(90deg);
+}
+
+/* line 254, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+.cube .down {
+  transform: translateY(7.5vw) rotateX(-90deg);
+}
+
+/* line 259, ../../Users/hasin/Documents/Porfolio/Website/src/style/styles.scss */
+.ball {
+  border-radius: 100%;
+  overflow: hidden;
+}
+
+/*# sourceMappingURL=styles.css.map */

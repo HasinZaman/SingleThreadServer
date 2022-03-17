@@ -1,0 +1,262 @@
+$col1 : rgb(173,60,92);
+$col2 : rgb(54,3,97);
+$col3 : rgb(223,124,60);
+$col4 : black;
+
+@function RGBtoRGBA($col, $alpha) {
+	@return rgba(red($col), green($col), blue($col), 0.75);
+}
+
+body {
+	background-color: $col4;
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	color: white;
+
+	& {
+		width: 100%;
+	}
+
+	#header {
+		position: relative;
+		width: 100vw;
+		height: fit-content;
+		overflow: hidden;
+		margin: none;
+
+		.overlay {
+			z-index: 2;
+			background: linear-gradient(0deg, $col2 0%, RGBtoRGBA($col2, 0.6) 50%);
+		}
+
+		:not(:first-child) {
+			z-index: 1;
+			width: 100%;
+			height: auto;
+			margin: 0;
+		}
+	}
+
+	#menu {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		background-color: $col2;
+
+		a {
+			display: block-inline;
+			position: relative;
+			padding: 10px;
+			margin-left: 2px;
+			margin-right: 2px;
+			font-size: 20px;
+			padding-bottom: 10px;
+			cursor: pointer;
+		}
+
+		a:hover:after {
+			transform: scaleX(1);
+		}
+
+		a:after {
+			display: block;
+			position: absolute;
+			width: 100%;
+			height: 3px;
+			background-color: white;
+			content: '';
+			bottom: 5px;
+			left: 0;
+			transform: scaleX(0);
+			transition: transform 250ms ease-in-out;
+		}
+	}
+
+	#aboutMe {
+		width: 100%;
+		height: 300px;
+
+		$padding: 10px;
+
+		div {
+			padding: $padding;
+			width: calc(50% - #{$padding} * 2);
+		}
+
+		div:first-child {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			//background-color: $col3;
+		}
+	}
+
+	#skills {
+		$whiteSpace: 5vw;
+		
+		width: 100vw;
+		height: fit-content;
+
+		margin: 10px $whiteSpace;
+		div {
+			$ballRadius: 50px;
+			$ballBorder: 3px;
+
+			width: 100vw-$whiteSpace*2;
+			height: 90vh;
+
+			position: relative;
+
+			border: solid white 2px;
+
+			* {
+				position: absolute;
+			}
+
+			canvas {
+				transform-origin: left top;
+				height: 100%;
+				width: 100%;
+			}
+
+			.ball {
+				width: calc((#{$ballRadius} - #{$ballBorder}) * 2);
+				height: calc((#{$ballRadius} - #{$ballBorder}) * 2);
+				border: #{$ballBorder} solid white;
+
+				background-color: black;
+
+				display: flex;
+				justify-content: center;
+				align-items: center;
+
+				img{
+					width: 80%;
+					height: auto;
+				}
+			}
+
+			p {
+				left: 50%;
+				transform: translate(-50%, 0%);
+	
+				display: block;
+				position: absolute;
+	
+				opacity: 1;
+	
+				transition: opacity 10s cubic-bezier(1, 0, 1, 0);
+			}
+
+			@media screen and (min-width: 768px) {
+				p::before {
+					content: "Click on ";
+				}
+			}
+			
+			@media screen and (max-width: 768px) {
+				p::before {
+					content: "Tap on ";
+				}
+			}
+		}
+		
+		.infoBox {
+			display: none;
+			h2 {
+			}
+
+			h3 {
+			}
+
+			p {
+			}
+
+			a {
+			}
+		}
+	}
+
+	#skills:hover {
+		p {
+			opacity: 0;
+			transition: opacity 500ms cubic-bezier(0, 1, 0.5, 1);
+		}
+	}
+
+	#portfolio {
+	}
+
+	#footer {
+	}
+}
+
+.overlay
+{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+}
+
+.content
+{
+	display: flex;
+
+	width: 100%;
+}
+
+.cube {
+	$sideLength: 15vw;
+	$borderWidth: 2px;
+
+	width: $sideLength !important;
+	height: $sideLength !important;
+	position: relative;
+	transform-style: preserve-3d;
+	transition: transform 1000ms ease-in-out;
+	padding: 0 !important;
+
+	div {
+		width: calc(#{$sideLength} - #{$borderWidth}) !important;
+		height: calc(#{$sideLength} - #{$borderWidth}) !important;
+		position: absolute;
+		padding: 0 !important;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border: solid white #{$borderWidth};
+		background-color: black;
+	}
+
+	.front {
+		transform: translateZ($sideLength/2);
+	}
+
+	.back {
+		transform: translateZ(-1 * $sideLength/2) scaleX(-1);
+	}
+
+	.left {
+		transform: translateX(-1 * $sideLength/2) rotateY(90deg) scaleX(-1);
+	}
+
+	.right {
+		transform: translateX($sideLength/2) rotateY(-90deg);
+	}
+
+	.up {
+		transform: translateY(-1 * $sideLength/2) rotateX(90deg);
+	}
+
+	.down {
+		transform: translateY($sideLength/2) rotateX(-90deg);
+	}
+}
+
+.ball {
+	border-radius: 100%;
+	overflow: hidden;
+}

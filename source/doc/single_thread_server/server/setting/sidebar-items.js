@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DomainPath","DomainPath defines the path of domain in the source directory; and the extensions that can be received through GET or HEAD requests. "],["ServerSetting","ServerSetting is a struct that stores key information required for server start up, HTTP method handling and file retrieval"]]});

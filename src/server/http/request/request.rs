@@ -1,3 +1,4 @@
+//! request module is responsible for functions parsing HTTP requests
 use super::super::body::{Body, ContentType};
 use super::method::Method;
 use super::parser_error::ParserError;
@@ -7,6 +8,10 @@ use std::str::Split;
 
 use super::super::super::log;
 
+/// parse method converts raw http bytes into Method enum
+/// 
+/// # Errors
+/// Method returns a ParseError if the bytes cannot be parsed into a useable Method enum
 pub fn parse(request_data: [u8; 1024]) -> Result<(Method, HashMap<String, String>), ParserError> {
     let request: String = String::from_utf8_lossy(&request_data[..]).to_string();
 
@@ -28,6 +33,10 @@ pub fn parse(request_data: [u8; 1024]) -> Result<(Method, HashMap<String, String
     Result::Ok((method, meta_data))
 }
 
+/// get_start_line method extracts the method, http version and target from the first line of a request
+/// 
+/// # Errors
+/// If the first line does not contain all three method, target and http version; in the specified order - then a ParserError is returned for an invalid request. 
 fn get_start_line<'a>(
     start_line: Option<&'a str>,
 ) -> Result<(&'a str, &'a str, &'a str), ParserError> {
@@ -61,6 +70,10 @@ fn get_start_line<'a>(
     Result::Ok((method, target, version))
 }
 
+/// get_data method extras metadata and possible Body from request
+/// 
+/// # Errors
+/// A ParserError is returned if a body doesn't have a valid content-type
 fn get_data<'a>(
     mut line_iter: Split<&'a str>,
 ) -> Result<(Option<Body>, HashMap<String, String>), ParserError> {
@@ -128,6 +141,10 @@ fn get_data<'a>(
     return Result::Ok((Option::Some(body), meta_data));
 }
 
+/// get_key_value_pair extracts key and associated value from unparsed metadata string
+/// 
+/// # Errors
+/// A parse Error is returned if the data isn't stored in the format [key]:value
 fn get_key_value_pair<'a>(line: &'a str) -> Result<(&'a str, &'a str), ParserError> {
     let mut line = line.split(':');
     let key = line

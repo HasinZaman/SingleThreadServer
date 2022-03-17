@@ -548,7 +548,7 @@ mod http_request_parse_test {
                 assert_eq!(file, String::from("/index.html"));
             }
             _ => {
-                panic!("Incorect variant. Got {} instead", method.to_string());
+                panic!("Incorrect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -570,7 +570,7 @@ mod http_request_parse_test {
                 assert_eq!(file, String::from("/index.html"));
             }
             _ => {
-                panic!("Incorect variant. Got {} instead", method.to_string());
+                panic!("Incorrect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -597,7 +597,7 @@ mod http_request_parse_test {
                 assert_eq!(body.content, "field1=value1&field2=value2".as_bytes());
             }
             _ => {
-                panic!("Incorect variant. Got {} instead", method.to_string());
+                panic!("Incorrect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -621,7 +621,7 @@ mod http_request_parse_test {
                 assert_eq!(body.content, "<p>New File</p>".as_bytes());
             }
             _ => {
-                panic!("Incorect variant. Got {} instead", method.to_string());
+                panic!("Incorrect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -652,7 +652,7 @@ mod http_request_parse_test {
                 }
             }
             _ => {
-                panic!("Incorect variant. Got {} instead", method.to_string());
+                panic!("Incorrect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -675,7 +675,7 @@ mod http_request_parse_test {
                 assert!(body.is_none());
             }
             _ => {
-                panic!("Incorect variant. Got {} instead", method.to_string());
+                panic!("Incorrect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -696,7 +696,7 @@ mod http_request_parse_test {
                 assert_eq!(url, String::from("www.example.com:443"));
             }
             _ => {
-                panic!("Incorect variant. Got {} instead", method.to_string());
+                panic!("Incorrect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -717,7 +717,7 @@ mod http_request_parse_test {
                 assert_eq!(url, String::from("https://example.org"));
             }
             _ => {
-                panic!("Incorect variant. Got {} instead", method.to_string());
+                panic!("Incorrect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -738,7 +738,7 @@ mod http_request_parse_test {
                 assert_eq!(file, String::from("/index.html"));
             }
             _ => {
-                panic!("Incorect variant. Got {} instead", method.to_string());
+                panic!("Incorrect variant. Got {} instead", method.to_string());
             }
         }
     }
@@ -762,7 +762,7 @@ mod http_request_parse_test {
                 assert_eq!(body.content, "[description of changes]".as_bytes());
             }
             _ => {
-                panic!("Incorect variant. Got {} instead", method.to_string());
+                panic!("Incorrect variant. Got {} instead", method.to_string());
             }
         }
     }

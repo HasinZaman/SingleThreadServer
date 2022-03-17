@@ -121,16 +121,16 @@ The frame by default logs the parsed intial connection request, errors and respo
 
 **Future Plans**
  - More default method implementations
-  - HEAD
-  - POST
-  - PUT
-  - DELETE
-  - CONNECT
-  - OPTION
-  - TRACE
-  - PATCH
+    - HEAD
+    - POST
+    - PUT
+    - DELETE
+    - CONNECT
+    - OPTION
+    - TRACE
+    - PATCH
  - Better error handling in default method implementations
-   - In which Results are handled with ```match``` rather than ```unwrap```
+    - In which Results are handled with ```match``` rather than ```unwrap```
  - Default error pages
 
 ## License

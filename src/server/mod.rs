@@ -1,3 +1,5 @@
+//! Server module is responsible for the start-up and handling of server requests
+
 use std::net::TcpListener;
 use std::net::TcpStream;
 

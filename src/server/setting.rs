@@ -7,7 +7,8 @@ use std::collections::HashMap;
 
 #[derive(Debug, Deserialize)]
 pub struct ServerSetting {
-    pub domain: String,
+    pub address: String,
+    pub port : u16,
     pub paths: HashMap<String, DomainPath>,
 }
 

@@ -1,5 +1,6 @@
 (
-    domain: "localhost",
+    address: "localhost",
+    port : 8080,
     paths : {
         "localhost" : (
             path : "tmp",

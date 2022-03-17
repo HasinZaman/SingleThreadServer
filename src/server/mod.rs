@@ -28,7 +28,7 @@ pub fn start(method_action: method_logic::MethodLogic) {
 
     println!("{:?}", server_setting);
 
-    let listener = TcpListener::bind(format!("{}:8080", server_setting.domain)).unwrap();
+    let listener = TcpListener::bind(format!("{}:{}", server_setting.address, server_setting.port)).unwrap();
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();

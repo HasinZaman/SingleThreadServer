@@ -10,7 +10,7 @@ pub fn parse(url: &str, search_folder: &str, allowed_extension: &Vec<String>) ->
 
     let mut path_buffer = PathBuf::new();
 
-    path_buffer.push(r"Site");
+    path_buffer.push(r"source");
 
     path_buffer.push(&search_folder);
 

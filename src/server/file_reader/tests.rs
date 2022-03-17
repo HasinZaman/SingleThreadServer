@@ -20,7 +20,7 @@ mod file_parser {
         let allowed_extension = vec![String::from("html")];
         assert_eq!(
             parse("\\", "tmp", &allowed_extension),
-            Option::Some(PathBuf::from("Site\\tmp\\index.html"))
+            Option::Some(PathBuf::from("source\\tmp\\index.html"))
         );
     }
 
@@ -29,7 +29,7 @@ mod file_parser {
         let allowed_extension = vec![String::from("html")];
         assert_eq!(
             parse("\\tests\\", "tmp", &allowed_extension),
-            Option::Some(PathBuf::from("Site\\tmp\\tests\\index.html"))
+            Option::Some(PathBuf::from("source\\tmp\\tests\\index.html"))
         );
     }
 
@@ -38,7 +38,7 @@ mod file_parser {
         let allowed_extension = vec![String::from("html")];
         assert_eq!(
             parse("\\?v=A", "tmp", &allowed_extension),
-            Option::Some(PathBuf::from("Site\\tmp\\index.html"))
+            Option::Some(PathBuf::from("source\\tmp\\index.html"))
         );
     }
 
@@ -47,7 +47,7 @@ mod file_parser {
         let allowed_extension = vec![String::from("html")];
         assert_eq!(
             parse("\\tests\\index.html?v=A", "tmp", &allowed_extension),
-            Option::Some(PathBuf::from("Site\\tmp\\tests\\index.html"))
+            Option::Some(PathBuf::from("source\\tmp\\tests\\index.html"))
         );
     }
 
@@ -60,7 +60,7 @@ mod file_parser {
                 "tmp",
                 &allowed_extension
             ),
-            Option::Some(PathBuf::from("Site\\tmp\\tests\\test_file.html.meta"))
+            Option::Some(PathBuf::from("source\\tmp\\tests\\test_file.html.meta"))
         );
     }
 
@@ -69,7 +69,7 @@ mod file_parser {
         let allowed_extension = vec![String::from("html")];
         assert_eq!(
             parse("\\tests\\index.html", "tmp", &allowed_extension),
-            Option::Some(PathBuf::from("Site\\tmp\\tests\\index.html"))
+            Option::Some(PathBuf::from("source\\tmp\\tests\\index.html"))
         );
     }
 
@@ -78,7 +78,7 @@ mod file_parser {
         let allowed_extension = vec![String::from("meta")];
         assert_eq!(
             parse("\\tests\\test_file.html.meta", "tmp", &allowed_extension),
-            Option::Some(PathBuf::from("Site\\tmp\\tests\\test_file.html.meta"))
+            Option::Some(PathBuf::from("source\\tmp\\tests\\test_file.html.meta"))
         );
     }
 }

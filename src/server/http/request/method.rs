@@ -1,6 +1,8 @@
+//! Method module define enums and method that store useable information for each [HTTP method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
 use super::super::body::Body;
 use super::parser_error::ParserError;
 
+/// Method enum define the HTTP Method and inputted parameters
 #[derive(Debug)]
 pub enum Method {
     Get { file: String },
@@ -15,6 +17,15 @@ pub enum Method {
 }
 
 impl Method {
+    /// new constructor creates a method from the extracted components of the start line of HTTP request
+    /// 
+    /// # Errors
+    /// A ParserError is returned if method isn't provided with a correct paramater
+    /// 
+    /// This example would return a ParseError because Post method requires a body
+    /// ```
+    /// Method::new("POST", "target", POST::None);
+    /// ```
     pub fn new(method: String, target: String, body: Option<Body>) -> Result<Method, ParserError> {
         let body_unwrap = |body_tmp: Option<Body>| -> Result<Body, ParserError> {
             match body_tmp {

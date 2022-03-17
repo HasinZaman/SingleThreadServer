@@ -2,7 +2,7 @@ use std::convert::AsRef;
 use strum_macros::AsRefStr;
 
 ///
-/// For more infomation about HTTP reponse status codes - visit https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+/// For more information about HTTP response status codes - visit https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 #[allow(dead_code)]
 #[derive(Debug, AsRefStr, Clone)]
 pub enum ResponseStatusCode {
@@ -89,7 +89,7 @@ fn split_at_capital(input: &str) -> String {
 
     let mut iter = input.chars();
 
-    //adds first character without adding space infront of char
+    //adds first character without adding space in front of char
     tmp.push(iter.next().unwrap());
 
     for c in iter {

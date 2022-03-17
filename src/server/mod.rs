@@ -19,8 +19,24 @@ use http::response::response_status_code::ResponseStatusCode;
 use setting::ServerSetting;
 use std::collections::HashMap;
 
-//future features
-// implement start, handle_connection and handle_method to server_settings. (so &self can be used rather than being moved through the paramater of functions)
+/// start up server on specified address and port
+/// 
+/// # Examples
+/// ```
+/// let logic: MethodLogic = MethodLogic {
+///     get: MethodLogic::default_get_logic(),
+///     head: MethodLogic::default_not_allowed_logic(),
+///     post: MethodLogic::default_not_allowed_logic(),
+///     put: MethodLogic::default_not_allowed_logic(),
+///     delete: MethodLogic::default_not_allowed_logic(),
+///     connect: MethodLogic::default_not_allowed_logic(),
+///     option: MethodLogic::default_not_allowed_logic(),
+///     trace: MethodLogic::default_not_allowed_logic(),
+///     patch: MethodLogic::default_not_allowed_logic(),
+/// };
+/// 
+/// server::start(logic);
+/// ```
 pub fn start(method_action: method_logic::MethodLogic) {
     logger::set_up();
 
@@ -36,7 +52,7 @@ pub fn start(method_action: method_logic::MethodLogic) {
     }
 }
 
-#[allow(unused_variables, non_snake_case, unreachable_patterns)]
+/// handle_connection is responsible for addressing the general steps required to parse and respond to HTTP requests
 fn handle_connection(
     mut stream: TcpStream,
     method_action: &method_logic::MethodLogic,

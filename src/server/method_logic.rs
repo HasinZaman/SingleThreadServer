@@ -1,3 +1,4 @@
+//! Method Logic module is response for structs and methods that define how parsed HTTP methods should be handled
 use std::collections::HashMap;
 use std::str;
 
@@ -10,6 +11,37 @@ use super::http::{
 };
 use super::setting::ServerSetting;
 
+/// MethodLogic stores the method required for any given HTTP method
+/// 
+/// # Example
+/// ```
+/// let logic: MethodLogic = MethodLogic {
+///     get: MethodLogic::default_get_logic(),
+///     head: MethodLogic::default_not_allowed_logic(),
+///     post: MethodLogic::default_not_allowed_logic(),
+///     put: MethodLogic::default_not_allowed_logic(),
+///     delete: MethodLogic::default_not_allowed_logic(),
+///     connect: MethodLogic::default_not_allowed_logic(),
+///     option: MethodLogic::default_not_allowed_logic(),
+///     trace: MethodLogic::default_not_allowed_logic(),
+///     patch: MethodLogic::default_not_allowed_logic(),
+/// };
+/// ```
+/// 
+/// ```
+///  let logic: MethodLogic = MethodLogic {
+///     get: Box::new(
+///         |request: Method, server_settings: &ServerSetting, meta_data: &HashMap<String, String>| -> Response {
+///             Response {
+///                 status: ResponseStatusCode::MethodNotAllowed,
+///                 body: Option::None,
+///             }
+///         }
+///     ),
+///     ...
+///     patch: MethodLogic::default_not_allowed_logic(),
+/// };
+/// ```
 pub struct MethodLogic {
     pub get: Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>,
     pub head: Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>,
@@ -23,6 +55,7 @@ pub struct MethodLogic {
 }
 
 impl MethodLogic {
+    /// Default implementation of method is not allowed to be called
     pub fn default_not_allowed_logic(
     ) -> Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response> {
         Box::new(
@@ -35,6 +68,7 @@ impl MethodLogic {
         )
     }
 
+    /// Default implementation of [Get](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET) method
     pub fn default_get_logic(
     ) -> Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response> {
         Box::new(
@@ -124,10 +158,7 @@ impl MethodLogic {
                         }
                     }
                 }
-                _ => Response {
-                    status: ResponseStatusCode::BadRequest,
-                    body: Option::None,
-                },
+                _ => panic!("default_get_logic logic should only used to handle Method::Get requests"),
             },
         )
     }

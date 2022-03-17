@@ -1,3 +1,4 @@
+//! body module is responsible for how HTTP body are parsed and stored
 use super::request::parser_error::ParserError;
 use std::fmt::{Debug, Error, Formatter};
 
@@ -8,16 +9,20 @@ pub use value::Multipart;
 pub use value::Text;
 pub use value::Video;
 
+/// Body struct defines the structure of an HTTP body
 #[derive(Debug)]
 pub struct Body {
     pub content_type: ContentType,
     pub content: Vec<u8>,
 }
 
+/// VariantName trait defines method to return string of variant names
 trait VariantName {
+    /// get_variant returns a string to identify variant
     fn get_variant(&self) -> String;
 }
 
+/// ContentType enum define the different types types of [content types](https://www.iana.org/assignments/media-types/media-types.xhtml)
 //https://www.geeksforgeeks.org/http-headers-content-type/
 pub enum ContentType {
     Application(Application),
@@ -29,6 +34,13 @@ pub enum ContentType {
 }
 
 impl ContentType {
+    /// Constructor that creates a new ContentType from string
+    /// 
+    /// # Example
+    /// ```
+    /// let actual: ContentType = ContentType::Application(Application::EDI_X12);
+    /// assert_eq!(actual, ContentType::new("application/EDI-X12"));
+    /// ``` 
     pub fn new(raw_str: &str) -> Result<ContentType, ParserError> {
         let str_vec: Vec<&str> = raw_str.split("/").collect();
 
@@ -125,12 +137,15 @@ impl Debug for ContentType {
 }
 
 pub mod value {
+    //! value module defines the specific Enums for each of the ContentType variants
     use super::super::request::parser_error::ParserError;
 
+    /// generic constructor trait define method signature for new methods
     pub trait Constructor<V> {
         fn new(value_raw: &str) -> Result<V, ParserError>;
     }
 
+    /// Application enum defines the variants of ContentType::Application
     #[allow(non_camel_case_types)]
     pub enum Application {
         EDI_X12,
@@ -190,6 +205,8 @@ pub mod value {
         }
     }
 
+    
+    /// Application enum defines the variants of ContentType::Audio
     #[allow(non_camel_case_types)]
     pub enum Audio {
         mpeg,
@@ -222,6 +239,8 @@ pub mod value {
         }
     }
 
+    
+    /// Application enum defines the variants of ContentType::Image
     #[allow(non_camel_case_types)]
     pub enum Image {
         gif,
@@ -266,6 +285,8 @@ pub mod value {
         }
     }
 
+    
+    /// Application enum defines the variants of ContentType::Multipart
     #[allow(non_camel_case_types)]
     pub enum Multipart {
         mixed,
@@ -303,6 +324,8 @@ pub mod value {
         }
     }
 
+    
+    /// Application enum defines the variants of ContentType::Text
     #[allow(non_camel_case_types)]
     pub enum Text {
         css,
@@ -341,6 +364,8 @@ pub mod value {
         }
     }
 
+    
+    /// Application enum defines the variants of ContentType::Video
     #[allow(non_camel_case_types)]
     pub enum Video {
         mpeg,
@@ -382,6 +407,10 @@ pub mod value {
         }
     }
 
+    /// parse_value is function to create any of the enums in value mod
+    /// 
+    /// # Errors
+    /// if the inputted value attribute cannot be parsed into a variant defined by the generic V. The function returns a ParserError.
     pub fn parse_value<V>(value: &str) -> Result<V, ParserError>
     where
         V: Constructor<V>,

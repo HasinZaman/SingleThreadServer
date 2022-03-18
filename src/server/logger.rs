@@ -8,7 +8,7 @@ use std::path::Path;
 /// If "log.txt" does not exist; then set_up will create a "log.txt" in the root folder
 pub fn set_up() {
     if !log_file_check() {
-        if let Result::Err(err) = File::create("log.txt") {
+        if let Err(err) = File::create("log.txt") {
             panic!("Failed to create log.txt. {}", err);
         }
     }

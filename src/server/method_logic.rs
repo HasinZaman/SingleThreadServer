@@ -11,7 +11,7 @@ use super::http::{
 };
 use super::setting::ServerSetting;
 
-type LogicFunc = Box<fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>;
+type LogicFunc = fn(Method, &ServerSetting, &HashMap<String, String>) -> Response;
 
 /// MethodLogic stores the method required for any given HTTP method
 ///
@@ -58,25 +58,19 @@ pub struct MethodLogic {
 
 impl MethodLogic {
     /// Default implementation of method is not allowed to be called
-    pub fn default_not_allowed_logic(
-    ) -> LogicFunc {
-        Box::new(
-            |_request: Method,
-             _server_settings: &ServerSetting,
-             _meta_data: &HashMap<String, String>| Response {
-                status: ResponseStatusCode::MethodNotAllowed,
-                body: Option::None,
-            },
-        )
+    pub fn default_not_allowed_logic() -> LogicFunc {
+        |_request: Method,
+         _server_settings: &ServerSetting,
+         _meta_data: &HashMap<String, String>| Response {
+            status: ResponseStatusCode::MethodNotAllowed,
+            body: Option::None,
+        }
     }
 
     /// Default implementation of [Get](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET) method
-    pub fn default_get_logic(
-    ) -> LogicFunc {
-        Box::new(
-            |request: Method,
-             server_settings: &ServerSetting,
-             meta_data: &HashMap<String, String>| match request {
+    pub fn default_get_logic() -> LogicFunc {
+        |request: Method, server_settings: &ServerSetting, meta_data: &HashMap<String, String>| {
+            match request {
                 Method::Get { file } => {
                     let host: &str = match meta_data.get("host") {
                         Some(host) => host,
@@ -163,7 +157,7 @@ impl MethodLogic {
                 _ => panic!(
                     "default_get_logic logic should only used to handle Method::Get requests"
                 ),
-            },
-        )
+            }
+        }
     }
 }

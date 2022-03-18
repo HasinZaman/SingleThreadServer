@@ -79,16 +79,17 @@ fn handle_connection(
             log("Method", format!("{:?}", method));
 
             response = (match &method {
-                Method::Get { .. } => method_action.get.clone(),
-                Method::Head { .. } => method_action.head.clone(),
-                Method::Post { .. } => method_action.post.clone(),
-                Method::Put { .. } => method_action.put.clone(),
-                Method::Delete { .. } => method_action.delete.clone(),
-                Method::Connect { .. } => method_action.connect.clone(),
-                Method::Options { .. } => method_action.option.clone(),
-                Method::Trace { .. } => method_action.trace.clone(),
-                Method::Patch { .. } => method_action.patch.clone(),
-            })(method, &server_settings, &meta_data);
+                Method::Get { .. } => method_action.get,
+                Method::Head { .. } => method_action.head,
+                Method::Post { .. } => method_action.post,
+                Method::Put { .. } => method_action.put,
+                Method::Delete { .. } => method_action.delete,
+                Method::Connect { .. } => method_action.connect,
+                Method::Options { .. } => method_action.option,
+                Method::Trace { .. } => method_action.trace,
+                Method::Patch { .. } => method_action.patch,
+            })
+            .clone()(method, &server_settings, &meta_data);
         }
         Err(err) => {
             log("Parse Failure", format!("Failure:{:?}", err));

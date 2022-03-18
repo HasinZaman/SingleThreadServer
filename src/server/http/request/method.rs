@@ -101,33 +101,15 @@ impl ToString for Method {
     fn to_string(&self) -> String {
         #[allow(unused_variables)]
         match &self {
-            Method::Get { file } => {
-                return String::from(format!("GET file={}", file));
-            }
-            Method::Head { file } => {
-                return String::from(format!("Head file={}", file));
-            }
-            Method::Post { file, body } => {
-                return String::from(format!("POST file={}", file));
-            }
-            Method::Put { file, body } => {
-                return String::from(format!("PUT file={}", file));
-            }
-            Method::Delete { file, body } => {
-                return String::from(format!("DELETE file={}", file));
-            }
-            Method::Connect { url } => {
-                return String::from(format!("CONNECT URL={}", url));
-            }
-            Method::Options { url } => {
-                return String::from(format!("OPTIONS URL={}", url));
-            }
-            Method::Trace { file } => {
-                return String::from(format!("TRACE file={}", file));
-            }
-            Method::Patch { file, body } => {
-                return String::from(format!("PATCH file={}", file));
-            }
+            Method::Get { file } => String::from(format!("GET file={}", file)),
+            Method::Head { file } => String::from(format!("Head file={}", file)),
+            Method::Post { file, body } => String::from(format!("POST file={}", file)),
+            Method::Put { file, body } =>String::from(format!("PUT file={}", file)),
+            Method::Delete { file, body } => String::from(format!("DELETE file={}", file)),
+            Method::Connect { url } => String::from(format!("CONNECT URL={}", url)),
+            Method::Options { url } => String::from(format!("OPTIONS URL={}", url)),
+            Method::Trace { file } => String::from(format!("TRACE file={}", file)),
+            Method::Patch { file, body } =>String::from(format!("PATCH file={}", file)),
         }
     }
 }

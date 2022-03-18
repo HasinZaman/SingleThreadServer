@@ -18,10 +18,10 @@ pub enum Method {
 
 impl Method {
     /// new constructor creates a method from the extracted components of the start line of HTTP request
-    /// 
+    ///
     /// # Errors
     /// A ParserError is returned if method isn't provided with a correct paramater
-    /// 
+    ///
     /// This example would return a ParseError because Post method requires a body
     /// ```
     /// Method::new("POST", "target", POST::None);
@@ -104,12 +104,12 @@ impl ToString for Method {
             Method::Get { file } => String::from(format!("GET file={}", file)),
             Method::Head { file } => String::from(format!("Head file={}", file)),
             Method::Post { file, body } => String::from(format!("POST file={}", file)),
-            Method::Put { file, body } =>String::from(format!("PUT file={}", file)),
+            Method::Put { file, body } => String::from(format!("PUT file={}", file)),
             Method::Delete { file, body } => String::from(format!("DELETE file={}", file)),
             Method::Connect { url } => String::from(format!("CONNECT URL={}", url)),
             Method::Options { url } => String::from(format!("OPTIONS URL={}", url)),
             Method::Trace { file } => String::from(format!("TRACE file={}", file)),
-            Method::Patch { file, body } =>String::from(format!("PATCH file={}", file)),
+            Method::Patch { file, body } => String::from(format!("PATCH file={}", file)),
         }
     }
 }

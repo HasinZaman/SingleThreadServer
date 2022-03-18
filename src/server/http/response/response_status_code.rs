@@ -2,7 +2,7 @@ use std::convert::AsRef;
 use strum_macros::AsRefStr;
 
 /// ResponseStatusCode is a enum of all HTTP [response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
-/// 
+///
 /// Variants between 100 - 199 relate to Information codes
 /// Variants between 200 - 299 relate to Successful codes
 /// Variants between 300 - 399 relate to Redirection codes

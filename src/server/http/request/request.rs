@@ -9,7 +9,7 @@ use std::str::Split;
 use super::super::super::log;
 
 /// parse method converts raw http bytes into Method enum
-/// 
+///
 /// # Errors
 /// Method returns a ParseError if the bytes cannot be parsed into a useable Method enum
 pub fn parse(request_data: [u8; 1024]) -> Result<(Method, HashMap<String, String>), ParserError> {
@@ -34,9 +34,9 @@ pub fn parse(request_data: [u8; 1024]) -> Result<(Method, HashMap<String, String
 }
 
 /// get_start_line method extracts the method, http version and target from the first line of a request
-/// 
+///
 /// # Errors
-/// If the first line does not contain all three method, target and http version; in the specified order - then a ParserError is returned for an invalid request. 
+/// If the first line does not contain all three method, target and http version; in the specified order - then a ParserError is returned for an invalid request.
 fn get_start_line<'a>(
     start_line: Option<&'a str>,
 ) -> Result<(&'a str, &'a str, &'a str), ParserError> {
@@ -71,7 +71,7 @@ fn get_start_line<'a>(
 }
 
 /// get_data method extras metadata and possible Body from request
-/// 
+///
 /// # Errors
 /// A ParserError is returned if a body doesn't have a valid content-type
 fn get_data<'a>(
@@ -142,7 +142,7 @@ fn get_data<'a>(
 }
 
 /// get_key_value_pair extracts key and associated value from unparsed metadata string
-/// 
+///
 /// # Errors
 /// A parse Error is returned if the data isn't stored in the format [key]:value
 fn get_key_value_pair<'a>(line: &'a str) -> Result<(&'a str, &'a str), ParserError> {

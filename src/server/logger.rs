@@ -4,7 +4,7 @@ use std::io::prelude::*;
 use std::path::Path;
 
 /// set_up method ensures there exists a "log.txt" for logging
-/// 
+///
 /// If "log.txt" does not exist; then set_up will create a "log.txt" in the root folder
 pub fn set_up() {
     if !log_file_check() {
@@ -15,7 +15,7 @@ pub fn set_up() {
 }
 
 /// log method adds message to log.txt
-/// 
+///
 /// The message is in the format
 /// ```text
 /// --- --- ---
@@ -23,7 +23,7 @@ pub fn set_up() {
 /// (message)
 /// --- --- ---
 /// ```
-/// 
+///
 /// # Example
 /// ```
 /// log("Hello", "World");

@@ -23,7 +23,7 @@ use setting::ServerSetting;
 use std::collections::HashMap;
 
 /// start up server on specified address and port
-/// 
+///
 /// # Examples
 /// ```
 /// let logic: MethodLogic = MethodLogic {
@@ -37,7 +37,7 @@ use std::collections::HashMap;
 ///     trace: MethodLogic::default_not_allowed_logic(),
 ///     patch: MethodLogic::default_not_allowed_logic(),
 /// };
-/// 
+///
 /// server::start(logic);
 /// ```
 pub fn start(method_action: method_logic::MethodLogic) {
@@ -47,7 +47,11 @@ pub fn start(method_action: method_logic::MethodLogic) {
 
     println!("{:?}", server_setting);
 
-    let listener = TcpListener::bind(format!("{}:{}", server_setting.address, server_setting.port)).unwrap();
+    let listener = TcpListener::bind(format!(
+        "{}:{}",
+        server_setting.address, server_setting.port
+    ))
+    .unwrap();
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
@@ -100,9 +104,9 @@ fn handle_connection(
 
     response.as_bytes().iter().try_for_each(|byte| {
         if let Err(err) = stream.write(&[*byte]) {
-                println!("{}", err);
-                log("Send Error", format!("{}", err));
-                return None
+            println!("{}", err);
+            log("Send Error", format!("{}", err));
+            return None;
         }
         Some(())
     });

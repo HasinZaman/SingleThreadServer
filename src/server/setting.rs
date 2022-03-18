@@ -11,11 +11,11 @@ use std::collections::HashMap;
 #[derive(Debug, Deserialize)]
 pub struct ServerSetting {
     pub address: String,
-    pub port : u16,
+    pub port: u16,
     pub paths: HashMap<String, DomainPath>,
 }
 
-/// DomainPath defines the path of domain in the source directory; and the extensions that can be received through GET or HEAD requests. 
+/// DomainPath defines the path of domain in the source directory; and the extensions that can be received through GET or HEAD requests.
 #[derive(Debug, Deserialize)]
 pub struct DomainPath {
     pub path: String,
@@ -24,10 +24,10 @@ pub struct DomainPath {
 
 impl ServerSetting {
     /// load functions read settings.ron
-    /// 
+    ///
     /// # return
     /// ServerSetting struct that reflect the data stored in settings.ron
-    /// 
+    ///
     /// #Examples
     /// ```
     /// let server_setting : ServerSetting = ServerSetting::Load();

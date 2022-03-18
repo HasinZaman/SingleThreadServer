@@ -14,7 +14,7 @@ use super::setting::ServerSetting;
 type LogicFunc = Box<fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>;
 
 /// MethodLogic stores the method required for any given HTTP method
-/// 
+///
 /// # Example
 /// ```
 /// let logic: MethodLogic = MethodLogic {
@@ -29,7 +29,7 @@ type LogicFunc = Box<fn(Method, &ServerSetting, &HashMap<String, String>) -> Res
 ///     patch: MethodLogic::default_not_allowed_logic(),
 /// };
 /// ```
-/// 
+///
 /// ```
 ///  let logic: MethodLogic = MethodLogic {
 ///     get: Box::new(
@@ -160,7 +160,9 @@ impl MethodLogic {
                         }
                     }
                 }
-                _ => panic!("default_get_logic logic should only used to handle Method::Get requests"),
+                _ => panic!(
+                    "default_get_logic logic should only used to handle Method::Get requests"
+                ),
             },
         )
     }

@@ -35,12 +35,12 @@ pub enum ContentType {
 
 impl ContentType {
     /// Constructor that creates a new ContentType from string
-    /// 
+    ///
     /// # Example
     /// ```
     /// let actual: ContentType = ContentType::Application(Application::EDI_X12);
     /// assert_eq!(actual, ContentType::new("application/EDI-X12"));
-    /// ``` 
+    /// ```
     pub fn new(raw_str: &str) -> Result<ContentType, ParserError> {
         let str_vec: Vec<&str> = raw_str.split("/").collect();
 
@@ -205,7 +205,6 @@ pub mod value {
         }
     }
 
-    
     /// Application enum defines the variants of ContentType::Audio
     #[allow(non_camel_case_types)]
     pub enum Audio {
@@ -239,7 +238,6 @@ pub mod value {
         }
     }
 
-    
     /// Application enum defines the variants of ContentType::Image
     #[allow(non_camel_case_types)]
     pub enum Image {
@@ -285,7 +283,6 @@ pub mod value {
         }
     }
 
-    
     /// Application enum defines the variants of ContentType::Multipart
     #[allow(non_camel_case_types)]
     pub enum Multipart {
@@ -324,7 +321,6 @@ pub mod value {
         }
     }
 
-    
     /// Application enum defines the variants of ContentType::Text
     #[allow(non_camel_case_types)]
     pub enum Text {
@@ -364,7 +360,6 @@ pub mod value {
         }
     }
 
-    
     /// Application enum defines the variants of ContentType::Video
     #[allow(non_camel_case_types)]
     pub enum Video {
@@ -408,7 +403,7 @@ pub mod value {
     }
 
     /// parse_value is function to create any of the enums in value mod
-    /// 
+    ///
     /// # Errors
     /// if the inputted value attribute cannot be parsed into a variant defined by the generic V. The function returns a ParserError.
     pub fn parse_value<V>(value: &str) -> Result<V, ParserError>

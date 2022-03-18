@@ -1,6 +1,5 @@
 //! Method Logic module is response for structs and methods that define how parsed HTTP methods should be handled
 use std::collections::HashMap;
-use std::hash::Hash;
 use std::str;
 
 use super::file_reader;
@@ -78,7 +77,7 @@ impl MethodLogic {
                         Some(host) => host,
                         None => {
                             return Response {
-                                status: ResponseStatusCode::NotFound,
+                                status: ResponseStatusCode::ImATeapot,
                                 meta_data : HashMap::new(),
                                 body: None,
                             }
@@ -167,7 +166,7 @@ impl MethodLogic {
                                 "woff" => ContentType::Application(Application::woff),
                                 _ => {
                                     return Response {
-                                        status: ResponseStatusCode::NotFound,
+                                        status: ResponseStatusCode::UnsupportedMediaType,
                                         meta_data : HashMap::new(),
                                         body: None,
                                     }
@@ -186,7 +185,115 @@ impl MethodLogic {
                     }
                 }
                 _ => panic!(
-                    "default_get_logic logic should only used to handle Method::Get requests"
+                    "default_get_logic should only used to handle Method::Get requests"
+                ),
+            }
+        }
+    }
+
+    pub fn default_head_logic() -> LogicFunc {
+        |request: Method, server_settings: &ServerSetting, meta_data: &HashMap<String, String>| {
+            match request {
+                Method::Get { file } => {
+                    let host: &str = match meta_data.get("host") {
+                        Some(host) => host,
+                        None => {
+                            return Response {
+                                status: ResponseStatusCode::ImATeapot,
+                                meta_data : HashMap::new(),
+                                body: None,
+                            }
+                        }
+                    };
+
+                    let (host_path, allowed_extension) = match server_settings.paths.get(host) {
+                        Some(host_path) => (&host_path.path, &host_path.allow),
+                        None => {
+                            return Response {
+                                status: ResponseStatusCode::NotFound,
+                                meta_data : HashMap::new(),
+                                body: None,
+                            }
+                        }
+                    };
+
+                    let path_buf = match file_reader::parse(&file, &host_path, allowed_extension) {
+                        Some(path_buf) => path_buf,
+                        None => {
+                            match file_reader::parse(
+                                "error\\404.html",
+                                &host_path,
+                                &allowed_extension,
+                            ) {
+                                Some(file) => file,
+                                None => {
+                                    return Response {
+                                        status: ResponseStatusCode::NotFound,
+                                        meta_data : HashMap::new(),
+                                        body: None,
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    let file_name = match path_buf.file_name() {
+                        Some(name) => name.to_str().unwrap(),
+                        None => panic!(
+                            "FileReader::parse does not return file name. {:?}",
+                            path_buf
+                        ),
+                    };
+
+                    match file_name {
+                        "404.html" => {
+                            return Response {
+                                status: ResponseStatusCode::NotFound,
+                                meta_data : HashMap::new(),
+                                body: None,
+                            }
+                        }
+                        _ => {
+                            let content_type = path_buf.extension().unwrap();
+                            let content_type = content_type.to_str().unwrap();
+
+                            let content_type: ContentType = match content_type {
+                                "gif" => ContentType::Image(Image::gif),
+                                "jpg" | "jpeg" | "jpe" | "jfif" => ContentType::Image(Image::jpeg),
+                                "png" => ContentType::Image(Image::png),
+                                "tif" | "tiff" => ContentType::Image(Image::tiff),
+                                "css" => ContentType::Text(Text::css),
+                                "csv" => ContentType::Text(Text::csv),
+                                "html" => ContentType::Text(Text::html),
+                                "js" => ContentType::Text(Text::javascript),
+                                "xml" => ContentType::Text(Text::xml),
+                                "mpeg" => ContentType::Video(Video::mpeg),
+                                "mp4" => ContentType::Video(Video::mp4),
+                                "webm" => ContentType::Video(Video::webm),
+                                "svg" => ContentType::Image(Image::svg_xml),
+                                "woff" => ContentType::Application(Application::woff),
+                                _ => {
+                                    return Response {
+                                        status: ResponseStatusCode::UnsupportedMediaType,
+                                        meta_data : HashMap::new(),
+                                        body: None,
+                                    }
+                                }
+                            };
+
+                            Response {
+                                status: ResponseStatusCode::Ok,
+                                meta_data : HashMap::from([
+                                    ("Cache-Control".to_string(), "private".to_string()),
+                                    ("content-type".to_string(), content_type.to_string()),
+                                ]),
+                                body: None,
+                            }
+                        }
+                    }
+                }
+                _ => panic!(
+                    "default_head_logic should only used to handle Method::Head requests"
                 ),
             }
         }

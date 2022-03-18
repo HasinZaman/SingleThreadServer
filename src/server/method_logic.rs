@@ -36,7 +36,7 @@ type LogicFunc = Box<fn(Method, &ServerSetting, &HashMap<String, String>) -> Res
 ///         |request: Method, server_settings: &ServerSetting, meta_data: &HashMap<String, String>| -> Response {
 ///             Response {
 ///                 status: ResponseStatusCode::MethodNotAllowed,
-///                 body: Option::None,
+///                 body: None,
 ///             }
 ///         }
 ///     ),
@@ -58,21 +58,19 @@ pub struct MethodLogic {
 
 impl MethodLogic {
     /// Default implementation of method is not allowed to be called
-    pub fn default_not_allowed_logic(
-    ) -> LogicFunc {
+    pub fn default_not_allowed_logic() -> LogicFunc {
         Box::new(
             |_request: Method,
              _server_settings: &ServerSetting,
              _meta_data: &HashMap<String, String>| Response {
                 status: ResponseStatusCode::MethodNotAllowed,
-                body: Option::None,
+                body: None,
             },
         )
     }
 
     /// Default implementation of [Get](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET) method
-    pub fn default_get_logic(
-    ) -> LogicFunc {
+    pub fn default_get_logic() -> LogicFunc {
         Box::new(
             |request: Method,
              server_settings: &ServerSetting,
@@ -83,7 +81,7 @@ impl MethodLogic {
                         None => {
                             return Response {
                                 status: ResponseStatusCode::NotFound,
-                                body: Option::None,
+                                body: None,
                             }
                         }
                     };
@@ -93,7 +91,7 @@ impl MethodLogic {
                         None => {
                             return Response {
                                 status: ResponseStatusCode::NotFound,
-                                body: Option::None,
+                                body: None,
                             }
                         }
                     };
@@ -119,7 +117,7 @@ impl MethodLogic {
                         "404.html" => {
                             return Response {
                                 status: ResponseStatusCode::NotFound,
-                                body: Option::Some(Body {
+                                body: Some(Body {
                                     content_type: ContentType::Text(Text::html),
                                     content: body,
                                 }),
@@ -145,18 +143,18 @@ impl MethodLogic {
                                 _ => {
                                     return Response {
                                         status: ResponseStatusCode::NotFound,
-                                        body: Option::None,
+                                        body: None,
                                     }
                                 }
                             };
 
-                            return Response {
+                            Response {
                                 status: ResponseStatusCode::Ok,
-                                body: Option::Some(Body {
+                                body: Some(Body {
                                     content_type: content_type,
                                     content: body,
                                 }),
-                            };
+                            }
                         }
                     }
                 }

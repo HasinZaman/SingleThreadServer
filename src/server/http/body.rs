@@ -45,7 +45,7 @@ impl ContentType {
         let str_vec: Vec<&str> = raw_str.split("/").collect();
 
         if str_vec.len() < 2 {
-            return Result::Err(ParserError::InvalidMethod(Option::Some(String::from(
+            return Err(ParserError::InvalidMethod(Some(String::from(
                 "Start line must have more than 2 elements",
             ))));
         }
@@ -58,38 +58,36 @@ impl ContentType {
             "application" => {
                 let content_type_value = value::parse_value::<value::Application>(value)?;
                 let content_type = ContentType::Application(content_type_value);
-                return Ok(content_type);
+                Ok(content_type)
             }
             "audio" => {
                 let content_type_value = value::parse_value::<value::Audio>(value)?;
                 let content_type = ContentType::Audio(content_type_value);
-                return Ok(content_type);
+                Ok(content_type)
             }
             "image" => {
                 let content_type_value = value::parse_value::<value::Image>(value)?;
                 let content_type = ContentType::Image(content_type_value);
-                return Ok(content_type);
+                Ok(content_type)
             }
             "multipart" => {
                 let content_type_value = value::parse_value::<value::Multipart>(value)?;
                 let content_type = ContentType::Multipart(content_type_value);
-                return Ok(content_type);
+                Ok(content_type)
             }
             "text" => {
                 let content_type_value = value::parse_value::<value::Text>(value)?;
                 let content_type = ContentType::Text(content_type_value);
-                return Ok(content_type);
+                Ok(content_type)
             }
             "video" => {
                 let content_type_value = value::parse_value::<value::Video>(value)?;
                 let content_type = ContentType::Video(content_type_value);
-                return Ok(content_type);
+                Ok(content_type)
             }
-            _ => {
-                return Result::Err(ParserError::InvalidMethod(Option::Some(String::from(
-                    "Invalid type",
-                ))))
-            }
+            _ => Err(ParserError::InvalidMethod(Some(String::from(
+                "Invalid type",
+            )))),
         }
     }
 }
@@ -107,26 +105,30 @@ impl VariantName for ContentType {
 }
 impl ToString for ContentType {
     fn to_string(&self) -> String {
-        match &self {
-            ContentType::Application(value) => {
-                return format!("{}/{}", &self.get_variant(), value.get_variant())
+        format!(
+            "{}/{}",
+            &self.get_variant(),
+            match &self {
+                ContentType::Application(value) => {
+                    value.get_variant()
+                }
+                ContentType::Audio(value) => {
+                    value.get_variant()
+                }
+                ContentType::Image(value) => {
+                    value.get_variant()
+                }
+                ContentType::Multipart(value) => {
+                    value.get_variant()
+                }
+                ContentType::Text(value) => {
+                    value.get_variant()
+                }
+                ContentType::Video(value) => {
+                    value.get_variant()
+                }
             }
-            ContentType::Audio(value) => {
-                return format!("{}/{}", &self.get_variant(), value.get_variant())
-            }
-            ContentType::Image(value) => {
-                return format!("{}/{}", &self.get_variant(), value.get_variant())
-            }
-            ContentType::Multipart(value) => {
-                return format!("{}/{}", &self.get_variant(), value.get_variant())
-            }
-            ContentType::Text(value) => {
-                return format!("{}/{}", &self.get_variant(), value.get_variant())
-            }
-            ContentType::Video(value) => {
-                return format!("{}/{}", &self.get_variant(), value.get_variant())
-            }
-        }
+        )
     }
 }
 impl Debug for ContentType {
@@ -165,19 +167,19 @@ pub mod value {
     impl super::VariantName for Application {
         fn get_variant(&self) -> String {
             match &self {
-                Application::EDI_X12 => return String::from("EDI-X12"),
-                Application::EDIFACT => return String::from("EDIFACT"),
-                Application::javascript => return String::from("javascript"),
-                Application::octet_stream => return String::from("octet-stream"),
-                Application::ogg => return String::from("ogg"),
-                Application::pdf => return String::from("pdf"),
-                Application::xhtml_xml => return String::from("xhtml+xml"),
-                Application::x_shockwave_flash => return String::from("x-shockwave-flash"),
-                Application::json => return String::from("json"),
-                Application::ld_json => return String::from("ld+json"),
-                Application::xml => return String::from("xml"),
-                Application::zip => return String::from("zip"),
-                Application::x_www_form_urlencoded => return String::from("x-www-form-urlencoded"),
+                Application::EDI_X12 => String::from("EDI-X12"),
+                Application::EDIFACT => String::from("EDIFACT"),
+                Application::javascript => String::from("javascript"),
+                Application::octet_stream => String::from("octet-stream"),
+                Application::ogg => String::from("ogg"),
+                Application::pdf => String::from("pdf"),
+                Application::xhtml_xml => String::from("xhtml+xml"),
+                Application::x_shockwave_flash => String::from("x-shockwave-flash"),
+                Application::json => String::from("json"),
+                Application::ld_json => String::from("ld+json"),
+                Application::xml => String::from("xml"),
+                Application::zip => String::from("zip"),
+                Application::x_www_form_urlencoded => String::from("x-www-form-urlencoded"),
             }
         }
     }
@@ -187,19 +189,19 @@ pub mod value {
 
             let value: &str = value_paramater_vec[0];
             match value {
-                "EDI-X12" => return Result::Ok(Application::EDI_X12),
-                "EDIFACT" => return Result::Ok(Application::EDIFACT),
-                "javascript" => return Result::Ok(Application::javascript),
-                "octet-stream" => return Result::Ok(Application::octet_stream),
-                "ogg" => return Result::Ok(Application::ogg),
-                "pdf" => return Result::Ok(Application::pdf),
-                "xhtml+xml" => return Result::Ok(Application::xhtml_xml),
-                "x-shockwave-flash" => return Result::Ok(Application::x_shockwave_flash),
-                "json" => return Result::Ok(Application::json),
-                "ld+json" => return Result::Ok(Application::ld_json),
-                "xml" => return Result::Ok(Application::xml),
-                "zip" => return Result::Ok(Application::zip),
-                "x-www-form-urlencoded" => return Result::Ok(Application::x_www_form_urlencoded),
+                "EDI-X12" => Ok(Application::EDI_X12),
+                "EDIFACT" => Ok(Application::EDIFACT),
+                "javascript" => Ok(Application::javascript),
+                "octet-stream" => Ok(Application::octet_stream),
+                "ogg" => Ok(Application::ogg),
+                "pdf" => Ok(Application::pdf),
+                "xhtml+xml" => Ok(Application::xhtml_xml),
+                "x-shockwave-flash" => Ok(Application::x_shockwave_flash),
+                "json" => Ok(Application::json),
+                "ld+json" => Ok(Application::ld_json),
+                "xml" => Ok(Application::xml),
+                "zip" => Ok(Application::zip),
+                "x-www-form-urlencoded" => Ok(Application::x_www_form_urlencoded),
                 _ => panic!("Invalid variant type"),
             }
         }
@@ -216,10 +218,10 @@ pub mod value {
     impl super::VariantName for Audio {
         fn get_variant(&self) -> String {
             match &self {
-                Audio::mpeg => return String::from("mpeg"),
-                Audio::x_ms_wma => return String::from("x-ms-wma"),
-                Audio::vnd_rn_realaudio => return String::from("vnd.rn-realaudio"),
-                Audio::x_wav => return String::from("x-wav"),
+                Audio::mpeg => String::from("mpeg"),
+                Audio::x_ms_wma => String::from("x-ms-wma"),
+                Audio::vnd_rn_realaudio => String::from("vnd.rn-realaudio"),
+                Audio::x_wav => String::from("x-wav"),
             }
         }
     }
@@ -229,10 +231,10 @@ pub mod value {
 
             let value: &str = value_paramater_vec[0];
             match value {
-                "mpeg" => return Result::Ok(Audio::mpeg),
-                "x-ms-wma" => return Result::Ok(Audio::x_ms_wma),
-                "vnd.rn-realaudio" => return Result::Ok(Audio::vnd_rn_realaudio),
-                "x-wav" => return Result::Ok(Audio::x_wav),
+                "mpeg" => Ok(Audio::mpeg),
+                "x-ms-wma" => Ok(Audio::x_ms_wma),
+                "vnd.rn-realaudio" => Ok(Audio::vnd_rn_realaudio),
+                "x-wav" => Ok(Audio::x_wav),
                 _ => panic!("Invalid variant type"),
             }
         }
@@ -253,14 +255,14 @@ pub mod value {
     impl super::VariantName for Image {
         fn get_variant(&self) -> String {
             match &self {
-                Image::gif => return String::from("gif"),
-                Image::jpeg => return String::from("jpeg"),
-                Image::png => return String::from("png"),
-                Image::tiff => return String::from("tiff"),
-                Image::vnd_microsoft_icon => return String::from("vnd.microsoft.icon"),
-                Image::x_icon => return String::from("x-icon"),
-                Image::vnd_djvu => return String::from("vnd.djvu"),
-                Image::svg_xml => return String::from("svg+xml"),
+                Image::gif => String::from("gif"),
+                Image::jpeg => String::from("jpeg"),
+                Image::png => String::from("png"),
+                Image::tiff => String::from("tiff"),
+                Image::vnd_microsoft_icon => String::from("vnd.microsoft.icon"),
+                Image::x_icon => String::from("x-icon"),
+                Image::vnd_djvu => String::from("vnd.djvu"),
+                Image::svg_xml => String::from("svg+xml"),
             }
         }
     }
@@ -270,14 +272,14 @@ pub mod value {
 
             let value: &str = value_paramater_vec[0];
             match value {
-                "gif" => return Result::Ok(Image::gif),
-                "jpeg" => return Result::Ok(Image::jpeg),
-                "png" => return Result::Ok(Image::png),
-                "tiff" => return Result::Ok(Image::tiff),
-                "vnd.microsoft.icon" => return Result::Ok(Image::vnd_microsoft_icon),
-                "x-icon" => return Result::Ok(Image::x_icon),
-                "vnd.djvu" => return Result::Ok(Image::vnd_djvu),
-                "svg+xml" => return Result::Ok(Image::svg_xml),
+                "gif" => Ok(Image::gif),
+                "jpeg" => Ok(Image::jpeg),
+                "png" => Ok(Image::png),
+                "tiff" => Ok(Image::tiff),
+                "vnd.microsoft.icon" => Ok(Image::vnd_microsoft_icon),
+                "x-icon" => Ok(Image::x_icon),
+                "vnd.djvu" => Ok(Image::vnd_djvu),
+                "svg+xml" => Ok(Image::svg_xml),
                 _ => panic!("Invalid variant type"),
             }
         }
@@ -308,14 +310,12 @@ pub mod value {
 
             let value: &str = value_paramater_vec[0];
             match value {
-                "mixed" => return Result::Ok(Multipart::mixed),
-                "alternative" => return Result::Ok(Multipart::alternative),
-                "related" => return Result::Ok(Multipart::related),
-                "form-data" => {
-                    return Result::Ok(Multipart::form_data {
-                        boundary: String::from(""),
-                    })
-                }
+                "mixed" => Ok(Multipart::mixed),
+                "alternative" => Ok(Multipart::alternative),
+                "related" => Ok(Multipart::related),
+                "form-data" => Ok(Multipart::form_data {
+                    boundary: String::from(""),
+                }),
                 _ => panic!("Invalid variant type"),
             }
         }
@@ -349,12 +349,12 @@ pub mod value {
 
             let value: &str = value_paramater_vec[0];
             match value {
-                "css" => return Result::Ok(Text::css),
-                "csv" => return Result::Ok(Text::csv),
-                "html" => return Result::Ok(Text::html),
-                "javascript" => return Result::Ok(Text::javascript),
-                "plain" => return Result::Ok(Text::plain),
-                "xml" => return Result::Ok(Text::xml),
+                "css" => Ok(Text::css),
+                "csv" => Ok(Text::csv),
+                "html" => Ok(Text::html),
+                "javascript" => Ok(Text::javascript),
+                "plain" => Ok(Text::plain),
+                "xml" => Ok(Text::xml),
                 _ => panic!("Invalid variant type"),
             }
         }
@@ -390,13 +390,13 @@ pub mod value {
 
             let value: &str = value_paramater_vec[0];
             match value {
-                "mpeg" => return Result::Ok(Video::mpeg),
-                "mp4" => return Result::Ok(Video::mp4),
-                "quicktime" => return Result::Ok(Video::quicktime),
-                "x-ms-wmv" => return Result::Ok(Video::x_ms_wmv),
-                "x-msvideo" => return Result::Ok(Video::x_msvideo),
-                "x-flv" => return Result::Ok(Video::x_flv),
-                "webm" => return Result::Ok(Video::webm),
+                "mpeg" => return Ok(Video::mpeg),
+                "mp4" => return Ok(Video::mp4),
+                "quicktime" => return Ok(Video::quicktime),
+                "x-ms-wmv" => return Ok(Video::x_ms_wmv),
+                "x-msvideo" => return Ok(Video::x_msvideo),
+                "x-flv" => return Ok(Video::x_flv),
+                "webm" => return Ok(Video::webm),
                 _ => panic!("Invalid variant type"),
             }
         }

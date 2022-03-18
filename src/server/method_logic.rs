@@ -59,7 +59,7 @@ pub struct MethodLogic {
 impl MethodLogic {
     /// Default implementation of method is not allowed to be called
     pub fn default_not_allowed_logic(
-    ) -> Box<fn(Method, &ServerSetting, &HashMap<String, String>) -> Response> {
+    ) -> LogicFunc {
         Box::new(
             |_request: Method,
              _server_settings: &ServerSetting,
@@ -72,7 +72,7 @@ impl MethodLogic {
 
     /// Default implementation of [Get](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET) method
     pub fn default_get_logic(
-    ) -> Box<fn(Method, &ServerSetting, &HashMap<String, String>) -> Response> {
+    ) -> LogicFunc {
         Box::new(
             |request: Method,
              server_settings: &ServerSetting,

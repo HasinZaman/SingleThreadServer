@@ -36,7 +36,7 @@ type LogicFunc = fn(Method, &ServerSetting, &HashMap<String, String>) -> Respons
 ///         |request: Method, server_settings: &ServerSetting, meta_data: &HashMap<String, String>| -> Response {
 ///             Response {
 ///                 status: ResponseStatusCode::MethodNotAllowed,
-///                 body: Option::None,
+///                 body: None,
 ///             }
 ///         }
 ///     ),
@@ -77,7 +77,7 @@ impl MethodLogic {
                         None => {
                             return Response {
                                 status: ResponseStatusCode::NotFound,
-                                body: Option::None,
+                                body: None,
                             }
                         }
                     };
@@ -87,7 +87,7 @@ impl MethodLogic {
                         None => {
                             return Response {
                                 status: ResponseStatusCode::NotFound,
-                                body: Option::None,
+                                body: None,
                             }
                         }
                     };
@@ -113,7 +113,7 @@ impl MethodLogic {
                         "404.html" => {
                             return Response {
                                 status: ResponseStatusCode::NotFound,
-                                body: Option::Some(Body {
+                                body: Some(Body {
                                     content_type: ContentType::Text(Text::html),
                                     content: body,
                                 }),
@@ -136,21 +136,22 @@ impl MethodLogic {
                                 "mpeg" => ContentType::Video(Video::mpeg),
                                 "mp4" => ContentType::Video(Video::mp4),
                                 "webm" => ContentType::Video(Video::webm),
+                                "svg" => ContentType::Image(Image::svg_xml),
                                 _ => {
                                     return Response {
                                         status: ResponseStatusCode::NotFound,
-                                        body: Option::None,
+                                        body: None,
                                     }
                                 }
                             };
 
-                            return Response {
+                            Response {
                                 status: ResponseStatusCode::Ok,
-                                body: Option::Some(Body {
+                                body: Some(Body {
                                     content_type: content_type,
                                     content: body,
                                 }),
-                            };
+                            }
                         }
                     }
                 }

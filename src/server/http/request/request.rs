@@ -22,7 +22,7 @@ pub fn parse(request_data: [u8; 1024]) -> Result<(Method, HashMap<String, String
 
     let (method, target, _version) = match get_start_line(request.next()) {
         Ok(ok) => ok,
-        Err(err) => return Result::Err(err),
+        Err(err) => return Err(err),
     };
 
     let method = method.to_uppercase();
@@ -30,7 +30,7 @@ pub fn parse(request_data: [u8; 1024]) -> Result<(Method, HashMap<String, String
     let (body, meta_data) = get_data(request)?;
 
     let method: Method = Method::new(method.to_string(), target.to_string(), body)?;
-    Result::Ok((method, meta_data))
+    Ok((method, meta_data))
 }
 
 /// get_start_line method extracts the method, http version and target from the first line of a request
@@ -43,7 +43,7 @@ fn get_start_line<'a>(
     let start_line = match start_line {
         Some(val) => val,
         None => {
-            return Result::Err(ParserError::InvalidMethod(Option::Some(String::from(
+            return Err(ParserError::InvalidMethod(Some(String::from(
                 "No start line",
             ))))
         }
@@ -53,21 +53,17 @@ fn get_start_line<'a>(
 
     let method: &str = start_line
         .next()
-        .ok_or(ParserError::InvalidMethod(Option::Some(String::from(
-            "No method",
-        ))))?;
+        .ok_or(ParserError::InvalidMethod(Some(String::from("No method"))))?;
     let target: &str = start_line
         .next()
-        .ok_or(ParserError::InvalidMethod(Option::Some(String::from(
-            "No targert",
-        ))))?;
+        .ok_or(ParserError::InvalidMethod(Some(String::from("No targert"))))?;
     let version: &str = start_line
         .next()
-        .ok_or(ParserError::InvalidMethod(Option::Some(String::from(
+        .ok_or(ParserError::InvalidMethod(Some(String::from(
             "No HTTP version",
         ))))?;
 
-    Result::Ok((method, target, version))
+    Ok((method, target, version))
 }
 
 /// get_data method extras metadata and possible Body from request
@@ -79,8 +75,8 @@ fn get_data<'a>(
 ) -> Result<(Option<Body>, HashMap<String, String>), ParserError> {
     let mut meta_data: HashMap<String, String> = HashMap::new();
 
-    let mut content_type: Option<&str> = Option::None;
-    let mut content_lenght: Option<&str> = Option::None;
+    let mut content_type: Option<&str> = None;
+    let mut content_lenght: Option<&str> = None;
 
     loop {
         let line = match line_iter.next() {
@@ -98,16 +94,16 @@ fn get_data<'a>(
         let value = value.trim();
 
         if key == "content-type" {
-            content_type = Option::Some(value);
+            content_type = Some(value);
         } else if key == "content-length" {
-            content_lenght = Option::Some(value);
+            content_lenght = Some(value);
         } else {
             meta_data.insert(key, value.to_string());
         }
     }
 
     if content_type.is_none() || content_lenght.is_none() {
-        return Result::Ok((Option::None, meta_data));
+        return Ok((None, meta_data));
     }
 
     let content_type = content_type.unwrap();
@@ -130,7 +126,7 @@ fn get_data<'a>(
 
     let content_type = match ContentType::new(content_type) {
         Ok(val) => val,
-        Err(err) => return Result::Err(err),
+        Err(err) => return Err(err),
     };
 
     let body = Body {
@@ -138,7 +134,7 @@ fn get_data<'a>(
         content: body.as_bytes().to_vec(),
     };
 
-    return Result::Ok((Option::Some(body), meta_data));
+    return Ok((Some(body), meta_data));
 }
 
 /// get_key_value_pair extracts key and associated value from unparsed metadata string
@@ -149,14 +145,14 @@ fn get_key_value_pair<'a>(line: &'a str) -> Result<(&'a str, &'a str), ParserErr
     let mut line = line.split(':');
     let key = line
         .next()
-        .ok_or(ParserError::InvalidMethod(Option::Some(String::from(
+        .ok_or(ParserError::InvalidMethod(Some(String::from(
             "No key in key value pair",
         ))))?;
     let value = line
         .next()
-        .ok_or(ParserError::InvalidMethod(Option::Some(String::from(
+        .ok_or(ParserError::InvalidMethod(Some(String::from(
             "No value in key value pair",
         ))))?;
 
-    Result::Ok((key, value))
+    Ok((key, value))
 }

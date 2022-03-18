@@ -19,11 +19,10 @@ impl DataBase {
 
         let stmp = conn.prep(command).unwrap();
 
-        return conn
-            .exec_iter(stmp, ())
+        conn.exec_iter(stmp, ())
             .unwrap()
             .map(|wrapped_row| row_logic(wrapped_row.unwrap()))
-            .collect();
+            .collect()
     }
 
     fn get_conn(&self) -> mysql::PooledConn {
@@ -44,7 +43,7 @@ macro_rules! env_var_to_variable {
     ($key : literal, $var : ident) => {
         match env::var($key) {
             Err(_err) => {
-                return Option::None;
+                return None;
             }
             Ok(ok) => $var = ok,
         }
@@ -64,7 +63,7 @@ fn get_database() -> Option<DataBase> {
     env_var_to_variable!("DB_username", db_username);
     env_var_to_variable!("DB_password", db_password);
 
-    Option::Some(DataBase {
+    Some(DataBase {
         db_host: db_host,
         db_port: db_port,
         db_name: db_name,

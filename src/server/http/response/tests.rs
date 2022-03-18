@@ -30,7 +30,7 @@ mod response {
     fn no_body_test() {
         let response = Response {
             status: ResponseStatusCode::Ok,
-            body: Option::None,
+            body: None,
         };
 
         assert_eq!(response.to_string(), "HTTP/1.1 200 Ok");
@@ -40,7 +40,7 @@ mod response {
     fn body_test() {
         let response = Response {
             status: ResponseStatusCode::Ok,
-            body: Option::Some(Body {
+            body: Some(Body {
                 content_type: ContentType::Text(value::Text::html),
                 content: String::from("<p>New File</p>"),
             }),

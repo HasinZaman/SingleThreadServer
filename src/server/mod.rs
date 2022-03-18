@@ -95,7 +95,7 @@ fn handle_connection(
             log("Parse Failure", format!("Failure:{:?}", err));
             response = Response {
                 status: ResponseStatusCode::BadRequest,
-                body: Option::None,
+                body: None,
             };
         }
     }

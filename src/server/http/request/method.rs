@@ -29,70 +29,49 @@ impl Method {
     pub fn new(method: String, target: String, body: Option<Body>) -> Result<Method, ParserError> {
         let body_unwrap = |body_tmp: Option<Body>| -> Result<Body, ParserError> {
             match body_tmp {
-                Some(body) => return Result::Ok(body),
-                None => {
-                    return Result::Err(ParserError::InvalidMethod(Option::Some(String::from(
-                        "Http request requires body attribute",
-                    ))))
-                }
+                Some(body) => Ok(body),
+                None => Err(ParserError::InvalidMethod(Some(String::from(
+                    "Http request requires body attribute",
+                )))),
             }
         };
 
         match method.to_ascii_uppercase().as_str() {
-            "GET" => {
-                return Result::Ok(Method::Get {
-                    file: target.to_string(),
-                })
-            }
-            "HEAD" => {
-                return Result::Ok(Method::Head {
-                    file: target.to_string(),
-                })
-            }
-            "POST" => {
-                return Result::Ok(Method::Post {
-                    file: target.to_string(),
-                    body: body_unwrap(body)?,
-                })
-            }
-            "PUT" => {
-                return Result::Ok(Method::Put {
-                    file: target.to_string(),
-                    body: body_unwrap(body)?,
-                })
-            }
-            "DELETE" => {
-                return Result::Ok(Method::Delete {
-                    file: target.to_string(),
-                    body: body,
-                })
-            }
-            "CONNECT" => {
-                return Result::Ok(Method::Connect {
-                    url: target.to_string(),
-                })
-            }
-            "OPTIONS" => {
-                return Result::Ok(Method::Options {
-                    url: target.to_string(),
-                })
-            }
-            "TRACE" => {
-                return Result::Ok(Method::Trace {
-                    file: target.to_string(),
-                })
-            }
-            "PATCH" => {
-                return Result::Ok(Method::Patch {
-                    file: target.to_string(),
-                    body: body_unwrap(body)?,
-                })
-            }
-            _ => {
-                return Result::Err(ParserError::InvalidMethod(Option::Some(String::from(
-                    format!("{} is an invalid method name", method.as_str()),
-                ))))
-            }
+            "GET" => Ok(Method::Get {
+                file: target.to_string(),
+            }),
+            "HEAD" => Ok(Method::Head {
+                file: target.to_string(),
+            }),
+            "POST" => Ok(Method::Post {
+                file: target.to_string(),
+                body: body_unwrap(body)?,
+            }),
+            "PUT" => Ok(Method::Put {
+                file: target.to_string(),
+                body: body_unwrap(body)?,
+            }),
+            "DELETE" => Ok(Method::Delete {
+                file: target.to_string(),
+                body: body,
+            }),
+            "CONNECT" => Ok(Method::Connect {
+                url: target.to_string(),
+            }),
+            "OPTIONS" => Ok(Method::Options {
+                url: target.to_string(),
+            }),
+            "TRACE" => Ok(Method::Trace {
+                file: target.to_string(),
+            }),
+            "PATCH" => Ok(Method::Patch {
+                file: target.to_string(),
+                body: body_unwrap(body)?,
+            }),
+            _ => Err(ParserError::InvalidMethod(Some(String::from(format!(
+                "{} is an invalid method name",
+                method.as_str()
+            ))))),
         }
     }
 }

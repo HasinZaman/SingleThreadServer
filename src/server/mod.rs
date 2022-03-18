@@ -1,5 +1,6 @@
 //! Server module is responsible for the start-up and handling of server requests
 
+use std::fmt::format;
 use std::net::TcpListener;
 use std::net::TcpStream;
 
@@ -74,17 +75,17 @@ fn handle_connection(
 
             log("Method", format!("{:?}", method));
 
-            response = match &method {
-                Method::Get { file: _ } => (method_action.get)(method, &server_settings, &meta_data),
-                Method::Head { file: _ } => (method_action.head)(method, &server_settings, &meta_data),
-                Method::Post { file: _, body: _ } => (method_action.post)(method, &server_settings, &meta_data),
-                Method::Put { file: _, body: _ } => (method_action.put)(method, &server_settings, &meta_data),
-                Method::Delete { file: _, body: _ } => (method_action.delete)(method, &server_settings, &meta_data),
-                Method::Connect { url: _ } => (method_action.connect)(method, &server_settings, &meta_data),
-                Method::Options { url: _ } => (method_action.option)(method, &server_settings, &meta_data),
-                Method::Trace { file: _ } => (method_action.trace)(method, &server_settings, &meta_data),
-                Method::Patch { file: _, body: _ } => (method_action.patch)(method, &server_settings, &meta_data),
-            };
+            response = (match &method {
+                Method::Get { .. } => method_action.get.clone(),
+                Method::Head { .. } => method_action.head.clone(),
+                Method::Post { .. } => method_action.post.clone(),
+                Method::Put { .. } => method_action.put.clone(),
+                Method::Delete { .. } => method_action.delete.clone(),
+                Method::Connect { .. } => method_action.connect.clone(),
+                Method::Options { .. } => method_action.option.clone(),
+                Method::Trace { .. } => method_action.trace.clone(),
+                Method::Patch { .. } => method_action.patch.clone(),
+            })(method, &server_settings, &meta_data);
         }
         Err(err) => {
             log("Parse Failure", format!("Failure:{:?}", err));
@@ -97,17 +98,14 @@ fn handle_connection(
 
     log("response", format!("{:?}", response.status));
 
-    let mut tmp: [u8; 1] = [0];
-    for byte in response.as_bytes() {
-        tmp[0] = byte.clone();
-        match stream.write(&tmp as &[u8]) {
-            Err(err) => {
+    response.as_bytes().iter().try_for_each(|byte| {
+        if let Err(err) = stream.write(&[*byte]) {
                 println!("{}", err);
-                break;
-            },
-            _ => {}
+                log("Send Error", format!("{}", err));
+                return None
         }
-    }
+        Some(())
+    });
 
     stream.flush().unwrap();
 }

@@ -11,6 +11,8 @@ use super::http::{
 };
 use super::setting::ServerSetting;
 
+type LogicFunc = Box<fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>;
+
 /// MethodLogic stores the method required for any given HTTP method
 /// 
 /// # Example
@@ -43,21 +45,21 @@ use super::setting::ServerSetting;
 /// };
 /// ```
 pub struct MethodLogic {
-    pub get: Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>,
-    pub head: Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>,
-    pub post: Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>,
-    pub put: Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>,
-    pub delete: Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>,
-    pub connect: Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>,
-    pub option: Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>,
-    pub trace: Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>,
-    pub patch: Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response>,
+    pub get: LogicFunc,
+    pub head: LogicFunc,
+    pub post: LogicFunc,
+    pub put: LogicFunc,
+    pub delete: LogicFunc,
+    pub connect: LogicFunc,
+    pub option: LogicFunc,
+    pub trace: LogicFunc,
+    pub patch: LogicFunc,
 }
 
 impl MethodLogic {
     /// Default implementation of method is not allowed to be called
     pub fn default_not_allowed_logic(
-    ) -> Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response> {
+    ) -> Box<fn(Method, &ServerSetting, &HashMap<String, String>) -> Response> {
         Box::new(
             |_request: Method,
              _server_settings: &ServerSetting,
@@ -70,7 +72,7 @@ impl MethodLogic {
 
     /// Default implementation of [Get](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET) method
     pub fn default_get_logic(
-    ) -> Box<dyn Fn(Method, &ServerSetting, &HashMap<String, String>) -> Response> {
+    ) -> Box<fn(Method, &ServerSetting, &HashMap<String, String>) -> Response> {
         Box::new(
             |request: Method,
              server_settings: &ServerSetting,

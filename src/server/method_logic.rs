@@ -1,5 +1,6 @@
 //! Method Logic module is response for structs and methods that define how parsed HTTP methods should be handled
 use std::collections::HashMap;
+use std::hash::Hash;
 use std::str;
 
 use super::file_reader;
@@ -63,6 +64,7 @@ impl MethodLogic {
          _server_settings: &ServerSetting,
          _meta_data: &HashMap<String, String>| Response {
             status: ResponseStatusCode::MethodNotAllowed,
+            meta_data : HashMap::new(),
             body: Option::None,
         }
     }
@@ -77,6 +79,7 @@ impl MethodLogic {
                         None => {
                             return Response {
                                 status: ResponseStatusCode::NotFound,
+                                meta_data : HashMap::new(),
                                 body: None,
                             }
                         }
@@ -87,6 +90,7 @@ impl MethodLogic {
                         None => {
                             return Response {
                                 status: ResponseStatusCode::NotFound,
+                                meta_data : HashMap::new(),
                                 body: None,
                             }
                         }
@@ -104,6 +108,7 @@ impl MethodLogic {
                                 None => {
                                     return Response {
                                         status: ResponseStatusCode::NotFound,
+                                        meta_data : HashMap::new(),
                                         body: Some(Body {
                                             content_type: ContentType::Text(Text::html),
                                             content: format!(
@@ -134,6 +139,7 @@ impl MethodLogic {
                         "404.html" => {
                             return Response {
                                 status: ResponseStatusCode::NotFound,
+                                meta_data : HashMap::new(),
                                 body: Some(Body {
                                     content_type: ContentType::Text(Text::html),
                                     content: body,
@@ -162,6 +168,7 @@ impl MethodLogic {
                                 _ => {
                                     return Response {
                                         status: ResponseStatusCode::NotFound,
+                                        meta_data : HashMap::new(),
                                         body: None,
                                     }
                                 }
@@ -169,6 +176,7 @@ impl MethodLogic {
 
                             Response {
                                 status: ResponseStatusCode::Ok,
+                                meta_data : HashMap::from([("Cache-Control".to_string(), "private".to_string())]),
                                 body: Some(Body {
                                     content_type: content_type,
                                     content: body,

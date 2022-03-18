@@ -46,11 +46,8 @@ pub fn log(tag: &str, message: String) {
         Ok(file) => file,
     };
 
-    match file.write(line.as_bytes()) {
-        Err(err) => {
-            panic!("failed to write at end: {:?}", err);
-        }
-        _ => {}
+    if let Err(err) = file.write(line.as_bytes()) {
+        panic!("failed to write at end: {:?}", err);
     }
 }
 

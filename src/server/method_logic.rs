@@ -95,7 +95,28 @@ impl MethodLogic {
                     let path_buf = match file_reader::parse(&file, &host_path, allowed_extension) {
                         Some(path_buf) => path_buf,
                         None => {
-                            file_reader::parse("404.html", &host_path, &allowed_extension).unwrap()
+                            match file_reader::parse(
+                                "error\\404.html",
+                                &host_path,
+                                &allowed_extension,
+                            ) {
+                                Some(file) => file,
+                                None => {
+                                    return Response {
+                                        status: ResponseStatusCode::NotFound,
+                                        body: Some(Body {
+                                            content_type: ContentType::Text(Text::html),
+                                            content: format!(
+                                                "<html><h1>Error code: {}</h1><p>{}</p></html>",
+                                                ResponseStatusCode::NotFound.get_code(),
+                                                ResponseStatusCode::NotFound.to_string()
+                                            )
+                                            .as_bytes()
+                                            .to_vec(),
+                                        }),
+                                    }
+                                }
+                            }
                         }
                     };
 

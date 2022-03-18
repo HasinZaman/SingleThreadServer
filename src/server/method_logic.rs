@@ -142,6 +142,7 @@ impl MethodLogic {
                                 "mpeg" => ContentType::Video(Video::mpeg),
                                 "mp4" => ContentType::Video(Video::mp4),
                                 "webm" => ContentType::Video(Video::webm),
+                                "svg" => ContentType::Image(Image::svg_xml),
                                 _ => {
                                     return Response {
                                         status: ResponseStatusCode::NotFound,

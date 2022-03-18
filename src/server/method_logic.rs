@@ -4,7 +4,7 @@ use std::str;
 
 use super::file_reader;
 use super::http::body::{Body, ContentType};
-use super::http::body::{Image, Text, Video};
+use super::http::body::{Image, Text, Video, Application};
 use super::http::{
     method::Method,
     response::{response::Response, response_status_code::ResponseStatusCode},
@@ -120,7 +120,7 @@ impl MethodLogic {
                         }
                     };
 
-                    let file_name = match &path_buf.file_name() {
+                    let file_name = match path_buf.file_name() {
                         Some(name) => name.to_str().unwrap(),
                         None => panic!(
                             "FileReader::parse does not return file name. {:?}",
@@ -158,6 +158,7 @@ impl MethodLogic {
                                 "mp4" => ContentType::Video(Video::mp4),
                                 "webm" => ContentType::Video(Video::webm),
                                 "svg" => ContentType::Image(Image::svg_xml),
+                                "woff" => ContentType::Application(Application::woff),
                                 _ => {
                                     return Response {
                                         status: ResponseStatusCode::NotFound,

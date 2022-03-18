@@ -163,6 +163,7 @@ pub mod value {
         xml,
         zip,
         x_www_form_urlencoded,
+        woff,
     }
     impl super::VariantName for Application {
         fn get_variant(&self) -> String {
@@ -180,6 +181,7 @@ pub mod value {
                 Application::xml => String::from("xml"),
                 Application::zip => String::from("zip"),
                 Application::x_www_form_urlencoded => String::from("x-www-form-urlencoded"),
+                Application::woff => String::from("woff"),
             }
         }
     }
@@ -202,7 +204,11 @@ pub mod value {
                 "xml" => Ok(Application::xml),
                 "zip" => Ok(Application::zip),
                 "x-www-form-urlencoded" => Ok(Application::x_www_form_urlencoded),
-                _ => panic!("Invalid variant type"),
+                "woff" => Ok(Application::woff),
+                _ => Err(ParserError::InvalidMethod(Some(format!(
+                    "{} is not a valid Application variant",
+                    value_raw
+                )))),
             }
         }
     }
@@ -235,7 +241,10 @@ pub mod value {
                 "x-ms-wma" => Ok(Audio::x_ms_wma),
                 "vnd.rn-realaudio" => Ok(Audio::vnd_rn_realaudio),
                 "x-wav" => Ok(Audio::x_wav),
-                _ => panic!("Invalid variant type"),
+                _ => Err(ParserError::InvalidMethod(Some(format!(
+                    "{} is not a valid Audio variant",
+                    value_raw
+                )))),
             }
         }
     }
@@ -280,7 +289,10 @@ pub mod value {
                 "x-icon" => Ok(Image::x_icon),
                 "vnd.djvu" => Ok(Image::vnd_djvu),
                 "svg+xml" => Ok(Image::svg_xml),
-                _ => panic!("Invalid variant type"),
+                _ => Err(ParserError::InvalidMethod(Some(format!(
+                    "{} is not a valid Image variant",
+                    value_raw
+                )))),
             }
         }
     }
@@ -316,7 +328,10 @@ pub mod value {
                 "form-data" => Ok(Multipart::form_data {
                     boundary: String::from(""),
                 }),
-                _ => panic!("Invalid variant type"),
+                _ => Err(ParserError::InvalidMethod(Some(format!(
+                    "{} is not a valid Multipart variant",
+                    value_raw
+                )))),
             }
         }
     }
@@ -355,7 +370,10 @@ pub mod value {
                 "javascript" => Ok(Text::javascript),
                 "plain" => Ok(Text::plain),
                 "xml" => Ok(Text::xml),
-                _ => panic!("Invalid variant type"),
+                _ => Err(ParserError::InvalidMethod(Some(format!(
+                    "{} is not a valid Text variant",
+                    value_raw
+                )))),
             }
         }
     }

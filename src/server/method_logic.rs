@@ -194,7 +194,7 @@ impl MethodLogic {
     pub fn default_head_logic() -> LogicFunc {
         |request: Method, server_settings: &ServerSetting, meta_data: &HashMap<String, String>| {
             match request {
-                Method::Get { file } => {
+                Method::Head { file } => {
                     let host: &str = match meta_data.get("host") {
                         Some(host) => host,
                         None => {

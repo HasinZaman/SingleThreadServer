@@ -44,13 +44,16 @@ pub fn start(method_action: method_logic::MethodLogic) {
 
     let server_setting = ServerSetting::load();
 
-    println!("{:?}", server_setting);
+
+    println!("Loaded settings:\n{:?}", server_setting);
 
     let listener = TcpListener::bind(format!(
         "{}:{}",
         server_setting.address, server_setting.port
     ))
     .unwrap();
+    
+    println!("TcpListener Bind:{:}", format!("{}:{}",server_setting.address, server_setting.port));
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();

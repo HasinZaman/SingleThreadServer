@@ -120,18 +120,11 @@ The frame by default logs the parsed intial connection request, errors and respo
 ## Road Map
 
 **Future Plans**
- - More default method implementations
-    - HEAD
-    - POST
-    - PUT
-    - DELETE
-    - CONNECT
-    - OPTION
-    - TRACE
-    - PATCH
  - Better error handling in default method implementations
     - In which Results are handled with ```match``` rather than ```unwrap```
  - Default error pages
+ - HTTPS support
+ - TCP Stream timeouts
 
 ## License
 Distributed under the MIT License. See ```LICENSE.txt``` for more information.

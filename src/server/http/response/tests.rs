@@ -21,35 +21,64 @@ mod response_status_code {
 }
 
 mod response {
-    /*
     use super::super::response::Response;
     use super::super::response_status_code::ResponseStatusCode;
-    use crate::server::http::body::{value, Body, ContentType};
+    use super::super::super::body::{Body, ContentType};
+    use super::super::super::body::{ Text };
+    use std::collections::HashMap;
 
     #[test]
-    fn no_body_test() {
+    fn no_meta_data_and_body_test(){
         let response = Response {
             status: ResponseStatusCode::Ok,
-            body: None,
+            meta_data: HashMap::new(),
+            body: None
         };
 
-        assert_eq!(response.to_string(), "HTTP/1.1 200 Ok");
+        let output:Vec<u8> = format!("HTTP/1.1 {}\r\n", ResponseStatusCode::Ok.to_string()).as_bytes().to_vec();
+
+        assert_eq!(response.as_bytes(), output);
     }
 
     #[test]
-    fn body_test() {
+    fn no_meta_data_test(){
         let response = Response {
             status: ResponseStatusCode::Ok,
+            meta_data: HashMap::new(),
             body: Some(Body {
-                content_type: ContentType::Text(value::Text::html),
-                content: String::from("<p>New File</p>"),
-            }),
+                content_type: ContentType::Text(Text::html),
+                content: "<html></html>".as_bytes().to_vec()
+            })
         };
 
-        assert_eq!(
-            response.to_string(),
-            "HTTP/1.1 200 Ok\r\nContent-Length: 15\r\nContent-Type: text/html\r\n\n<p>New File</p>"
-        );
+        let output:Vec<u8> = format!("HTTP/1.1 {}\r\nContent-Length: {}\r\nContent-Type: {}\r\n\n{}",
+            ResponseStatusCode::Ok.to_string(),
+            "<html></html>".as_bytes().len(),
+            ContentType::Text(Text::html).to_string(),
+            "<html></html>"
+        ).as_bytes().to_vec();
+
+        assert_eq!(response.as_bytes(), output);
     }
-    */
+
+    #[test]
+    fn general_test(){
+        let response = Response {
+            status: ResponseStatusCode::Ok,
+            meta_data: HashMap::from([("Cache-Control".to_string(), "private".to_string())]),
+            body: Some(Body {
+                content_type: ContentType::Text(Text::html),
+                content: "<html></html>".as_bytes().to_vec()
+            })
+        };
+
+        let output:Vec<u8> = format!("HTTP/1.1 {}\r\nCache-Control: private\r\nContent-Length: {}\r\nContent-Type: {}\r\n\n{}",
+            ResponseStatusCode::Ok.to_string(),
+            "<html></html>".as_bytes().len(),
+            ContentType::Text(Text::html).to_string(),
+            "<html></html>"
+        ).as_bytes().to_vec();
+
+        assert_eq!(response.as_bytes(), output);
+    }
 }

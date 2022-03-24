@@ -125,6 +125,7 @@ The frame by default logs the parsed intial connection request, errors and respo
  - Default error pages
  - HTTPS support
  - TCP Stream timeouts
+ - Use the framework to make multi-threaded, async, and pipeline architecture servers
 
 ## License
 Distributed under the MIT License. See ```LICENSE.txt``` for more information.

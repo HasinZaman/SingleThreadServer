@@ -1,6 +1,6 @@
 # SingleThreadServer
 ## Description
-SingleThreadServer is a rust based server frame work to create a low level servers.
+SingleThreadServer is a rust based server framework to create low level servers.
 
 The framework is responsible for receiving, parsing and sending HTTP requests. The user and developers are responsible providing closures that define how to respond to an HTTP request.
 ## Getting Started

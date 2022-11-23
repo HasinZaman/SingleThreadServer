@@ -7,7 +7,7 @@ The framework is responsible for receiving, parsing and sending HTTP requests. T
 
 ### Prerequisites
 
-The frame requires the following prerequisites in order to function
+The framework requires the following prerequisites in order to function
  * [Rust](https://www.rust-lang.org/tools/install)
 
 ### Installation & Compiling
